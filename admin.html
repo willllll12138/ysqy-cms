@@ -43,6 +43,7 @@
             z-index:1000;
         }
         .container { max-width:960px; margin:0 auto; padding:0 24px; }
+
         /* 登录 */
         .login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; }
         .login-card {
@@ -55,8 +56,23 @@
         .login-card input { width:100%; padding:14px 18px; border:1.5px solid var(--border); border-radius:var(--radius-full); text-align:center; font-size:1rem; outline:none; margin-bottom:16px; background:var(--bg); }
         .btn { background:var(--ink); color:#fff; border:none; padding:12px 24px; border-radius:var(--radius-full); cursor:pointer; font-family:inherit; font-weight:500; letter-spacing:0.05em; transition:0.2s; }
         .btn:hover { background:#2b2b2b; }
-        .btn-outline { background:transparent; color:var(--ink); border:1.5px solid #ddd; }
-        .btn-outline:hover { background:#f5f5f5; }
+        .btn-outline {
+            background:transparent;
+            color:var(--ink);
+            border:1.5px solid var(--border-strong);
+            padding:8px 16px;
+            border-radius:var(--radius-full);
+            cursor:pointer;
+            font-family:inherit;
+            font-size:0.75rem;
+            letter-spacing:0.04em;
+            transition:0.2s;
+            display:inline-flex;
+            align-items:center;
+            gap:4px;
+            text-decoration:none;
+        }
+        .btn-outline:hover { background:#f5f5f5; border-color:#aaa; }
         .login-links { margin-top:16px; display:flex; justify-content:center; gap:20px; }
         .login-links a { color:var(--ink-light); font-size:0.8rem; text-decoration:none; transition:0.2s; }
         .login-links a:hover { color:var(--gold); }
@@ -89,16 +105,28 @@
         .action-icons { display:flex; gap:5px; }
         .action-icons i { cursor:pointer; color:#bbb; padding:4px; border-radius:6px; }
         .action-icons i:hover { color:var(--gold); background:var(--gold-pale); }
+
+        /* 模态框 */
         .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:2000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:0.3s; }
         .modal-overlay.open { opacity:1; pointer-events:auto; }
-        .modal { background:#fff; border-radius:var(--radius-lg); padding:32px; max-width:500px; width:90%; max-height:80vh; overflow-y:auto; position:relative; }
+        .modal { background:#fff; border-radius:var(--radius-lg); padding:32px; max-width:480px; width:90%; max-height:80vh; overflow-y:auto; position:relative; }
         .modal h3 { font-family:var(--font-serif); margin-bottom:16px; }
         .modal .form-group { margin-bottom:12px; }
         .modal .form-group label { display:block; font-size:0.72rem; letter-spacing:0.05em; margin-bottom:4px; color:var(--ink-light); }
         .modal .form-group input, .modal .form-group select, .modal .form-group textarea { width:100%; padding:10px 14px; border:1.5px solid #e0dbd0; border-radius:8px; font-family:inherit; background:#fdfdfb; outline:none; }
         .modal .btn-group { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+        /* 确保模态框内取消按钮有明显边框 */
+        .modal .btn-outline {
+            border:1.5px solid #ccc;
+            color:#555;
+            background:#fff;
+        }
+        .modal .btn-outline:hover { background:#f9f9f9; border-color:#999; }
+
+        /* Toast */
         .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 24px; border-radius:30px; font-size:0.8rem; opacity:0; transition:0.3s; z-index:3000; pointer-events:none; }
         .toast.show { opacity:1; }
+
         @media (max-width:680px) {
             .panel-grid { grid-template-columns:1fr 1fr; }
         }
@@ -127,9 +155,9 @@
             <div class="admin-header">
                 <h1>⚙️ 库管理中心</h1>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                    <a href="index.html" class="btn-outline" style="padding:8px 16px;border-radius:var(--radius-full);text-decoration:none;color:var(--ink);">← 返回前台</a>
-                    <button class="btn-outline" onclick="exportData()">📤 导出数据</button>
-                    <label class="btn-outline" style="cursor:pointer;padding:8px 16px;">📥 导入数据<input type="file" id="importFile" style="display:none" onchange="importData(this)"></label>
+                    <a href="index.html" class="btn-outline" style="font-size:0.72rem; padding:6px 14px;">← 返回前台</a>
+                    <button class="btn-outline" onclick="exportData()" style="font-size:0.72rem; padding:6px 14px;">📤 导出</button>
+                    <label class="btn-outline" style="cursor:pointer;font-size:0.72rem; padding:6px 14px;">📥 导入<input type="file" id="importFile" style="display:none" onchange="importData(this)"></label>
                 </div>
             </div>
             <div class="panel-grid">
@@ -168,39 +196,25 @@
             const DEFAULT_PWD = 'ysqy798';
             const RESET_CODE = 'ysqy_reset';
 
-            // 默认数据库结构
             const DEFAULT_DB = {
                 modules: ['朋友圈', '客户见证', '课程卖点'],
-                angles: ['数字冲击', '对话还原', '情绪唤醒', '场景反差', '旁观者视角', '预言式', '时间轴', '选择题',
-                    '内幕揭秘', '反常识', '学员故事', '身体感知', '追问式', '画面描写'
-                ],
+                angles: ['数字冲击', '对话还原', '情绪唤醒', '场景反差', '旁观者视角', '预言式', '时间轴', '选择题', '内幕揭秘', '反常识', '学员故事', '身体感知', '追问式', '画面描写'],
                 testimonialCategories: ['文昌', '沙龙', '成交', '夫妻关系', '身体健康', '知识成长', '见识提升'],
                 courseCategories: ['核心价值', '课程亮点', '学员反馈'],
                 posts: [
-                    { id: 1, module: '朋友圈', angle: '数字冲击',
-                        text: '同样做室内设计，收入差距能有10倍 📊\n靠颜感做方案的，改稿改到怀疑人生\n靠五行色彩做方案的，签单当天就定\n区别不在于谁更努力\n而在于那套判断客户的底层工具 🎯',
-                        time: 1715000000000 },
-                    { id: 2, module: '朋友圈', angle: '对话还原',
-                        text: '客户上周说了一句话，我一直在想 💬\n她说："你懂我"\n别人都在说方案，你在说我的生活\n五行色彩秒懂客户，教的就是这种眼光 👀',
-                        time: 1714900000000 }
+                    { id: 1, module: '朋友圈', angle: '数字冲击', text: '同样做室内设计，收入差距能有10倍 📊\n靠颜感做方案的，改稿改到怀疑人生\n靠五行色彩做方案的，签单当天就定\n区别不在于谁更努力\n而在于那套判断客户的底层工具 🎯', time: 1715000000000 },
+                    { id: 2, module: '朋友圈', angle: '对话还原', text: '客户上周说了一句话，我一直在想 💬\n她说："你懂我"\n别人都在说方案，你在说我的生活\n五行色彩秒懂客户，教的就是这种眼光 👀', time: 1714900000000 }
                 ],
                 testimonials: [
-                    { id: 101, module: '客户见证', category: '成交', imageUrl: '', videoUrl: '', title: '林女士 · 软装设计师',
-                        description: '学了五行色彩后，第一个月签单率提升40%。客户说"你懂我"，这种感觉太好了。',
-                        clientName: '林女士', date: '2024-05-15' },
-                    { id: 102, module: '客户见证', category: '文昌', imageUrl: '', videoUrl: '', title: '张先生 · 企业主',
-                        description: '调整办公室文昌位后，团队效率明显提升，业绩稳步增长。', clientName: '张先生',
-                    date: '2024-05-10' }
+                    { id: 101, module: '客户见证', category: '成交', imageUrl: '', videoUrl: '', title: '林女士 · 软装设计师', description: '学了五行色彩后，第一个月签单率提升40%。客户说"你懂我"，这种感觉太好了。', clientName: '林女士', date: '2024-05-15' },
+                    { id: 102, module: '客户见证', category: '文昌', imageUrl: '', videoUrl: '', title: '张先生 · 企业主', description: '调整办公室文昌位后，团队效率明显提升，业绩稳步增长。', clientName: '张先生', date: '2024-05-10' }
                 ],
                 courses: [
-                    { id: 201, module: '课程卖点', category: '核心价值', imageUrl: '', videoUrl: '', title: '五行色彩诊断系统',
-                        description: '一套让设计师秒懂客户的底层工具，让签单变成自然结果。', date: '2024-05-01' },
-                    { id: 202, module: '课程卖点', category: '课程亮点', imageUrl: '', videoUrl: '', title: '四天精华班 · 易学全案',
-                        description: '涵盖五行色彩、读像思维、经营根源、九运趋势四大模块。', date: '2024-05-01' }
+                    { id: 201, module: '课程卖点', category: '核心价值', imageUrl: '', videoUrl: '', title: '五行色彩诊断系统', description: '一套让设计师秒懂客户的底层工具，让签单变成自然结果。', date: '2024-05-01' },
+                    { id: 202, module: '课程卖点', category: '课程亮点', imageUrl: '', videoUrl: '', title: '四天精华班 · 易学全案', description: '涵盖五行色彩、读像思维、经营根源、九运趋势四大模块。', date: '2024-05-01' }
                 ]
             };
 
-            // 初始化或加载数据
             let db = JSON.parse(localStorage.getItem(DATA_KEY) || 'null');
             if (!db || !db.modules) {
                 db = JSON.parse(JSON.stringify(DEFAULT_DB));
@@ -217,7 +231,6 @@
                 t._t = setTimeout(() => t.classList.remove('show'), 2000);
             }
 
-            // ── 登录相关 ──
             window.login = function() {
                 if (document.getElementById('pwdInput').value === getPwd()) {
                     document.getElementById('loginScreen').style.display = 'none';
@@ -229,9 +242,10 @@
                 }
             };
 
+            // ── 密码修改弹窗（取消按钮有边框）──
             window.showChangePwdModal = function() {
                 openModal('修改管理密码', `
-                    <div class="form-group"><label>当前密码</label><input type="password" id="oldPwdChg" placeholder="当前密码" onkeydown="if(event.key==='Enter')changePwd()"></div>
+                    <div class="form-group"><label>当前密码</label><input type="password" id="oldPwdChg" placeholder="当前密码"></div>
                     <div class="form-group"><label>新密码（至少4位）</label><input type="password" id="newPwd1" placeholder="新密码"></div>
                     <div class="form-group"><label>确认新密码</label><input type="password" id="newPwd2" placeholder="再次输入"></div>
                     <div class="btn-group">
@@ -253,13 +267,14 @@
                 toast('密码已修改 ✓');
             };
 
+            // ── 忘记密码弹窗（不显示默认暗号提示，但暗号有效）──
             window.showForgotPwdModal = function() {
                 openModal('重置密码', `
-                    <p style="margin-bottom:12px;">请输入重置暗号（默认暗号：ysqy_reset）</p>
-                    <input type="text" id="forgotCode" placeholder="重置暗号" style="width:100%;padding:10px;margin-bottom:16px;border:1px solid #ddd;border-radius:8px;" onkeydown="if(event.key==='Enter')resetPwd()">
+                    <p style="margin-bottom:12px; font-size:0.85rem;">请输入重置暗号，完成后密码将恢复为默认。</p>
+                    <input type="text" id="forgotCode" placeholder="请输入重置暗号" style="width:100%;padding:10px;margin-bottom:16px;border:1px solid #ddd;border-radius:8px;" onkeydown="if(event.key==='Enter')resetPwd()">
                     <div class="btn-group">
                         <button class="btn-outline" onclick="closeModal()">取消</button>
-                        <button class="btn" onclick="resetPwd()">重置为默认密码</button>
+                        <button class="btn" onclick="resetPwd()">重置密码</button>
                     </div>
                 `);
             };
@@ -269,13 +284,13 @@
                 if (code === RESET_CODE) {
                     localStorage.removeItem('ysqy_admin_pwd');
                     closeModal();
-                    toast('已重置为默认密码 ysqy798');
+                    toast('密码已重置为默认密码');
                 } else {
-                    toast('暗号错误');
+                    toast('暗号错误，请重试');
                 }
             };
 
-            // ── 面板切换 ──
+            // ── 面板控制 ──
             let currentPanel = 'modules';
             window.switchPanel = function(panel) {
                 currentPanel = panel;
@@ -286,7 +301,7 @@
                 renderContent();
             };
 
-            // ── 通用标签编辑/删除 ──
+            // 通用标签编辑
             window.editTagGlobal = function(type, oldVal) {
                 const newVal = prompt('将 "' + oldVal + '" 修改为：', oldVal);
                 if (newVal && newVal.trim() !== '' && newVal !== oldVal) {
@@ -294,15 +309,10 @@
                     const idx = arr.indexOf(oldVal);
                     if (idx !== -1) {
                         arr[idx] = newVal.trim();
-                        // 更新所有引用此分类的数据
-                        if (type === 'testimonialCategories') {
-                            db.testimonials.forEach(t => { if (t.category === oldVal) t.category = newVal; });
-                        } else if (type === 'courseCategories') {
-                            db.courses.forEach(c => { if (c.category === oldVal) c.category = newVal; });
-                        } else if (type === 'angles') {
-                            db.posts.forEach(p => { if (p.angle === oldVal) p.angle = newVal; });
-                        } else if (type === 'modules') {
-                            // 模块改名需要同步所有内容
+                        if (type === 'testimonialCategories') db.testimonials.forEach(t => { if (t.category === oldVal) t.category = newVal; });
+                        if (type === 'courseCategories') db.courses.forEach(c => { if (c.category === oldVal) c.category = newVal; });
+                        if (type === 'angles') db.posts.forEach(p => { if (p.angle === oldVal) p.angle = newVal; });
+                        if (type === 'modules') {
                             db.posts.forEach(p => { if (p.module === oldVal) p.module = newVal; });
                             db.testimonials.forEach(t => { if (t.module === oldVal) t.module = newVal; });
                             db.courses.forEach(c => { if (c.module === oldVal) c.module = newVal; });
@@ -341,72 +351,47 @@
                 toast('已添加');
             };
 
-            // ── 绘制内容区 ──
+            // ── 绘制内容 ──
             function renderContent() {
                 const area = document.getElementById('contentArea');
                 switch (currentPanel) {
-                    case 'modules':
-                        area.innerHTML = renderModulesPanel();
-                        break;
-                    case 'posts':
-                        area.innerHTML = renderPostsPanel();
-                        break;
-                    case 'testimonials':
-                        area.innerHTML = renderTestimonialsPanel();
-                        break;
-                    case 'courses':
-                        area.innerHTML = renderCoursesPanel();
-                        break;
+                    case 'modules': area.innerHTML = renderModulesPanel(); break;
+                    case 'posts': area.innerHTML = renderPostsPanel(); break;
+                    case 'testimonials': area.innerHTML = renderTestimonialsPanel(); break;
+                    case 'courses': area.innerHTML = renderCoursesPanel(); break;
                 }
             }
 
-            // 模块与分类面板
             function renderModulesPanel() {
                 return `
                     <h3>📦 模块管理</h3>
-                    <div class="tag-list">
-                        ${db.modules.map(m => `<span class="tag-item">${m} <i class="edit-tag fa-solid fa-pen" onclick="editTagGlobal('modules','${m}')"></i> <i class="fa-solid fa-xmark" onclick="deleteTagGlobal('modules','${m}')"></i></span>`).join('')}
-                    </div>
-                    <div class="form-row">
-                        <input type="text" id="newModInput" placeholder="新模块名称">
-                        <button class="btn" onclick="addTagGlobal('modules','newModInput')">添加模块</button>
-                    </div>
+                    <div class="tag-list">${db.modules.map(m => `<span class="tag-item">${m} <i class="edit-tag fa-solid fa-pen" onclick="editTagGlobal('modules','${m}')"></i> <i class="fa-solid fa-xmark" onclick="deleteTagGlobal('modules','${m}')"></i></span>`).join('')}</div>
+                    <div class="form-row"><input type="text" id="newModInput" placeholder="新模块名称"><button class="btn" onclick="addTagGlobal('modules','newModInput')">添加模块</button></div>
 
                     <h3 style="margin-top:24px;">📂 客户见证分类</h3>
-                    <div class="tag-list">
-                        ${db.testimonialCategories.map(c => `<span class="tag-item">${c} <i class="edit-tag fa-solid fa-pen" onclick="editTagGlobal('testimonialCategories','${c}')"></i> <i class="fa-solid fa-xmark" onclick="deleteTagGlobal('testimonialCategories','${c}')"></i></span>`).join('')}
-                    </div>
-                    <div class="form-row">
-                        <input type="text" id="newTestCatInput" placeholder="新分类">
-                        <button class="btn" onclick="addTagGlobal('testimonialCategories','newTestCatInput')">添加分类</button>
-                    </div>
+                    <div class="tag-list">${db.testimonialCategories.map(c => `<span class="tag-item">${c} <i class="edit-tag fa-solid fa-pen" onclick="editTagGlobal('testimonialCategories','${c}')"></i> <i class="fa-solid fa-xmark" onclick="deleteTagGlobal('testimonialCategories','${c}')"></i></span>`).join('')}</div>
+                    <div class="form-row"><input type="text" id="newTestCatInput" placeholder="新分类"><button class="btn" onclick="addTagGlobal('testimonialCategories','newTestCatInput')">添加分类</button></div>
 
                     <h3 style="margin-top:24px;">🎓 课程卖点分类</h3>
-                    <div class="tag-list">
-                        ${db.courseCategories.map(c => `<span class="tag-item">${c} <i class="edit-tag fa-solid fa-pen" onclick="editTagGlobal('courseCategories','${c}')"></i> <i class="fa-solid fa-xmark" onclick="deleteTagGlobal('courseCategories','${c}')"></i></span>`).join('')}
-                    </div>
-                    <div class="form-row">
-                        <input type="text" id="newCourseCatInput" placeholder="新分类">
-                        <button class="btn" onclick="addTagGlobal('courseCategories','newCourseCatInput')">添加分类</button>
-                    </div>
+                    <div class="tag-list">${db.courseCategories.map(c => `<span class="tag-item">${c} <i class="edit-tag fa-solid fa-pen" onclick="editTagGlobal('courseCategories','${c}')"></i> <i class="fa-solid fa-xmark" onclick="deleteTagGlobal('courseCategories','${c}')"></i></span>`).join('')}</div>
+                    <div class="form-row"><input type="text" id="newCourseCatInput" placeholder="新分类"><button class="btn" onclick="addTagGlobal('courseCategories','newCourseCatInput')">添加分类</button></div>
                 `;
             }
 
-            // 朋友圈文案面板（包含角度管理）
             function renderPostsPanel() {
                 const anglesHTML = db.angles.map(a => `<span class="tag-item">${a} <i class="edit-tag fa-solid fa-pen" onclick="editTagGlobal('angles','${a}')"></i> <i class="fa-solid fa-xmark" onclick="deleteTagGlobal('angles','${a}')"></i></span>`).join('');
                 const angleOptions = db.angles.map(a => `<option value="${a}">${a}</option>`).join('');
-                const postsHTML = db.posts.filter(p => p.module === '朋友圈').map((p, idx) => {
+                const postsHTML = (db.posts.filter(p => p.module === '朋友圈') || []).map((p) => {
                     const globalIdx = db.posts.indexOf(p);
                     return `<tr>
                         <td><input type="checkbox" class="post-check" data-idx="${globalIdx}"></td>
                         <td><span class="tag-item" style="font-size:0.7rem;">${p.angle}</span></td>
                         <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.text.replace(/\n/g,' | ')}</td>
                         <td class="action-icons">
-                            <i class="fa-solid fa-arrow-up" onclick="movePost(${globalIdx}, -1)" title="上移"></i>
-                            <i class="fa-solid fa-arrow-down" onclick="movePost(${globalIdx}, 1)" title="下移"></i>
-                            <i class="fa-solid fa-pen" onclick="editPost(${globalIdx})" title="编辑"></i>
-                            <i class="fa-solid fa-trash" onclick="deletePost(${globalIdx})" title="删除"></i>
+                            <i class="fa-solid fa-arrow-up" onclick="movePost(${globalIdx}, -1)"></i>
+                            <i class="fa-solid fa-arrow-down" onclick="movePost(${globalIdx}, 1)"></i>
+                            <i class="fa-solid fa-pen" onclick="editPost(${globalIdx})"></i>
+                            <i class="fa-solid fa-trash" onclick="deletePost(${globalIdx})"></i>
                         </td>
                     </tr>`;
                 }).join('');
@@ -414,32 +399,24 @@
                 return `
                     <h3>🏷️ 角度管理</h3>
                     <div class="tag-list">${anglesHTML}</div>
-                    <div class="form-row">
-                        <input type="text" id="newAngleInput" placeholder="新角度名称">
-                        <button class="btn" onclick="addTagGlobal('angles','newAngleInput')">添加角度</button>
-                    </div>
+                    <div class="form-row"><input type="text" id="newAngleInput" placeholder="新角度名称"><button class="btn" onclick="addTagGlobal('angles','newAngleInput')">添加角度</button></div>
 
                     <h3 style="margin-top:24px;">📝 发布新文案</h3>
-                    <div class="form-row">
-                        <select id="pubAngle" style="padding:9px 14px;border-radius:var(--radius-full);">${angleOptions}</select>
-                    </div>
+                    <div class="form-row"><select id="pubAngle" style="padding:9px 14px;border-radius:var(--radius-full);">${angleOptions}</select></div>
                     <textarea id="pubText" rows="4" placeholder="输入文案内容，换行分段…" style="width:100%;resize:vertical;padding:12px;border-radius:var(--radius-md);border:1px solid #ddd;"></textarea>
                     <button class="btn" onclick="publishPost()" style="margin-top:8px;">发布文案</button>
 
                     <h3 style="margin-top:24px;">📋 已发布文案 <span style="font-size:0.7rem;color:var(--ink-light);">（共 ${db.posts.filter(p=>p.module==='朋友圈').length} 条）</span></h3>
                     <table class="data-table">
-                        <thead>
-                            <tr><th><input type="checkbox" id="selectAllPosts" title="全选"></th><th>角度</th><th>内容预览</th><th style="width:110px;">操作</th></tr>
-                        </thead>
+                        <thead><tr><th><input type="checkbox" id="selectAllPosts" title="全选"></th><th>角度</th><th>内容预览</th><th style="width:110px;">操作</th></tr></thead>
                         <tbody>${postsHTML || '<tr><td colspan="4" style="text-align:center;color:#ccc;padding:40px;">暂无文案</td></tr>'}</tbody>
                     </table>
                     <button class="btn-outline" onclick="batchDeletePosts()" style="margin-top:8px;">🗑️ 删除选中</button>
                 `;
             }
 
-            // 客户见证面板
             function renderTestimonialsPanel() {
-                const testsHTML = db.testimonials.filter(t => t.module === '客户见证').map((t, idx) => {
+                const testsHTML = (db.testimonials.filter(t => t.module === '客户见证') || []).map((t) => {
                     const globalIdx = db.testimonials.indexOf(t);
                     return `<tr>
                         <td><input type="checkbox" class="test-check" data-idx="${globalIdx}"></td>
@@ -454,6 +431,7 @@
                         </td>
                     </tr>`;
                 }).join('');
+
                 return `
                     <h3>🖼️ 客户见证 <span style="font-size:0.7rem;color:var(--ink-light);">（${db.testimonials.filter(t=>t.module==='客户见证').length} 条）</span></h3>
                     <button class="btn" onclick="openTestimonialForm()">➕ 新增见证</button>
@@ -465,9 +443,8 @@
                 `;
             }
 
-            // 课程面板
             function renderCoursesPanel() {
-                const coursesHTML = db.courses.filter(c => c.module === '课程卖点').map((c, idx) => {
+                const coursesHTML = (db.courses.filter(c => c.module === '课程卖点') || []).map((c) => {
                     const globalIdx = db.courses.indexOf(c);
                     return `<tr>
                         <td><input type="checkbox" class="course-check" data-idx="${globalIdx}"></td>
@@ -482,6 +459,7 @@
                         </td>
                     </tr>`;
                 }).join('');
+
                 return `
                     <h3>📚 课程卖点 <span style="font-size:0.7rem;color:var(--ink-light);">（${db.courses.filter(c=>c.module==='课程卖点').length} 条）</span></h3>
                     <button class="btn" onclick="openCourseForm()">➕ 新增课程</button>
@@ -658,7 +636,7 @@
                 toast('已批量删除');
             };
 
-            // ── 课程操作 ──
+            // 课程操作
             window.openCourseForm = function() {
                 openModal('新增课程', `
                     <div class="form-group"><label>分类</label><select id="cCat">${db.courseCategories.map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
@@ -673,7 +651,6 @@
                     </div>
                 `);
             };
-
             window.saveNewCourse = function() {
                 const title = document.getElementById('cTitle').value.trim();
                 const desc = document.getElementById('cDesc').value.trim();
@@ -694,7 +671,6 @@
                 renderContent();
                 toast('课程已添加 ✓');
             };
-
             window.editCourse = function(idx) {
                 const c = db.courses[idx];
                 openModal('编辑课程', `
@@ -711,7 +687,6 @@
                     </div>
                 `);
             };
-
             window.saveEditCourse = function() {
                 const idx = parseInt(document.getElementById('editCourseIdx').value);
                 const title = document.getElementById('cTitle').value.trim();
@@ -728,7 +703,6 @@
                 renderContent();
                 toast('课程已更新 ✓');
             };
-
             window.moveCourse = function(idx, dir) {
                 const newIdx = idx + dir;
                 if (newIdx < 0 || newIdx >= db.courses.length) return;
@@ -736,14 +710,12 @@
                 save();
                 renderContent();
             };
-
             window.deleteCourse = function(idx) {
                 if (!confirm('确认删除？')) return;
                 db.courses.splice(idx, 1);
                 save();
                 renderContent();
             };
-
             window.batchDeleteCourses = function() {
                 const checks = document.querySelectorAll('.course-check:checked');
                 if (!checks.length) return;
@@ -755,18 +727,17 @@
                 toast('已批量删除');
             };
 
-            // ── 数据导入导出 ──
+            // 导入导出
             window.exportData = function() {
                 const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'ysqy_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+                a.download = 'ysqy_backup_' + new Date().toISOString().slice(0,10) + '.json';
                 a.click();
                 URL.revokeObjectURL(url);
                 toast('数据已导出');
             };
-
             window.importData = function(input) {
                 const file = input.files[0];
                 if (!file) return;
@@ -792,11 +763,10 @@
                 input.value = '';
             };
 
-            // ── 模态框公共方法 ──
+            // 公共模态框
             function openModal(title, html) {
                 document.getElementById('modalContent').innerHTML = `<h3>${title}</h3>` + html;
                 document.getElementById('modalOverlay').classList.add('open');
-                // 焦点移到第一个输入框
                 setTimeout(() => {
                     const firstInput = document.querySelector('#modalBox input, #modalBox textarea');
                     if (firstInput) firstInput.focus();
@@ -812,18 +782,12 @@
                 }
             });
 
-            // ── 全选复选框 ──
             document.addEventListener('change', function(e) {
                 if (e.target.id === 'selectAllPosts') {
                     const checks = document.querySelectorAll('.post-check');
                     checks.forEach(c => c.checked = e.target.checked);
                 }
             });
-
-            // 初始化
-            window.onload = function() {
-                // 如果已登录（跳过登录界面），实际需要密码；直接展示登录界面
-            };
         })();
     </script>
 </body>
