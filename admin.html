@@ -132,7 +132,6 @@
     </style>
 </head>
 <body>
-    <!-- 登录界面 -->
     <div id="loginScreen" class="login-screen">
         <div class="login-card">
             <div class="hero-tag">ADMIN PANEL</div>
@@ -151,7 +150,6 @@
         </div>
     </div>
 
-    <!-- 管理主界面 -->
     <div id="adminMain" style="display:none;">
         <div class="container">
             <div class="admin-header">
@@ -175,7 +173,6 @@
         </div>
     </div>
 
-    <!-- 模态框 -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
         <div class="modal" id="modalBox" onclick="event.stopPropagation()">
             <div id="modalContent"></div>
@@ -189,25 +186,36 @@
             const DEFAULT_PWD = 'ysqy798';
             const RESET_CODE = 'ysqy_reset';
 
-            // 默认模块数据
             const DEFAULT_MODULES = [
                 { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原','情绪唤醒','场景反差'] },
                 { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙','成交','夫妻关系'] },
                 { id:'course', name:'课程卖点', type:'course', categories:['核心价值','课程亮点','学员反馈'] }
             ];
 
-            // 尝试从localStorage加载，若无则初始化
-            let db = JSON.parse(localStorage.getItem(DATA_KEY));
-            if (!db || !db.modules) {
+            // 读取数据并兼容旧格式
+            let raw = localStorage.getItem(DATA_KEY);
+            let db;
+            if (raw) {
+                try {
+                    db = JSON.parse(raw);
+                } catch(e) { db = null; }
+            }
+            // 结构验证与修复
+            if (!db || !db.modules || !Array.isArray(db.modules) || db.modules.length === 0 || !db.modules[0].id) {
+                // 需要重置或合并
+                const oldContents = (db && db.contents) ? db.contents : [];
                 db = {
                     modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)),
-                    contents: [
+                    contents: oldContents.length ? oldContents : [
                         { id:1, moduleId:'pyq', angle:'数字冲击', text:'同样做室内设计…', time:1715000000000 },
                         { id:101, moduleId:'witness', category:'成交', title:'林女士 · 软装设计师', description:'学了五行色彩后签单提升40%', imageUrl:'', videoUrl:'', clientName:'林女士', date:'2024-05-15' },
                         { id:201, moduleId:'course', category:'核心价值', title:'五行色彩诊断系统', description:'一套让设计师秒懂客户的底层工具', imageUrl:'', videoUrl:'', date:'2024-05-01' }
                     ]
                 };
                 localStorage.setItem(DATA_KEY, JSON.stringify(db));
+            } else if (!db.contents) {
+                db.contents = [];
+                save();
             }
 
             function save() { localStorage.setItem(DATA_KEY, JSON.stringify(db)); }
@@ -217,7 +225,6 @@
                 clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2000);
             }
 
-            // ── 密码相关 ──
             function getPwd() { return localStorage.getItem('ysqy_admin_pwd') || DEFAULT_PWD; }
             window.login = function() {
                 if (document.getElementById('pwdInput').value === getPwd()) {
@@ -271,9 +278,13 @@
             window.currentModuleId = null;
             function renderModuleSidebar() {
                 const list = document.getElementById('moduleList');
+                if (!db.modules || !Array.isArray(db.modules)) {
+                    list.innerHTML = '<p style="color:#aaa;">模块加载失败，请刷新</p>';
+                    return;
+                }
                 list.innerHTML = db.modules.map(m => `
                     <div class="module-item ${currentModuleId === m.id ? 'active' : ''}" onclick="selectModule('${m.id}')">
-                        <span>${m.name}</span>
+                        <span>${m.name || '(未命名)'}</span>
                         <div class="actions" onclick="event.stopPropagation()">
                             <i class="fa-solid fa-pen" onclick="editModuleName('${m.id}')"></i>
                             <i class="fa-solid fa-trash" onclick="deleteModule('${m.id}')"></i>
@@ -297,18 +308,18 @@
                 let html = `<h3>📁 ${mod.name} <span style="font-size:0.7rem;color:var(--ink-light);">(${mod.type})</span></h3>`;
 
                 // 分类管理
-                html += `<div class="tag-list">${mod.categories.map(c => `<span class="tag-item">${c} <i class="edit-tag fa-solid fa-pen" onclick="editCategory('${currentModuleId}','${c}')"></i> <i class="fa-solid fa-xmark" onclick="deleteCategory('${currentModuleId}','${c}')"></i></span>`).join('')}</div>
+                html += `<div class="tag-list">${(mod.categories||[]).map(c => `<span class="tag-item">${c} <i class="edit-tag fa-solid fa-pen" onclick="editCategory('${currentModuleId}','${c}')"></i> <i class="fa-solid fa-xmark" onclick="deleteCategory('${currentModuleId}','${c}')"></i></span>`).join('')}</div>
                 <div class="form-row"><input id="newCatInput" placeholder="新分类"><button class="btn" onclick="addCategory('${currentModuleId}')">添加</button></div>`;
 
                 // 发布表单
                 if (mod.type === 'moments') {
                     html += `<h4 style="margin-top:18px;">📝 发布文案</h4>
-                    <div class="form-row"><select id="pubAngle">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select></div>
+                    <div class="form-row"><select id="pubAngle">${(mod.categories||[]).map(c=>`<option>${c}</option>`).join('')}</select></div>
                     <textarea id="pubText" rows="4" placeholder="文案内容..."></textarea>
                     <button class="btn" onclick="publishContent('${currentModuleId}')">发布</button>`;
                 } else if (mod.type === 'testimonial') {
                     html += `<h4 style="margin-top:18px;">🖼️ 新增见证</h4>
-                    <div class="form-row"><select id="pubCategory">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select></div>
+                    <div class="form-row"><select id="pubCategory">${(mod.categories||[]).map(c=>`<option>${c}</option>`).join('')}</select></div>
                     <input id="pubTitle" placeholder="标题" class="form-row" style="margin-bottom:8px;">
                     <input id="pubImage" placeholder="图片URL" class="form-row" style="margin-bottom:8px;">
                     <input id="pubVideo" placeholder="视频URL" class="form-row" style="margin-bottom:8px;">
@@ -318,7 +329,7 @@
                     <button class="btn" onclick="publishContent('${currentModuleId}')">保存</button>`;
                 } else if (mod.type === 'course') {
                     html += `<h4 style="margin-top:18px;">📚 新增课程</h4>
-                    <div class="form-row"><select id="pubCategory">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select></div>
+                    <div class="form-row"><select id="pubCategory">${(mod.categories||[]).map(c=>`<option>${c}</option>`).join('')}</select></div>
                     <input id="pubTitle" placeholder="标题" class="form-row" style="margin-bottom:8px;">
                     <input id="pubImage" placeholder="图片URL" class="form-row" style="margin-bottom:8px;">
                     <input id="pubVideo" placeholder="视频URL" class="form-row" style="margin-bottom:8px;">
@@ -332,11 +343,11 @@
                 if (contents.length === 0) html += '<p style="color:#aaa;text-align:center;">暂无内容</p>';
                 else {
                     html += `<table class="data-table"><thead><tr><th></th><th>预览</th><th>操作</th></tr></thead><tbody>`;
-                    contents.forEach((c, idx) => {
+                    contents.forEach((c) => {
                         const globalIdx = db.contents.indexOf(c);
                         let preview = '';
-                        if (mod.type === 'moments') preview = c.text.substring(0, 30);
-                        else preview = c.title;
+                        if (mod.type === 'moments') preview = c.text ? c.text.substring(0, 30) : '';
+                        else preview = c.title || '';
                         html += `<tr>
                             <td><input type="checkbox" class="content-check" data-idx="${globalIdx}"></td>
                             <td>${preview}</td>
@@ -361,6 +372,7 @@
                 const val = input.value.trim();
                 if (!val) return;
                 const mod = db.modules.find(m => m.id === moduleId);
+                if (!mod.categories) mod.categories = [];
                 if (mod.categories.includes(val)) return toast('已存在');
                 mod.categories.push(val);
                 save(); renderContentPanel();
@@ -369,10 +381,9 @@
                 const newVal = prompt('修改分类', oldVal);
                 if (newVal && newVal !== oldVal) {
                     const mod = db.modules.find(m => m.id === moduleId);
-                    const idx = mod.categories.indexOf(oldVal);
+                    const idx = (mod.categories||[]).indexOf(oldVal);
                     if (idx > -1) {
                         mod.categories[idx] = newVal;
-                        // 同步更新内容中的分类
                         db.contents.forEach(c => {
                             if (c.moduleId === moduleId && c.category === oldVal) c.category = newVal;
                             if (c.moduleId === moduleId && c.angle === oldVal) c.angle = newVal;
@@ -384,8 +395,7 @@
             window.deleteCategory = function(moduleId, val) {
                 if (!confirm('确定删除分类“'+val+'”?')) return;
                 const mod = db.modules.find(m => m.id === moduleId);
-                mod.categories = mod.categories.filter(c => c !== val);
-                // 不移除已使用该分类的内容，只删除分类选项
+                mod.categories = (mod.categories||[]).filter(c => c !== val);
                 save(); renderContentPanel();
             };
 
@@ -423,7 +433,6 @@
                 toast('发布成功');
             };
 
-            // ── 内容编辑（通用）──
             window.editContent = function(idx) {
                 const content = db.contents[idx];
                 const mod = db.modules.find(m => m.id === content.moduleId);
@@ -431,21 +440,19 @@
                 let formHtml = '';
                 if (mod.type === 'moments') {
                     formHtml = `
-                        <div class="form-group"><label>角度</label><select id="editAngle">${mod.categories.map(c=>`<option ${c===content.angle?'selected':''}>${c}</option>`).join('')}</select></div>
-                        <div class="form-group"><label>文案</label><textarea id="editText" rows="5">${content.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></div>
+                        <div class="form-group"><label>角度</label><select id="editAngle">${(mod.categories||[]).map(c=>`<option ${c===content.angle?'selected':''}>${c}</option>`).join('')}</select></div>
+                        <div class="form-group"><label>文案</label><textarea id="editText" rows="5">${(content.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></div>
                     `;
                 } else {
                     formHtml = `
-                        <div class="form-group"><label>分类</label><select id="editCategory">${mod.categories.map(c=>`<option ${c===content.category?'selected':''}>${c}</option>`).join('')}</select></div>
+                        <div class="form-group"><label>分类</label><select id="editCategory">${(mod.categories||[]).map(c=>`<option ${c===content.category?'selected':''}>${c}</option>`).join('')}</select></div>
                         <div class="form-group"><label>标题</label><input type="text" id="editTitle" value="${(content.title||'').replace(/"/g,'&quot;')}"></div>
                         <div class="form-group"><label>图片URL</label><input type="text" id="editImage" value="${content.imageUrl||''}"></div>
                         <div class="form-group"><label>视频URL</label><input type="text" id="editVideo" value="${content.videoUrl||''}"></div>
                         <div class="form-group"><label>描述</label><textarea id="editDesc" rows="4">${(content.description||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></div>
                     `;
                     if (mod.type === 'testimonial') {
-                        formHtml += `
-                            <div class="form-group"><label>客户名称</label><input type="text" id="editClient" value="${content.clientName||''}"></div>
-                        `;
+                        formHtml += `<div class="form-group"><label>客户名称</label><input type="text" id="editClient" value="${content.clientName||''}"></div>`;
                     }
                     formHtml += `<div class="form-group"><label>日期</label><input type="text" id="editDate" value="${content.date||''}"></div>`;
                 }
@@ -540,7 +547,7 @@
                 save(); renderModuleSidebar();
             };
 
-            // ── 导入导出 ──
+            // 导入导出
             window.exportData = function() {
                 const blob = new Blob([JSON.stringify(db, null, 2)], {type:'application/json'});
                 const a = document.createElement('a');
@@ -572,7 +579,6 @@
                 input.value = '';
             };
 
-            // 模态框
             function openModal(title, html) {
                 document.getElementById('modalContent').innerHTML = `<h3>${title}</h3>` + html;
                 document.getElementById('modalOverlay').classList.add('open');
