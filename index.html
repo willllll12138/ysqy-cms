@@ -16,27 +16,122 @@
 * {margin:0;padding:0;box-sizing:border-box;}
 body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink);}
 
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(247,245,240,0.95);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+header a { color: var(--ink); text-decoration: none; font-weight: 500; }
+
 .hero {
-  height: 78vh;
-  min-height: 650px;
-  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.45)), 
+  height: 100vh;
+  min-height: 700px;
+  background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), 
               url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=2000') center/cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   color: white;
+  position: relative;
 }
 .hero-content h1 {
   font-family: 'Noto Serif SC', serif;
-  font-size: clamp(3.2rem, 8.5vw, 5.8rem);
-  letter-spacing: 0.06em;
+  font-size: clamp(3.5rem, 9vw, 6.2rem);
+  letter-spacing: 0.05em;
   margin-bottom: 20px;
 }
-.hero-content p { font-size: 1.35rem; opacity: 0.95; }
+.hero-content p { font-size: 1.4rem; opacity: 0.95; max-width: 700px; margin: 0 auto; }
 
-/* 模块区域 */
-.modules {
+/* 底部三大模块 */
+.bottom-modules {
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 40px
+  margin: -80px auto 0;
+  padding: 0 40px 100px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 24px;
+}
+.module-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: all 0.4s;
+  cursor: pointer;
+}
+.module-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 25px 50px rgba(198,106,78,0.15);
+}
+.module-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+}
+.module-info {
+  padding: 28px;
+}
+.module-info h3 {
+  font-size: 1.65rem;
+  margin-bottom: 8px;
+}
+.module-info p {
+  color: #666;
+  line-height: 1.7;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div><strong>易饰乾园</strong></div>
+  <div>
+    <a href="index.html" style="margin-right:30px;">首页</a>
+    <a href="admin.html">后台管理</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>易饰乾园</h1>
+    <p>极简文案资产 · 驱动品牌自然生长</p>
+  </div>
+</div>
+
+<div class="bottom-modules">
+  <div class="module-card" onclick="location.href='friends.html'">
+    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800" alt="朋友圈">
+    <div class="module-info">
+      <h3>朋友圈</h3>
+      <p>高转化发圈文案库</p>
+    </div>
+  </div>
+
+  <div class="module-card" onclick="location.href='testimonials.html'">
+    <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800" alt="客户见证">
+    <div class="module-info">
+      <h3>客户见证</h3>
+      <p>真实案例 · 信任背书</p>
+    </div>
+  </div>
+
+  <div class="module-card" onclick="location.href='course.html'">
+    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800" alt="课程卖点">
+    <div class="module-info">
+      <h3>课程卖点</h3>
+      <p>核心价值 · 转化文案</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
