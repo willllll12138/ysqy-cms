@@ -3,100 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>易饰乾园 · 后台管理</title>
+<title>易饰乾园 · 后台</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&family=Noto+Sans+SC:wght@400;500&display=swap');
 
-:root {
-  --ink: #1D1D1F;
-  --gold: #C66A4E;
-  --cream: #F7F5F0;
-  --mist: #E5E0D8;
+body {
+  background: #111111;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: #ddd;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
 }
-
-* {margin:0;padding:0;box-sizing:border-box;}
-body {background:var(--cream);font-family:'Noto Sans SC',sans-serif;color:var(--ink);min-height:100vh;}
 
 .login-box {
-  max-width: 380px; margin: 100px auto; padding: 60px 40px;
-  background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+  background: #1f1f1f;
+  border: 1px solid #3a3a3a;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  padding: 60px 50px;
   text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7);
 }
-.login-logo {
-  font-family: 'Noto Serif SC', serif; font-size: 2rem; margin-bottom: 10px;
-}
-.login-input {
-  width: 100%; padding: 16px; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1.1rem;
-}
-.btn {
-  width: 100%; padding: 16px; background: var(--ink); color: white; border: none; border-radius: 8px;
-  font-size: 1.1rem; cursor: pointer; margin-top: 10px;
-}
-.btn:hover { background: #333; }
 
-/* 后台主界面 */
-#adminScreen { display: none; }
-header {
-  background: var(--ink); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
+.login-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.9rem;
+  margin-bottom: 8px;
 }
-.tab {
-  padding: 15px 25px; cursor: pointer; border-bottom: 3px solid transparent;
+
+.login-subtitle {
+  color: #999;
+  margin-bottom: 40px;
 }
-.tab.active { border-bottom: 3px solid var(--gold); color: var(--gold); }
+
+.login-input {
+  width: 100%;
+  padding: 16px 20px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.15rem;
+  margin-bottom: 25px;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 16px;
+  background: #C66A4E;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.error-msg {
+  color: #ff6b6b;
+  margin-top: 20px;
+  min-height: 28px;
+}
 </style>
 </head>
 <body>
 
-<!-- 登录界面 -->
-<div id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">易饰乾园</div>
-    <p style="margin:20px 0 30px; color:#666;">后台管理系统</p>
-    <input type="password" id="pwdInput" class="login-input" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter') doLogin()">
-    <button class="btn" onclick="doLogin()">进入后台</button>
-    <div id="loginError" style="color:#c0392b; margin-top:15px;"></div>
-  </div>
-</div>
-
-<!-- 后台界面 -->
-<div id="adminScreen">
-  <header>
-    <div>易饰乾园 · 文案后台管理</div>
-    <div>
-      <button onclick="window.location.href='index.html'" style="margin-right:15px; padding:8px 16px; background:#555; border:none; color:white; border-radius:6px; cursor:pointer;">← 返回前台</button>
-      <button onclick="saveAll()" style="padding:8px 16px; background:var(--gold); border:none; color:white; border-radius:6px; cursor:pointer;">💾 保存同步</button>
-    </div>
-  </header>
-
-  <div style="max-width:1200px; margin:30px auto; padding:0 30px;">
-    <!-- 这里放你的 Tab 和功能，可后续继续扩展 -->
-    <p style="text-align:center; padding:100px; font-size:1.2rem; opacity:0.6;">
-      后台管理功能开发中...<br><br>
-      当前版本已修正密码为：<strong>ysqy798</strong>
-    </p>
-  </div>
+<div class="login-box">
+  <div class="login-title">易饰乾园 · 后台</div>
+  <div class="login-subtitle">文案资产管理系统</div>
+  
+  <input type="password" id="pwdInput" class="login-input" placeholder="请输入密码" autofocus>
+  <button class="btn-login" onclick="doLogin()">进入后台</button>
+  
+  <div id="loginError" class="error-msg"></div>
 </div>
 
 <script>
-// ==================== 配置 ====================
-const DEFAULT_PWD = 'ysqy798';   // ← 已确认正确密码
+// ====================== 密码设置 ======================
+const CORRECT_PASSWORD = "ysqy798";   // ← 确认无误
 
 function doLogin() {
-  const inputPwd = document.getElementById('pwdInput').value.trim();
-  if (inputPwd === DEFAULT_PWD) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminScreen').style.display = 'block';
+  const input = document.getElementById('pwdInput').value.trim();
+  const errorEl = document.getElementById('loginError');
+
+  if (input === CORRECT_PASSWORD) {
+    alert("✅ 登录成功！\n\n（后台功能正在完善中...）");
+    // 这里后续可以跳转或显示后台界面
+    window.location.href = "index.html";   // 临时跳转前台，可改成显示后台
   } else {
-    document.getElementById('loginError').textContent = '密码错误，请重试';
+    errorEl.textContent = "密码错误";
+    document.getElementById('pwdInput').value = "";
+    document.getElementById('pwdInput').focus();
   }
 }
 
-function saveAll() {
-  alert('✅ 数据已保存（当前为简化版）');
-}
-
-// 回车支持
-document.getElementById('pwdInput').focus();
+// 支持回车登录
+document.getElementById('pwdInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
 </script>
 </body>
 </html>
