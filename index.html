@@ -1,1085 +1,623 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>易饰乾园素材库</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --bg: #F9F7F2;
-            --card-bg: #FFFFFF;
-            --ink: #1a1815;
-            --ink-light: #5c574f;
-            --gold: #b8832a;
-            --gold-light: #d4a84b;
-            --gold-pale: #f7f0e0;
-            --bordeaux: #8b3a3a;
-            --bordeaux-light: #a85555;
-            --sage: #5a6b4d;
-            --sage-light: #7d8f6e;
-            --border: rgba(0, 0, 0, 0.06);
-            --border-strong: rgba(0, 0, 0, 0.12);
-            --radius-sm: 10px;
-            --radius-md: 18px;
-            --radius-lg: 24px;
-            --radius-xl: 32px;
-            --radius-full: 50px;
-            --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.07);
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.10);
-            --transition: 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
-            --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
-            --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>易饰乾园素材库 · 文案资产系统</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg: #F9F7F2;
+      --card-bg: #FFFFFF;
+      --ink: #1a1815;
+      --ink-light: #5c574f;
+      --gold: #b8832a;
+      --gold-light: #d4a84b;
+      --gold-pale: #f7f0e0;
+      --bordeaux: #8b3a3a;
+      --sage: #5a6b4d;
+      --border: rgba(0,0,0,0.06);
+      --border-strong: rgba(0,0,0,0.12);
+      --radius-sm: 10px;
+      --radius-md: 18px;
+      --radius-lg: 24px;
+      --radius-full: 50px;
+      --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
+      --shadow-md: 0 8px 30px rgba(0,0,0,0.07);
+      --transition: 0.3s cubic-bezier(0.23,1,0.32,1);
+      --font-serif: 'Noto Serif SC', 'Songti SC', serif;
+      --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      background:var(--bg);
+      font-family:var(--font-sans);
+      color:var(--ink);
+      line-height:1.6;
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+    }
+    body::before{
+      content:'';position:fixed;top:0;left:0;right:0;height:3px;
+      background:linear-gradient(90deg,var(--gold),var(--bordeaux),var(--sage));
+      z-index:1000;
+    }
+    .container{max-width:900px;margin:0 auto;padding:0 24px;}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    /* 首页 */
+    .hero{text-align:center;padding:72px 0 48px;}
+    .hero-tag{display:inline-block;font-size:0.7rem;letter-spacing:0.35em;color:var(--gold);background:var(--gold-pale);padding:6px 18px;border-radius:var(--radius-full);margin-bottom:16px;font-weight:500;}
+    .hero-title{font-family:var(--font-serif);font-size:2.8rem;font-weight:900;letter-spacing:0.06em;color:var(--ink);margin-bottom:8px;line-height:1.2;}
+    .hero-subtitle{font-size:0.9rem;color:var(--ink-light);font-weight:300;letter-spacing:0.15em;}
+    .hero-line{width:50px;height:2px;background:var(--gold);margin:20px auto 0;border-radius:2px;}
+    .module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;padding-bottom:60px;}
+    .module-card{background:var(--card-bg);border-radius:var(--radius-lg);padding:32px 26px 26px;cursor:pointer;transition:var(--transition);border:1px solid var(--border);text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow-sm);}
+    .module-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,0.08);border-color:var(--border-strong);}
+    .module-card-icon{font-size:1.8rem;color:var(--gold);}
+    .module-card-title{font-family:var(--font-serif);font-size:1.3rem;font-weight:700;letter-spacing:0.04em;}
+    .module-card-desc{font-size:0.8rem;color:var(--ink-light);}
+    .module-card-arrow{align-self:flex-end;color:#ccc;}
 
-        body {
-            background: var(--bg);
-            font-family: var(--font-sans);
-            color: var(--ink);
-            line-height: 1.6;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+    /* 二级页头 */
+    .sub-header{display:flex;align-items:center;justify-content:space-between;padding:24px 0 16px;gap:12px;flex-wrap:wrap;position:sticky;top:3px;background:var(--bg);z-index:90;border-bottom:1px solid var(--border);}
+    .sub-title-area{display:flex;align-items:center;gap:12px;}
+    .sub-title{font-family:var(--font-serif);font-size:1.6rem;font-weight:700;}
+    .btn-back{display:inline-flex;align-items:center;gap:6px;background:#eae6dc;color:var(--ink-light);padding:7px 14px;border-radius:var(--radius-full);font-size:0.73rem;letter-spacing:0.06em;cursor:pointer;text-decoration:none;transition:var(--transition);white-space:nowrap;border:none;font-family:inherit;}
+    .btn-back:hover{background:#ddd8cc;color:var(--ink);}
+    .search-wrap{position:relative;display:flex;align-items:center;}
+    .search-toggle{width:38px;height:38px;border-radius:50%;background:var(--card-bg);border:1px solid var(--border);cursor:pointer;font-size:1rem;color:var(--ink-light);display:flex;align-items:center;justify-content:center;transition:var(--transition);}
+    .search-toggle:hover{color:var(--gold);border-color:var(--gold);}
+    .search-input-wrap{position:absolute;right:0;top:50%;transform:translateY(-50%);width:0;overflow:hidden;transition:var(--transition);background:var(--card-bg);border-radius:var(--radius-full);display:flex;align-items:center;}
+    .search-input-wrap.open{width:240px;border:1px solid var(--border-strong);box-shadow:var(--shadow-md);}
+    .search-input-wrap input{width:100%;padding:9px 38px 9px 16px;border:none;background:transparent;font-size:0.82rem;font-family:inherit;outline:none;}
+    .search-input-wrap .search-close{position:absolute;right:6px;cursor:pointer;color:#aaa;padding:6px;}
 
-        /* ── 顶部装饰线 ── */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--gold), var(--bordeaux), var(--sage));
-            z-index: 1000;
-        }
+    /* 角度Pills */
+    .angle-bar{display:flex;gap:8px;padding:16px 0;flex-wrap:wrap;}
+    .angle-pill{padding:7px 18px;border-radius:var(--radius-full);background:var(--card-bg);border:1.5px solid var(--border);cursor:pointer;font-size:0.8rem;transition:var(--transition);color:var(--ink-light);}
+    .angle-pill.active{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:500;}
 
-        /* ── 全局容器 ── */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 28px;
-        }
+    /* 分类Tab */
+    .cat-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid var(--border);margin-bottom:4px;}
+    .cat-tab{padding:7px 16px;border-radius:var(--radius-full);cursor:pointer;font-size:0.76rem;letter-spacing:0.05em;background:transparent;color:var(--ink-light);border:1.5px solid transparent;transition:var(--transition);}
+    .cat-tab.active{background:var(--ink);color:#fff;font-weight:500;}
 
-        /* ── 首页头部 ── */
-        .hero {
-            text-align: center;
-            padding: 72px 0 48px;
-            position: relative;
-        }
-        .hero-tag {
-            display: inline-block;
-            font-size: 0.7rem;
-            letter-spacing: 0.35em;
-            color: var(--gold);
-            text-transform: uppercase;
-            margin-bottom: 16px;
-            font-weight: 500;
-            background: var(--gold-pale);
-            padding: 6px 18px;
-            border-radius: var(--radius-full);
-        }
-        .hero-title {
-            font-family: var(--font-serif);
-            font-size: 2.8rem;
-            font-weight: 900;
-            letter-spacing: 0.06em;
-            color: var(--ink);
-            margin-bottom: 8px;
-            line-height: 1.2;
-        }
-        .hero-subtitle {
-            font-size: 0.9rem;
-            color: var(--ink-light);
-            font-weight: 300;
-            letter-spacing: 0.15em;
-        }
-        .hero-line {
-            width: 50px;
-            height: 2px;
-            background: var(--gold);
-            margin: 20px auto 0;
-            border-radius: 2px;
-        }
+    /* 朋友圈卡片 */
+    .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding:10px 0 50px;}
+    .copy-card{background:var(--card-bg);border-radius:var(--radius-lg);padding:26px 24px;transition:var(--transition);border:1px solid var(--border);display:flex;flex-direction:column;gap:16px;box-shadow:var(--shadow-sm);}
+    .copy-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.08);}
+    .copy-text{font-size:0.92rem;font-weight:300;line-height:1.9;white-space:pre-wrap;}
+    .card-meta{display:flex;justify-content:space-between;align-items:center;font-size:0.7rem;color:#aaa;}
+    .copy-btn{cursor:pointer;color:#888;transition:var(--transition);padding:4px 8px;border-radius:6px;}
+    .copy-btn:hover{color:var(--gold);background:var(--gold-pale);}
 
-        /* ── 模块卡片网格（首页）── */
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 22px;
-            padding-bottom: 60px;
-        }
-        .module-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 36px 30px 30px;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            box-shadow: var(--shadow-sm);
-        }
-        .module-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--border-strong);
-        }
-        .module-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--gold-light);
-            opacity: 0;
-            transition: var(--transition);
-        }
-        .module-card:hover::after {
-            opacity: 1;
-        }
-        .module-card-icon {
-            font-size: 2rem;
-            color: var(--gold);
-            transition: var(--transition);
-        }
-        .module-card:hover .module-card-icon {
-            color: var(--bordeaux);
-            transform: scale(1.1);
-        }
-        .module-card-title {
-            font-family: var(--font-serif);
-            font-size: 1.3rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-        }
-        .module-card-desc {
-            font-size: 0.8rem;
-            color: var(--ink-light);
-            letter-spacing: 0.06em;
-            line-height: 1.5;
-        }
-        .module-card-arrow {
-            align-self: flex-end;
-            font-size: 0.8rem;
-            color: #ccc;
-            transition: var(--transition);
-        }
-        .module-card:hover .module-card-arrow {
-            color: var(--gold);
-            transform: translateX(4px);
-        }
+    /* 见证/课程列表 */
+    .testimonial-list{display:flex;flex-direction:column;gap:2px;padding-bottom:50px;}
+    .testimonial-item{display:flex;gap:16px;align-items:flex-start;padding:16px 18px;background:var(--card-bg);cursor:pointer;border-bottom:1px solid var(--border);transition:var(--transition);}
+    .testimonial-item:hover{background:#fdfbf5;}
+    .testimonial-thumb{width:64px;height:64px;border-radius:var(--radius-sm);object-fit:cover;flex-shrink:0;background:#f0ede5;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:1.4rem;overflow:hidden;}
+    .testimonial-thumb img{width:100%;height:100%;object-fit:cover;}
+    .testimonial-info{flex:1;min-width:0;}
+    .testimonial-info h4{font-size:0.9rem;font-weight:600;margin-bottom:4px;}
+    .testimonial-info p{font-size:0.78rem;color:var(--ink-light);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    .testimonial-meta{font-size:0.68rem;color:#bbb;margin-top:4px;display:flex;gap:8px;align-items:center;}
+    .testimonial-cat{background:var(--gold-pale);color:var(--gold);padding:2px 8px;border-radius:var(--radius-full);font-size:0.65rem;}
 
-        /* ── 二级页面布局 ── */
-        .sub-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 28px 0 20px;
-            gap: 16px;
-            flex-wrap: wrap;
-            position: sticky;
-            top: 3px;
-            background: var(--bg);
-            z-index: 99;
-            border-bottom: 1px solid var(--border);
-        }
-        .sub-title-area {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .sub-title {
-            font-family: var(--font-serif);
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-        }
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #eae6dc;
-            color: var(--ink-light);
-            padding: 8px 16px;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            letter-spacing: 0.08em;
-            cursor: pointer;
-            text-decoration: none;
-            transition: var(--transition);
-            white-space: nowrap;
-            font-weight: 500;
-            border: none;
-            font-family: inherit;
-        }
-        .btn-back:hover {
-            background: #ddd8cc;
-            color: var(--ink);
-        }
-        .search-wrap {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .search-toggle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            font-size: 1rem;
-            color: var(--ink-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-            box-shadow: var(--shadow-sm);
-        }
-        .search-toggle:hover {
-            color: var(--gold);
-            border-color: var(--gold);
-        }
-        .search-input-wrap {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            overflow: hidden;
-            transition: var(--transition);
-            background: var(--card-bg);
-            border-radius: var(--radius-full);
-            display: flex;
-            align-items: center;
-        }
-        .search-input-wrap.open {
-            width: 240px;
-            border: 1px solid var(--border-strong);
-            box-shadow: var(--shadow-md);
-        }
-        .search-input-wrap input {
-            width: 100%;
-            padding: 10px 40px 10px 18px;
-            border: none;
-            background: transparent;
-            font-size: 0.85rem;
-            font-family: inherit;
-            outline: none;
-            color: var(--ink);
-        }
-        .search-input-wrap .search-close {
-            position: absolute;
-            right: 8px;
-            cursor: pointer;
-            color: #aaa;
-            font-size: 0.8rem;
-            padding: 6px;
-            transition: var(--transition);
-        }
-        .search-input-wrap .search-close:hover {
-            color: var(--ink);
-        }
+    /* 管理按钮 */
+    .admin-float{position:fixed;bottom:28px;right:28px;width:56px;height:56px;background:var(--ink);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:999;box-shadow:0 8px 28px rgba(0,0,0,0.25);font-size:1.3rem;transition:0.2s;}
+    .admin-float:hover{background:#2b2b2b;transform:scale(1.05);}
 
-        /* ── 角度筛选Pills（圆润弧形）── */
-        .angle-bar {
-            display: flex;
-            gap: 10px;
-            padding: 18px 0;
-            flex-wrap: wrap;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-        .angle-bar::-webkit-scrollbar {
-            display: none;
-        }
-        .angle-pill {
-            padding: 9px 22px;
-            border-radius: var(--radius-full);
-            background: var(--card-bg);
-            border: 1.5px solid var(--border);
-            white-space: nowrap;
-            cursor: pointer;
-            font-size: 0.82rem;
-            letter-spacing: 0.04em;
-            transition: var(--transition);
-            font-weight: 400;
-            color: var(--ink-light);
-            box-shadow: var(--shadow-sm);
-        }
-        .angle-pill:hover {
-            border-color: var(--gold-light);
-            color: var(--ink);
-        }
-        .angle-pill.active {
-            background: var(--ink);
-            color: #fff;
-            border-color: var(--ink);
-            font-weight: 500;
-            box-shadow: var(--shadow-md);
-        }
+    /* 抽屉 */
+    .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;opacity:0;pointer-events:none;transition:0.3s;}
+    .drawer-overlay.open{opacity:1;pointer-events:auto;}
+    .drawer{position:fixed;right:0;top:0;width:460px;max-width:100%;height:100vh;background:#fff;z-index:1001;transform:translateX(100%);transition:0.3s;box-shadow:-10px 0 30px rgba(0,0,0,0.1);display:flex;flex-direction:column;}
+    .drawer.open{transform:translateX(0);}
+    .drawer-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .drawer-header h3{font-family:var(--font-serif);font-size:1.2rem;letter-spacing:0.04em;}
+    .drawer-close{cursor:pointer;font-size:1.2rem;color:#888;padding:6px;}
+    .drawer-body{flex:1;overflow-y:auto;padding:20px 24px;}
+    .drawer-section{margin-bottom:28px;}
+    .drawer-section h4{font-size:0.85rem;letter-spacing:0.08em;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+    .drawer .form-row{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+    .drawer input,.drawer select,.drawer textarea{flex:1;padding:10px 14px;border:1px solid #e0dbd0;border-radius:var(--radius-sm);font-family:inherit;font-size:0.82rem;background:#fdfdfb;outline:none;}
+    .drawer textarea{min-height:90px;resize:vertical;}
+    .drawer .btn{background:var(--ink);color:#fff;border:none;padding:10px 18px;border-radius:var(--radius-sm);cursor:pointer;font-size:0.8rem;letter-spacing:0.06em;transition:0.2s;font-family:inherit;}
+    .drawer .btn:hover{background:#2b2b2b;}
+    .drawer .btn-outline{background:none;border:1px solid #ccc;color:#555;}
+    .drawer .btn-outline:hover{background:#f5f5f5;}
+    .drawer .tag-list{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
+    .drawer .tag{background:#f0ede5;padding:4px 10px;border-radius:16px;font-size:0.73rem;display:flex;align-items:center;gap:4px;}
+    .drawer .tag i{cursor:pointer;color:#b33;font-size:0.7rem;}
+    .drawer .item-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0ede5;font-size:0.82rem;}
+    .drawer .item-actions{display:flex;gap:6px;}
+    .drawer .item-actions i{cursor:pointer;color:#888;padding:4px;}
+    .drawer .item-actions i:hover{color:var(--gold);}
+    .empty-state{text-align:center;padding:60px 20px;color:#ccc;}
 
-        /* ── 朋友圈卡片网格 ── */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 22px;
-            padding: 10px 0 50px;
-        }
-        .copy-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 30px 28px;
-            transition: var(--transition);
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 18px;
-            box-shadow: var(--shadow-sm);
-        }
-        .copy-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--border-strong);
-        }
-        .copy-text {
-            font-size: 0.95rem;
-            font-weight: 300;
-            line-height: 1.9;
-            white-space: pre-wrap;
-            letter-spacing: 0.02em;
-            color: var(--ink);
-        }
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.7rem;
-            color: #aaa;
-            letter-spacing: 0.06em;
-        }
-        .card-meta .copy-btn {
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: #bbb;
-            transition: var(--transition);
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-        .card-meta .copy-btn:hover {
-            color: var(--gold);
-            background: var(--gold-pale);
-        }
-
-        /* ── 客户见证 / 课程卖点 列表布局 ── */
-        .testimonial-list {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            padding: 10px 0 50px;
-        }
-        .testimonial-item {
-            display: flex;
-            gap: 18px;
-            align-items: flex-start;
-            padding: 18px 20px;
-            background: var(--card-bg);
-            cursor: pointer;
-            transition: var(--transition);
-            border-bottom: 1px solid var(--border);
-            border-radius: 2px;
-        }
-        .testimonial-item:hover {
-            background: #fdfbf6;
-            box-shadow: var(--shadow-sm);
-        }
-        .testimonial-thumb {
-            width: 70px;
-            height: 70px;
-            border-radius: var(--radius-sm);
-            object-fit: cover;
-            flex-shrink: 0;
-            background: #f0ede5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ccc;
-            font-size: 1.4rem;
-            overflow: hidden;
-        }
-        .testimonial-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .testimonial-info {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .testimonial-info h4 {
-            font-size: 0.9rem;
-            font-weight: 500;
-            letter-spacing: 0.04em;
-            color: var(--ink);
-            margin: 0;
-        }
-        .testimonial-info p {
-            font-size: 0.78rem;
-            color: var(--ink-light);
-            letter-spacing: 0.04em;
-            line-height: 1.5;
-            margin: 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .testimonial-meta {
-            font-size: 0.68rem;
-            color: #bbb;
-            letter-spacing: 0.06em;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .testimonial-cat {
-            display: inline-block;
-            font-size: 0.65rem;
-            padding: 3px 10px;
-            border-radius: var(--radius-full);
-            background: var(--gold-pale);
-            color: var(--gold);
-            letter-spacing: 0.08em;
-            white-space: nowrap;
-        }
-
-        /* ── 分类Tab（客户见证顶部）── */
-        .cat-tabs {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 4px;
-        }
-        .cat-tab {
-            padding: 8px 18px;
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            font-size: 0.78rem;
-            letter-spacing: 0.06em;
-            transition: var(--transition);
-            background: transparent;
-            color: var(--ink-light);
-            border: 1.5px solid transparent;
-            white-space: nowrap;
-            font-family: inherit;
-        }
-        .cat-tab:hover {
-            color: var(--ink);
-            background: #f5f2ea;
-        }
-        .cat-tab.active {
-            background: var(--ink);
-            color: #fff;
-            font-weight: 500;
-            border-color: var(--ink);
-        }
-
-        /* ── 详情弹窗 ── */
-        .detail-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.55);
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .detail-modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .detail-modal {
-            background: #fff;
-            border-radius: var(--radius-lg);
-            padding: 36px 30px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: var(--shadow-lg);
-        }
-        .detail-modal img {
-            width: 100%;
-            border-radius: var(--radius-md);
-            margin-bottom: 16px;
-            max-height: 350px;
-            object-fit: cover;
-        }
-        .detail-modal h3 {
-            font-family: var(--font-serif);
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            letter-spacing: 0.04em;
-        }
-        .detail-modal p {
-            font-size: 0.88rem;
-            color: var(--ink-light);
-            line-height: 1.8;
-            letter-spacing: 0.03em;
-        }
-        .detail-modal .close-modal {
-            position: absolute;
-            top: 16px;
-            right: 18px;
-            cursor: pointer;
-            font-size: 1.3rem;
-            color: #aaa;
-            transition: var(--transition);
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: #f5f5f5;
-        }
-        .detail-modal .close-modal:hover {
-            color: var(--ink);
-            background: #e8e8e8;
-        }
-
-        /* ── Toast ── */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(14px);
-            background: var(--ink);
-            color: #fff;
-            padding: 10px 24px;
-            border-radius: var(--radius-full);
-            font-size: 0.8rem;
-            letter-spacing: 0.06em;
-            opacity: 0;
-            transition: all 0.3s;
-            pointer-events: none;
-            z-index: 999;
-            box-shadow: var(--shadow-lg);
-        }
-        .toast.on {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* ── 空状态 ── */
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            color: #ccc;
-            letter-spacing: 0.08em;
-            font-size: 0.9rem;
-            grid-column: 1 / -1;
-        }
-
-        /* ── 响应式 ── */
-        @media (max-width: 680px) {
-            .hero-title {
-                font-size: 2rem;
-            }
-            .card-grid {
-                grid-template-columns: 1fr;
-            }
-            .module-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 14px;
-            }
-            .module-card {
-                padding: 24px 18px 20px;
-            }
-            .sub-header {
-                padding: 18px 0 14px;
-            }
-            .sub-title {
-                font-size: 1.3rem;
-            }
-            .search-input-wrap.open {
-                width: 180px;
-            }
-            .detail-modal {
-                padding: 24px 18px;
-                width: 95%;
-            }
-            .testimonial-thumb {
-                width: 50px;
-                height: 50px;
-            }
-        }
-    </style>
+    @media(max-width:680px){
+      .hero-title{font-size:2rem;}
+      .drawer{width:100%;}
+    }
+  </style>
 </head>
 <body>
 
-    <!-- ═══════════ 首页视图 ═══════════ -->
-    <div id="homeView">
-        <div class="container">
-            <header class="hero">
-                <div class="hero-tag">YISHI QIANYUAN</div>
-                <h1 class="hero-title">易饰乾园素材库</h1>
-                <p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p>
-                <div class="hero-line"></div>
-            </header>
-            <nav class="module-grid" id="moduleGrid"></nav>
-        </div>
+  <!-- 首页视图 -->
+  <div id="homeView">
+    <div class="container">
+      <header class="hero">
+        <div class="hero-tag">YISHI QIANYUAN</div>
+        <h1 class="hero-title">易饰乾园素材库</h1>
+        <p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p>
+        <div class="hero-line"></div>
+      </header>
+      <nav class="module-grid" id="moduleGrid"></nav>
     </div>
+  </div>
 
-    <!-- ═══════════ 二级页面视图 ═══════════ -->
-    <div id="subView" style="display:none;">
-        <div class="container">
-            <div class="sub-header">
-                <div class="sub-title-area">
-                    <button class="btn-back" onclick="goHome()">
-                        <i class="fa-solid fa-arrow-left"></i> 返回首页
-                    </button>
-                    <h2 class="sub-title" id="subTitle">朋友圈</h2>
-                </div>
-                <div class="search-wrap" id="searchWrap">
-                    <button class="search-toggle" id="searchToggle" onclick="toggleSearch()">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                    <div class="search-input-wrap" id="searchInputWrap">
-                        <input type="text" id="searchInput" placeholder="搜索文案内容…" oninput="doSearch()">
-                        <span class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></span>
-                    </div>
-                </div>
-            </div>
-            <!-- 角度筛选（朋友圈用） -->
-            <div class="angle-bar" id="angleBar" style="display:none;"></div>
-            <!-- 分类Tab（客户见证/课程卖点用） -->
-            <div class="cat-tabs" id="catTabs" style="display:none;"></div>
-            <!-- 朋友圈卡片网格 -->
-            <div class="card-grid" id="cardGrid" style="display:none;"></div>
-            <!-- 客户见证/课程卖点列表 -->
-            <div class="testimonial-list" id="testimonialList" style="display:none;"></div>
-            <!-- 空状态 -->
-            <div class="empty-state" id="emptyState" style="display:none;">暂无内容</div>
+  <!-- 二级页面 -->
+  <div id="subView" style="display:none;">
+    <div class="container">
+      <div class="sub-header">
+        <div class="sub-title-area">
+          <button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> 返回首页</button>
+          <h2 class="sub-title" id="subTitle">朋友圈</h2>
         </div>
-    </div>
-
-    <!-- ═══════════ 详情弹窗 ═══════════ -->
-    <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)">
-        <div class="detail-modal" id="detailModal" onclick="event.stopPropagation()">
-            <span class="close-modal" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span>
-            <div id="detailContent"></div>
+        <div class="search-wrap" id="searchWrap">
+          <button class="search-toggle" onclick="toggleSearch()"><i class="fa-solid fa-magnifying-glass"></i></button>
+          <div class="search-input-wrap" id="searchInputWrap">
+            <input type="text" id="searchInput" placeholder="搜索内容…" oninput="doSearch()">
+            <span class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></span>
+          </div>
         </div>
+      </div>
+      <div class="angle-bar" id="angleBar"></div>
+      <div class="cat-tabs" id="catTabs"></div>
+      <div class="card-grid" id="cardGrid"></div>
+      <div class="testimonial-list" id="testimonialList"></div>
+      <div class="empty-state" id="emptyState">暂无内容</div>
     </div>
+  </div>
 
-    <!-- ═══════════ Toast ═══════════ -->
-    <div class="toast" id="toast"></div>
+  <!-- 管理浮动按钮 -->
+  <div class="admin-float" onclick="openAdmin()" title="管理后台"><i class="fa-solid fa-sliders"></i></div>
 
-    <script>
-        // ═══════════════════════════════════
-        //  数据配置
-        // ═══════════════════════════════════
-        const DATA_KEY = 'ysqy_data_v3';
-        const DEFAULT_DATA = {
-            modules: ['朋友圈', '客户见证', '课程卖点'],
-            angles: ['数字冲击', '对话还原', '情绪唤醒', '场景反差', '旁观者视角', '预言式', '时间轴', '选择题', '内幕揭秘', '反常识', '学员故事', '身体感知', '追问式', '画面描写'],
-            testimonialCategories: ['文昌', '沙龙', '成交', '夫妻关系', '身体健康', '知识成长', '见识提升'],
-            courseCategories: ['核心价值', '课程亮点', '学员反馈', '报名须知'],
-            posts: [
-                { id: 1, module: '朋友圈', angle: '数字冲击',
-                    text: '同样做室内设计，收入差距能有10倍 📊\n靠颜感做方案的，改稿改到怀疑人生\n靠五行色彩做方案的，签单当天就定\n区别不在于谁更努力、谁更有品味\n而在于那套判断客户的底层工具 🎯\n有这个工具的人，和没有的人，不同命',
-                    time: 1715000000000 },
-                { id: 2, module: '朋友圈', angle: '数字冲击',
-                    text: '10个客户说"再想想"，9个再也没回来 😮\n这个比例，很多设计师心里清楚\n但从来没有去想过为什么\n他在说"再想想"的那一刻\n其实已经替你做了一个决定了 🔑\n五行色彩秒懂客户，这才是真正的破局 🔥',
-                    time: 1714900000000 },
-                { id: 3, module: '朋友圈', angle: '对话还原',
-                    text: '客户上周说了一句话，我一直在想 💬\n她说："我看了很多设计师，感觉你懂我"\n我问她为什么这么说\n她说："别人都在说方案，你在说我的生活"\n那一刻我突然明白了 🔑\n五行色彩秒懂客户，教的就是这种眼光 👀',
-                    time: 1714800000000 },
-                { id: 4, module: '朋友圈', angle: '情绪唤醒',
-                    text: '你有没有在见完客户之后，一个人坐在车里 😣\n反复想：哪里没说对、哪里可以更好\n改了五版方案，对方还是说"再考虑一下"\n那种感觉，不是累，是茫然 😔\n不知道问题出在哪，才是最难熬的',
-                    time: 1714700000000 },
-                { id: 5, module: '朋友圈', angle: '场景反差',
-                    text: '学了三年设计，卖了两年方案 📐\n换来的是："能不能再便宜一点"\n有人入行一年，客户主动加价签单\n同一个市场，同样的产品线\n差距怎么来的，值得停下来想一想 🤔\n文化时代赋能百业，说的就是这件事 💎',
-                    time: 1714600000000 },
-                { id: 6, module: '朋友圈', angle: '预言式',
-                    text: '文化营销这件事，三年后会是标配 🔮\n现在学的人，到时候已经跑在前面了\n现在觉得"再看看"的人\n到时候再入场，成本会高很多\n九运离火这扇窗，不会一直开着 🔥\n先进去的人，已经在布局了 💎',
-                    time: 1714500000000 },
-            ],
-            testimonials: [
-                { id: 101, module: '客户见证', category: '成交',
-                    imageUrl: '',
-                    title: '林女士 · 软装设计师',
-                    description: '学了五行色彩之后，第一个月签单率提升了40%。客户说"你懂我"，这种感觉太好了。以前总在猜客户想要什么，现在一眼就能判断。',
-                    clientName: '林女士', date: '2024-05-15' },
-                { id: 102, module: '客户见证', category: '文昌',
-                    imageUrl: '',
-                    title: '张先生 · 企业主',
-                    description: '调整了办公室的文昌位后，团队效率明显提升。以前总觉得哪里不对，现在员工说办公环境舒服多了，业绩也在稳步增长。',
-                    clientName: '张先生', date: '2024-05-10' },
-                { id: 103, module: '客户见证', category: '沙龙',
-                    imageUrl: '',
-                    title: '易饰乾园线下沙龙 · 北京站',
-                    description: '30位设计师齐聚，现场演示五行色彩诊断。大家惊叹于色彩与性格的精准对应，沙龙结束后有18位当场报名精华班。',
-                    clientName: '沙龙参与者', date: '2024-04-28' },
-                { id: 104, module: '客户见证', category: '夫妻关系',
-                    imageUrl: '',
-                    title: '王女士 · 全职妈妈',
-                    description: '学了五行之后才理解丈夫的性格底色，以前总因为小事争吵，现在懂得用适合他的方式沟通，家里气氛完全不一样了。',
-                    clientName: '王女士', date: '2024-04-20' },
-                { id: 105, module: '客户见证', category: '身体健康',
-                    imageUrl: '',
-                    title: '陈先生 · 退休教师',
-                    description: '按五行调整了卧室色彩后，睡眠质量明显改善。以前入睡困难，现在躺下很快就能睡着，醒来精神也很好。',
-                    clientName: '陈先生', date: '2024-04-12' },
-                { id: 106, module: '客户见证', category: '知识成长',
-                    imageUrl: '',
-                    title: '刘设计师 · 学员',
-                    description: '易学全案精华班让我打开了新世界。以前做设计只看审美，现在懂得从人的底层性格出发，方案更有说服力。',
-                    clientName: '刘设计师', date: '2024-03-28' },
-                { id: 107, module: '客户见证', category: '见识提升',
-                    imageUrl: '',
-                    title: '赵总 · 连锁品牌创始人',
-                    description: '从传统文化中汲取商业智慧，这是我在精华班最大的收获。眼界打开了，做决策时有了更深的依据，不再只凭经验。',
-                    clientName: '赵总', date: '2024-03-15' },
-            ],
-            courses: [
-                { id: 201, module: '课程卖点', category: '核心价值',
-                    imageUrl: '',
-                    title: '五行色彩诊断系统',
-                    description: '一套让设计师秒懂客户的底层工具。从五行属性判断客户性格、需求、顾虑，让签单变成自然的结果而非艰难的推销。',
-                    clientName: '', date: '2024-05-01' },
-                { id: 202, module: '课程卖点', category: '课程亮点',
-                    imageUrl: '',
-                    title: '四天精华班 · 易学全案',
-                    description: '从判断到布局到落地，每步有据。涵盖五行色彩、读像思维、经营根源、九运趋势四大模块，构建完整的文化营销体系。',
-                    clientName: '', date: '2024-05-01' },
-                { id: 203, module: '课程卖点', category: '学员反馈',
-                    imageUrl: '',
-                    title: '学员真实反馈合集',
-                    description: '"学完才知道，签单和美学没多大关系，和懂人有关系"——这是学员最常说的一句话。课程带给他们的不仅是知识，更是看待客户的全新眼光。',
-                    clientName: '', date: '2024-04-20' },
-            ]
-        };
+  <!-- 管理抽屉 -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="adminDrawer">
+    <div class="drawer-header">
+      <h3>⚙️ 库管理中心</h3>
+      <span class="drawer-close" onclick="closeDrawer()"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+    <div class="drawer-body" id="drawerBody">
+      <!-- 密码验证 -->
+      <div id="pwdBlock">
+        <p style="margin-bottom:8px;font-size:0.82rem;">输入管理密码</p>
+        <div class="form-row">
+          <input type="password" id="adminPwd" placeholder="密码" onkeydown="if(event.key==='Enter')checkPwd()">
+          <button class="btn" onclick="checkPwd()">进入</button>
+        </div>
+        <p style="color:#c33;font-size:0.7rem;" id="pwdError"></p>
+      </div>
+      <div id="adminContent" style="display:none;">
+        <!-- 模块管理 -->
+        <div class="drawer-section">
+          <h4><i class="fa-solid fa-cubes"></i> 模块管理</h4>
+          <div class="tag-list" id="moduleTagList"></div>
+          <div class="form-row">
+            <input type="text" id="newModuleName" placeholder="新模块名称">
+            <button class="btn" onclick="addModule()">添加</button>
+          </div>
+        </div>
+        <!-- 角度管理 -->
+        <div class="drawer-section">
+          <h4><i class="fa-solid fa-tags"></i> 角度管理</h4>
+          <div class="tag-list" id="angleTagList"></div>
+          <div class="form-row">
+            <input type="text" id="newAngleName" placeholder="新角度">
+            <button class="btn" onclick="addAngle()">添加</button>
+          </div>
+        </div>
+        <!-- 见证类别 -->
+        <div class="drawer-section">
+          <h4><i class="fa-solid fa-folder-tree"></i> 客户见证分类</h4>
+          <div class="tag-list" id="testCatList"></div>
+          <div class="form-row">
+            <input type="text" id="newTestCat" placeholder="新分类">
+            <button class="btn" onclick="addTestCat()">添加</button>
+          </div>
+        </div>
+        <!-- 课程类别 -->
+        <div class="drawer-section">
+          <h4><i class="fa-solid fa-graduation-cap"></i> 课程卖点分类</h4>
+          <div class="tag-list" id="courseCatList"></div>
+          <div class="form-row">
+            <input type="text" id="newCourseCat" placeholder="新分类">
+            <button class="btn" onclick="addCourseCat()">添加</button>
+          </div>
+        </div>
+        <!-- 发布朋友圈 -->
+        <div class="drawer-section">
+          <h4>📝 发布朋友圈文案</h4>
+          <select id="pubAngle" style="width:100%;margin-bottom:8px;"></select>
+          <textarea id="pubText" placeholder="文案内容，换行用回车"></textarea>
+          <button class="btn" style="margin-top:8px;" onclick="publishPost()">发布</button>
+        </div>
+        <!-- 管理见证 -->
+        <div class="drawer-section">
+          <h4>🖼️ 客户见证管理</h4>
+          <div id="testListAdmin" style="max-height:220px;overflow-y:auto;"></div>
+          <details style="margin-top:12px;">
+            <summary style="cursor:pointer;font-size:0.8rem;">➕ 新增见证</summary>
+            <select id="newTestCatSel" style="width:100%;margin:8px 0;"></select>
+            <input type="text" id="newTestTitle" placeholder="标题">
+            <input type="text" id="newTestImg" placeholder="图片URL（可留空）">
+            <textarea id="newTestDesc" placeholder="描述文字"></textarea>
+            <button class="btn" onclick="addTestimonial()">保存见证</button>
+          </details>
+        </div>
+        <!-- 管理课程 -->
+        <div class="drawer-section">
+          <h4>📚 课程卖点管理</h4>
+          <div id="courseListAdmin" style="max-height:220px;overflow-y:auto;"></div>
+          <details style="margin-top:12px;">
+            <summary style="cursor:pointer;font-size:0.8rem;">➕ 新增课程</summary>
+            <select id="newCourseCatSel" style="width:100%;margin:8px 0;"></select>
+            <input type="text" id="newCourseTitle" placeholder="标题">
+            <input type="text" id="newCourseImg" placeholder="图片URL">
+            <textarea id="newCourseDesc" placeholder="描述"></textarea>
+            <button class="btn" onclick="addCourse()">保存课程</button>
+          </details>
+        </div>
+        <button class="btn-outline btn" style="width:100%;margin-top:16px;" onclick="closeDrawer()">关闭后台</button>
+      </div>
+    </div>
+  </div>
 
-        let db = JSON.parse(localStorage.getItem(DATA_KEY) || 'null') || JSON.parse(JSON.stringify(
-        DEFAULT_DATA));
-        let currentModule = null;
-        let currentAngle = '全部';
-        let currentCategory = '全部';
-        let searchQuery = '';
+  <div class="toast" id="toast"></div>
 
-        // 保存数据
-        function saveDB() {
-            localStorage.setItem(DATA_KEY, JSON.stringify(db));
-            // 触发storage事件同步给admin页面
-            window.dispatchEvent(new StorageEvent('storage', { key: DATA_KEY, newValue: JSON.stringify(db) }));
-        }
+  <script>
+    (function() {
+      // ── 数据 ──
+      const DATA_KEY = 'ysqy_data_v3';
+      const ADMIN_PWD = 'ysqy798';
+      const DEFAULT_DATA = {
+        modules: ['朋友圈','客户见证','课程卖点'],
+        angles: ['数字冲击','对话还原','情绪唤醒','场景反差','旁观者视角','预言式','时间轴','选择题','内幕揭秘','反常识','学员故事','身体感知','追问式','画面描写'],
+        testimonialCategories: ['文昌','沙龙','成交','夫妻关系','身体健康','知识成长','见识提升'],
+        courseCategories: ['核心价值','课程亮点','学员反馈'],
+        posts: [
+          {id:1,module:'朋友圈',angle:'数字冲击',text:'同样做室内设计，收入差距能有10倍 📊\n靠颜感做方案的，改稿改到怀疑人生\n靠五行色彩做方案的，签单当天就定\n区别不在于谁更努力\n而在于那套判断客户的底层工具 🎯',time:1715000000000},
+          {id:2,module:'朋友圈',angle:'对话还原',text:'客户上周说了一句话，我一直在想 💬\n她说："你懂我"\n别人都在说方案，你在说我的生活\n五行色彩秒懂客户，教的就是这种眼光 👀',time:1714900000000}
+        ],
+        testimonials: [
+          {id:101,module:'客户见证',category:'成交',imageUrl:'',title:'林女士 · 软装设计师',description:'学了五行色彩后，第一个月签单率提升40%。客户说"你懂我"，这种感觉太好了。',clientName:'林女士',date:'2024-05-15'},
+          {id:102,module:'客户见证',category:'文昌',imageUrl:'',title:'张先生 · 企业主',description:'调整办公室文昌位后，团队效率明显提升，业绩稳步增长。',clientName:'张先生',date:'2024-05-10'}
+        ],
+        courses: [
+          {id:201,module:'课程卖点',category:'核心价值',imageUrl:'',title:'五行色彩诊断系统',description:'一套让设计师秒懂客户的底层工具，让签单变成自然结果。',date:'2024-05-01'},
+          {id:202,module:'课程卖点',category:'课程亮点',imageUrl:'',title:'四天精华班 · 易学全案',description:'涵盖五行色彩、读像思维、经营根源、九运趋势四大模块。',date:'2024-05-01'}
+        ]
+      };
 
-        // Toast
-        function toast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.classList.add('on');
-            setTimeout(() => t.classList.remove('on'), 2200);
-        }
+      let db = JSON.parse(localStorage.getItem(DATA_KEY) || 'null');
+      if (!db || !db.modules) {
+        db = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        localStorage.setItem(DATA_KEY, JSON.stringify(db));
+      }
 
-        // ═══════════ 首页渲染 ═══════════
-        function renderHome() {
-            const grid = document.getElementById('moduleGrid');
-            const icons = { '朋友圈': 'fa-solid fa-pen-to-square', '客户见证': 'fa-solid fa-comments',
-                '课程卖点': 'fa-solid fa-graduation-cap' };
-            const descs = { '朋友圈': '高转化发图文案库 · 真实案例信任背书', '客户见证': '真实案例 · 信任背书 · 截图存档',
-                '课程卖点': '核心价值 · 转化文案 · 课程亮点' };
-            grid.innerHTML = db.modules.map(m => `
-            <div class="module-card" onclick="openModule('${m}')">
-              <div class="module-card-icon"><i class="${icons[m] || 'fa-solid fa-folder'}"></i></div>
-              <div class="module-card-title">${m}</div>
-              <div class="module-card-desc">${descs[m] || '点击查看详情'}</div>
-              <div class="module-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      function save() {
+        localStorage.setItem(DATA_KEY, JSON.stringify(db));
+        window.dispatchEvent(new StorageEvent('storage', {key:DATA_KEY, newValue:JSON.stringify(db)}));
+      }
+
+      let currentModule = null;
+      let currentAngle = '全部';
+      let currentCategory = '全部';
+      let searchQuery = '';
+
+      // ── Toast ──
+      function toast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg; t.style.opacity=1; t.style.transform='translateX(-50%) translateY(0)';
+        clearTimeout(t._timeout);
+        t._timeout = setTimeout(()=>{ t.style.opacity=0; t.style.transform='translateX(-50%) translateY(14px)'; },2000);
+      }
+
+      // ── 首页 ──
+      function renderHome() {
+        const grid = document.getElementById('moduleGrid');
+        const icons = {'朋友圈':'fa-pen-to-square','客户见证':'fa-comments','课程卖点':'fa-graduation-cap'};
+        grid.innerHTML = db.modules.map(m => `
+          <div class="module-card" onclick="window.openModule('${m}')">
+            <div class="module-card-icon"><i class="fa-solid ${icons[m]||'fa-folder'}"></i></div>
+            <div class="module-card-title">${m}</div>
+            <div class="module-card-desc">点击查看内容</div>
+            <div class="module-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>`).join('');
+      }
+
+      window.openModule = function(moduleName) {
+        currentModule = moduleName;
+        currentAngle = '全部';
+        currentCategory = '全部';
+        searchQuery = '';
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchInputWrap').classList.remove('open');
+        document.getElementById('homeView').style.display = 'none';
+        document.getElementById('subView').style.display = 'block';
+        document.getElementById('subTitle').textContent = moduleName;
+        renderSubPage();
+        window.scrollTo(0,0);
+      };
+
+      window.goHome = function() {
+        document.getElementById('subView').style.display = 'none';
+        document.getElementById('homeView').style.display = 'block';
+        currentModule = null;
+        renderHome();
+        window.scrollTo(0,0);
+      };
+
+      function renderSubPage() {
+        if (!currentModule) return;
+        const isMoments = currentModule === '朋友圈';
+        const isTest = currentModule === '客户见证';
+        const isCourse = currentModule === '课程卖点';
+        document.getElementById('angleBar').style.display = isMoments ? 'flex' : 'none';
+        document.getElementById('catTabs').style.display = (isTest||isCourse) ? 'flex' : 'none';
+        document.getElementById('cardGrid').style.display = isMoments ? 'grid' : 'none';
+        document.getElementById('testimonialList').style.display = (isTest||isCourse) ? 'flex' : 'none';
+        if (isMoments) renderMoments();
+        if (isTest) renderTestimonials();
+        if (isCourse) renderCourses();
+      }
+
+      function renderMoments() {
+        const angleBar = document.getElementById('angleBar');
+        angleBar.innerHTML = ['全部',...db.angles].map(a => `<span class="angle-pill ${currentAngle===a?'active':''}" onclick="window.setAngle('${a}')">${a}</span>`).join('');
+        let filtered = db.posts.filter(p=>p.module==='朋友圈');
+        if (currentAngle!=='全部') filtered = filtered.filter(p=>p.angle===currentAngle);
+        if (searchQuery) filtered = filtered.filter(p=>p.text.includes(searchQuery)||p.angle.includes(searchQuery));
+        const grid = document.getElementById('cardGrid');
+        if (!filtered.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
+        grid.innerHTML = filtered.map(p => `
+          <div class="copy-card">
+            <div class="copy-text">${p.text}</div>
+            <div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" onclick="window.copyText('${p.text.replace(/\n/g,'\\n').replace(/'/g,"\\'")}')"><i class="fa-regular fa-clone"></i> 复制</span></div>
+          </div>`).join('');
+      }
+
+      window.setAngle = function(a) { currentAngle = a; renderMoments(); };
+      window.copyText = function(t) { navigator.clipboard.writeText(t.replace(/\\n/g,'\n')).then(()=>toast('已复制 ✓')); };
+
+      function renderTestimonials() {
+        const catTabs = document.getElementById('catTabs');
+        catTabs.innerHTML = ['全部',...db.testimonialCategories].map(c => `<span class="cat-tab ${currentCategory===c?'active':''}" onclick="window.setCategory('${c}')">${c}</span>`).join('');
+        let filtered = db.testimonials.filter(t=>t.module==='客户见证');
+        if (currentCategory!=='全部') filtered = filtered.filter(t=>t.category===currentCategory);
+        if (searchQuery) filtered = filtered.filter(t=>t.title.includes(searchQuery)||t.description.includes(searchQuery));
+        const list = document.getElementById('testimonialList');
+        if (!filtered.length) { list.innerHTML = '<div class="empty-state">暂无见证</div>'; return; }
+        list.innerHTML = filtered.map(t => `
+          <div class="testimonial-item">
+            <div class="testimonial-thumb">${t.imageUrl ? `<img src="${t.imageUrl}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\'></i>'">` : '<i class="fa-solid fa-image"></i>'}</div>
+            <div class="testimonial-info">
+              <h4>${t.title} <span class="copy-btn" onclick="event.stopPropagation();window.copyText('${t.title+'\\n'+t.description}')"><i class="fa-regular fa-clone"></i></span></h4>
+              <p>${t.description}</p>
+              <div class="testimonial-meta"><span class="testimonial-cat">${t.category}</span> ${t.date||''} ${t.clientName||''}</div>
             </div>
-          `).join('');
-        }
+          </div>`).join('');
+      }
 
-        // ═══════════ 二级页面 ═══════════
-        function openModule(moduleName) {
-            currentModule = moduleName;
-            currentAngle = '全部';
-            currentCategory = '全部';
-            searchQuery = '';
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchInputWrap').classList.remove('open');
-            document.getElementById('homeView').style.display = 'none';
-            document.getElementById('subView').style.display = 'block';
-            document.getElementById('subTitle').textContent = moduleName;
-            renderSubPage();
-            window.scrollTo(0, 0);
-        }
-
-        function goHome() {
-            document.getElementById('subView').style.display = 'none';
-            document.getElementById('homeView').style.display = 'block';
-            currentModule = null;
-            renderHome();
-            window.scrollTo(0, 0);
-        }
-
-        function renderSubPage() {
-            if (!currentModule) return;
-            const isMoments = currentModule === '朋友圈';
-            const isTestimonial = currentModule === '客户见证';
-            const isCourse = currentModule === '课程卖点';
-
-            // 角度栏（朋友圈）
-            document.getElementById('angleBar').style.display = isMoments ? 'flex' : 'none';
-            // 分类Tab（客户见证/课程卖点）
-            document.getElementById('catTabs').style.display = (isTestimonial || isCourse) ? 'flex' : 'none';
-            // 卡片网格（朋友圈）
-            document.getElementById('cardGrid').style.display = isMoments ? 'grid' : 'none';
-            // 列表（客户见证/课程卖点）
-            document.getElementById('testimonialList').style.display = (isTestimonial || isCourse) ? 'flex' : 'none';
-            document.getElementById('emptyState').style.display = 'none';
-
-            if (isMoments) renderMoments();
-            if (isTestimonial) renderTestimonials();
-            if (isCourse) renderCourses();
-        }
-
-        // ── 朋友圈 ──
-        function renderMoments() {
-            // 角度pills
-            const angleBar = document.getElementById('angleBar');
-            const allAngles = ['全部', ...db.angles];
-            angleBar.innerHTML = allAngles.map(a => `
-            <span class="angle-pill ${currentAngle === a ? 'active' : ''}" onclick="setAngle('${a}')">${a}</span>
-          `).join('');
-
-            // 卡片
-            let filtered = db.posts.filter(p => p.module === '朋友圈');
-            if (currentAngle !== '全部') filtered = filtered.filter(p => p.angle === currentAngle);
-            if (searchQuery) filtered = filtered.filter(p => p.text.includes(searchQuery) || p.angle.includes(
-                searchQuery));
-
-            const grid = document.getElementById('cardGrid');
-            if (filtered.length === 0) {
-                grid.innerHTML = '<div class="empty-state">暂无匹配文案</div>';
-                return;
-            }
-            grid.innerHTML = filtered.map(p => `
-            <div class="copy-card">
-              <div class="copy-text">${p.text}</div>
-              <div class="card-meta">
-                <span># ${p.angle}</span>
-                <span class="copy-btn" onclick="copyText('${p.text.replace(/\n/g, '\\n').replace(/'/g, "\\'")}')" title="复制">
-                  <i class="fa-regular fa-clone"></i> 复制
-                </span>
-              </div>
+      function renderCourses() {
+        const catTabs = document.getElementById('catTabs');
+        catTabs.innerHTML = ['全部',...db.courseCategories].map(c => `<span class="cat-tab ${currentCategory===c?'active':''}" onclick="window.setCategory('${c}')">${c}</span>`).join('');
+        let filtered = db.courses.filter(c=>c.module==='课程卖点');
+        if (currentCategory!=='全部') filtered = filtered.filter(c=>c.category===currentCategory);
+        if (searchQuery) filtered = filtered.filter(c=>c.title.includes(searchQuery)||c.description.includes(searchQuery));
+        const list = document.getElementById('testimonialList');
+        if (!filtered.length) { list.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
+        list.innerHTML = filtered.map(c => `
+          <div class="testimonial-item">
+            <div class="testimonial-thumb">${c.imageUrl ? `<img src="${c.imageUrl}">` : '<i class="fa-solid fa-graduation-cap"></i>'}</div>
+            <div class="testimonial-info">
+              <h4>${c.title} <span class="copy-btn" onclick="event.stopPropagation();window.copyText('${c.title+'\\n'+c.description}')"><i class="fa-regular fa-clone"></i></span></h4>
+              <p>${c.description}</p>
+              <div class="testimonial-meta"><span class="testimonial-cat">${c.category}</span> ${c.date||''}</div>
             </div>
-          `).join('');
+          </div>`).join('');
+      }
+
+      window.setCategory = function(c) { currentCategory = c; if(currentModule==='客户见证') renderTestimonials(); else if(currentModule==='课程卖点') renderCourses(); };
+
+      // 搜索
+      window.toggleSearch = function() {
+        const wrap = document.getElementById('searchInputWrap');
+        if (wrap.classList.contains('open')) { window.closeSearch(); } else { wrap.classList.add('open'); setTimeout(()=>document.getElementById('searchInput').focus(),200); }
+      };
+      window.closeSearch = function() {
+        document.getElementById('searchInputWrap').classList.remove('open');
+        document.getElementById('searchInput').value = '';
+        searchQuery = '';
+        renderSubPage();
+      };
+      window.doSearch = function() { searchQuery = document.getElementById('searchInput').value.trim(); renderSubPage(); };
+
+      // ── 后台管理 ──
+      window.openAdmin = function() {
+        document.getElementById('drawerOverlay').classList.add('open');
+        document.getElementById('adminDrawer').classList.add('open');
+        document.getElementById('pwdBlock').style.display = 'block';
+        document.getElementById('adminContent').style.display = 'none';
+        document.getElementById('adminPwd').value = '';
+        document.getElementById('pwdError').textContent = '';
+        renderAdminContent();
+      };
+      window.closeDrawer = function() {
+        document.getElementById('drawerOverlay').classList.remove('open');
+        document.getElementById('adminDrawer').classList.remove('open');
+      };
+
+      window.checkPwd = function() {
+        if (document.getElementById('adminPwd').value === ADMIN_PWD) {
+          document.getElementById('pwdBlock').style.display = 'none';
+          document.getElementById('adminContent').style.display = 'block';
+          renderAdminContent();
+        } else {
+          document.getElementById('pwdError').textContent = '密码错误';
         }
+      };
 
-        function setAngle(a) {
-            currentAngle = a;
-            renderMoments();
+      function renderAdminContent() {
+        // 模块标签
+        document.getElementById('moduleTagList').innerHTML = db.modules.map(m => `<span class="tag">${m} <i onclick="window.removeModule('${m}')" class="fa-solid fa-xmark"></i></span>`).join('');
+        document.getElementById('angleTagList').innerHTML = db.angles.map(a => `<span class="tag">${a} <i onclick="window.removeAngle('${a}')" class="fa-solid fa-xmark"></i></span>`).join('');
+        document.getElementById('testCatList').innerHTML = db.testimonialCategories.map(c => `<span class="tag">${c} <i onclick="window.removeTestCat('${c}')" class="fa-solid fa-xmark"></i></span>`).join('');
+        document.getElementById('courseCatList').innerHTML = db.courseCategories.map(c => `<span class="tag">${c} <i onclick="window.removeCourseCat('${c}')" class="fa-solid fa-xmark"></i></span>`).join('');
+
+        const angleSel = document.getElementById('pubAngle');
+        angleSel.innerHTML = db.angles.map(a => `<option>${a}</option>`).join('');
+
+        // 见证管理列表
+        const testListDiv = document.getElementById('testListAdmin');
+        testListDiv.innerHTML = db.testimonials.map((t,i) => `<div class="item-row"><span>${t.title}</span><div class="item-actions"><i class="fa-solid fa-pen" onclick="window.editTestimonial(${i})"></i><i class="fa-solid fa-trash" onclick="window.deleteTestimonial(${i})"></i></div></div>`).join('') || '暂无';
+        const newTestCatSel = document.getElementById('newTestCatSel');
+        newTestCatSel.innerHTML = db.testimonialCategories.map(c => `<option>${c}</option>`).join('');
+
+        const courseListDiv = document.getElementById('courseListAdmin');
+        courseListDiv.innerHTML = db.courses.map((c,i) => `<div class="item-row"><span>${c.title}</span><div class="item-actions"><i class="fa-solid fa-pen" onclick="window.editCourse(${i})"></i><i class="fa-solid fa-trash" onclick="window.deleteCourse(${i})"></i></div></div>`).join('') || '暂无';
+        const newCourseCatSel = document.getElementById('newCourseCatSel');
+        newCourseCatSel.innerHTML = db.courseCategories.map(c => `<option>${c}</option>`).join('');
+      }
+
+      // 模块增删
+      window.addModule = function() {
+        const val = document.getElementById('newModuleName').value.trim();
+        if (!val) return;
+        if (db.modules.includes(val)) { toast('模块已存在'); return; }
+        db.modules.push(val);
+        save(); renderHome(); renderAdminContent(); toast('模块已添加');
+        document.getElementById('newModuleName').value = '';
+      };
+      window.removeModule = function(m) {
+        if (!confirm(`删除模块“${m}”？相关文案不会删除但将无法显示。`)) return;
+        db.modules = db.modules.filter(x=>x!==m);
+        save(); renderHome(); renderAdminContent();
+      };
+      window.addAngle = function() {
+        const val = document.getElementById('newAngleName').value.trim();
+        if (!val) return;
+        if (db.angles.includes(val)) return;
+        db.angles.push(val);
+        save(); renderAdminContent(); if(currentModule==='朋友圈') renderMoments();
+        document.getElementById('newAngleName').value = '';
+      };
+      window.removeAngle = function(a) {
+        db.angles = db.angles.filter(x=>x!==a);
+        save(); renderAdminContent(); if(currentModule==='朋友圈') renderMoments();
+      };
+      window.addTestCat = function() {
+        const val = document.getElementById('newTestCat').value.trim();
+        if (!val || db.testimonialCategories.includes(val)) return;
+        db.testimonialCategories.push(val);
+        save(); renderAdminContent(); if(currentModule==='客户见证') renderTestimonials();
+        document.getElementById('newTestCat').value = '';
+      };
+      window.removeTestCat = function(c) {
+        db.testimonialCategories = db.testimonialCategories.filter(x=>x!==c);
+        save(); renderAdminContent(); if(currentModule==='客户见证') renderTestimonials();
+      };
+      window.addCourseCat = function() {
+        const val = document.getElementById('newCourseCat').value.trim();
+        if (!val || db.courseCategories.includes(val)) return;
+        db.courseCategories.push(val);
+        save(); renderAdminContent(); if(currentModule==='课程卖点') renderCourses();
+        document.getElementById('newCourseCat').value = '';
+      };
+      window.removeCourseCat = function(c) {
+        db.courseCategories = db.courseCategories.filter(x=>x!==c);
+        save(); renderAdminContent(); if(currentModule==='课程卖点') renderCourses();
+      };
+
+      // 发布朋友圈
+      window.publishPost = function() {
+        const angle = document.getElementById('pubAngle').value;
+        const text = document.getElementById('pubText').value.trim();
+        if (!text) return;
+        db.posts.unshift({ id: Date.now(), module:'朋友圈', angle, text, time: Date.now() });
+        save(); if(currentModule==='朋友圈') renderMoments();
+        document.getElementById('pubText').value = '';
+        toast('已发布');
+      };
+
+      // 见证增删改
+      window.addTestimonial = function() {
+        const cat = document.getElementById('newTestCatSel').value;
+        const title = document.getElementById('newTestTitle').value.trim();
+        const img = document.getElementById('newTestImg').value.trim();
+        const desc = document.getElementById('newTestDesc').value.trim();
+        if (!title || !desc) return;
+        db.testimonials.push({ id: Date.now(), module:'客户见证', category:cat, imageUrl:img, title, description:desc, clientName:'', date:new Date().toISOString().slice(0,10) });
+        save(); renderAdminContent(); if(currentModule==='客户见证') renderTestimonials();
+        document.getElementById('newTestTitle').value = ''; document.getElementById('newTestImg').value = ''; document.getElementById('newTestDesc').value = '';
+        toast('见证已添加');
+      };
+      window.deleteTestimonial = function(idx) {
+        if (!confirm('删除这条见证？')) return;
+        db.testimonials.splice(idx,1);
+        save(); renderAdminContent(); if(currentModule==='客户见证') renderTestimonials();
+      };
+      window.editTestimonial = function(idx) {
+        const t = db.testimonials[idx];
+        const newTitle = prompt('标题', t.title);
+        if (newTitle===null) return;
+        const newDesc = prompt('描述', t.description);
+        if (newDesc===null) return;
+        t.title = newTitle; t.description = newDesc;
+        save(); renderAdminContent(); if(currentModule==='客户见证') renderTestimonials();
+      };
+
+      // 课程增删改
+      window.addCourse = function() {
+        const cat = document.getElementById('newCourseCatSel').value;
+        const title = document.getElementById('newCourseTitle').value.trim();
+        const img = document.getElementById('newCourseImg').value.trim();
+        const desc = document.getElementById('newCourseDesc').value.trim();
+        if (!title || !desc) return;
+        db.courses.push({ id: Date.now(), module:'课程卖点', category:cat, imageUrl:img, title, description:desc, date:new Date().toISOString().slice(0,10) });
+        save(); renderAdminContent(); if(currentModule==='课程卖点') renderCourses();
+        document.getElementById('newCourseTitle').value = ''; document.getElementById('newCourseImg').value = ''; document.getElementById('newCourseDesc').value = '';
+        toast('课程已添加');
+      };
+      window.deleteCourse = function(idx) {
+        if (!confirm('删除？')) return;
+        db.courses.splice(idx,1);
+        save(); renderAdminContent(); if(currentModule==='课程卖点') renderCourses();
+      };
+      window.editCourse = function(idx) {
+        const c = db.courses[idx];
+        const newTitle = prompt('标题', c.title);
+        if (newTitle===null) return;
+        const newDesc = prompt('描述', c.description);
+        if (newDesc===null) return;
+        c.title = newTitle; c.description = newDesc;
+        save(); renderAdminContent(); if(currentModule==='课程卖点') renderCourses();
+      };
+
+      window.addEventListener('storage', (e) => {
+        if (e.key === DATA_KEY && e.newValue) {
+          db = JSON.parse(e.newValue);
+          if (currentModule) renderSubPage();
+          renderHome();
         }
+      });
 
-        function copyText(text) {
-            navigator.clipboard.writeText(text.replace(/\\n/g, '\n')).then(() => toast('已复制到剪贴板 ✓'));
-        }
-
-        // ── 客户见证 ──
-        function renderTestimonials() {
-            const catTabs = document.getElementById('catTabs');
-            const allCats = ['全部', ...db.testimonialCategories];
-            catTabs.innerHTML = allCats.map(c => `
-            <button class="cat-tab ${currentCategory === c ? 'active' : ''}" onclick="setCategory('${c}')">${c}</button>
-          `).join('');
-
-            let filtered = db.testimonials.filter(t => t.module === '客户见证');
-            if (currentCategory !== '全部') filtered = filtered.filter(t => t.category === currentCategory);
-            if (searchQuery) filtered = filtered.filter(t => t.title.includes(searchQuery) || t.description.includes(
-                searchQuery) || t.category.includes(searchQuery));
-
-            const list = document.getElementById('testimonialList');
-            if (filtered.length === 0) {
-                list.innerHTML = '<div class="empty-state" style="width:100%;">暂无匹配见证</div>';
-                return;
-            }
-            list.innerHTML = filtered.map(t => `
-            <div class="testimonial-item" onclick="openDetail('testimonial', ${t.id})">
-              <div class="testimonial-thumb">
-                ${t.imageUrl ? `<img src="${t.imageUrl}" alt="${t.title}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\'></i>'">` : '<i class="fa-solid fa-image"></i>'}
-              </div>
-              <div class="testimonial-info">
-                <h4>${t.title}</h4>
-                <p>${t.description}</p>
-                <div class="testimonial-meta">
-                  <span class="testimonial-cat">${t.category}</span>
-                  <span>${t.date || ''}</span>
-                  <span>${t.clientName || ''}</span>
-                </div>
-              </div>
-            </div>
-          `).join('');
-        }
-
-        // ── 课程卖点 ──
-        function renderCourses() {
-            const catTabs = document.getElementById('catTabs');
-            const allCats = ['全部', ...db.courseCategories];
-            catTabs.innerHTML = allCats.map(c => `
-            <button class="cat-tab ${currentCategory === c ? 'active' : ''}" onclick="setCategory('${c}')">${c}</button>
-          `).join('');
-
-            let filtered = db.courses.filter(c => c.module === '课程卖点');
-            if (currentCategory !== '全部') filtered = filtered.filter(c => c.category === currentCategory);
-            if (searchQuery) filtered = filtered.filter(c => c.title.includes(searchQuery) || c.description.includes(
-                searchQuery) || c.category.includes(searchQuery));
-
-            const list = document.getElementById('testimonialList');
-            if (filtered.length === 0) {
-                list.innerHTML = '<div class="empty-state" style="width:100%;">暂无匹配内容</div>';
-                return;
-            }
-            list.innerHTML = filtered.map(c => `
-            <div class="testimonial-item" onclick="openDetail('course', ${c.id})">
-              <div class="testimonial-thumb">
-                ${c.imageUrl ? `<img src="${c.imageUrl}" alt="${c.title}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\'></i>'">` : '<i class="fa-solid fa-graduation-cap"></i>'}
-              </div>
-              <div class="testimonial-info">
-                <h4>${c.title}</h4>
-                <p>${c.description}</p>
-                <div class="testimonial-meta">
-                  <span class="testimonial-cat">${c.category}</span>
-                  <span>${c.date || ''}</span>
-                </div>
-              </div>
-            </div>
-          `).join('');
-        }
-
-        function setCategory(c) {
-            currentCategory = c;
-            if (currentModule === '客户见证') renderTestimonials();
-            if (currentModule === '课程卖点') renderCourses();
-        }
-
-        // ── 搜索 ──
-        function toggleSearch() {
-            const wrap = document.getElementById('searchInputWrap');
-            const input = document.getElementById('searchInput');
-            if (wrap.classList.contains('open')) {
-                closeSearch();
-            } else {
-                wrap.classList.add('open');
-                setTimeout(() => input.focus(), 200);
-            }
-        }
-
-        function closeSearch() {
-            document.getElementById('searchInputWrap').classList.remove('open');
-            document.getElementById('searchInput').value = '';
-            searchQuery = '';
-            renderSubPage();
-        }
-
-        function doSearch() {
-            searchQuery = document.getElementById('searchInput').value.trim();
-            renderSubPage();
-        }
-
-        // ── 详情弹窗 ──
-        function openDetail(type, id) {
-            let item;
-            if (type === 'testimonial') item = db.testimonials.find(t => t.id === id);
-            if (type === 'course') item = db.courses.find(c => c.id === id);
-            if (!item) return;
-
-            const content = document.getElementById('detailContent');
-            content.innerHTML = `
-            ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.title}" onerror="this.style.display='none'">` : ''}
-            <h3>${item.title}</h3>
-            <p style="color:#888;font-size:0.75rem;letter-spacing:0.08em;margin-bottom:8px;">
-              ${item.category || ''} ${item.date ? '· ' + item.date : ''} ${item.clientName ? '· ' + item.clientName : ''}
-            </p>
-            <p>${item.description}</p>
-          `;
-            document.getElementById('detailOverlay').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeDetail(e) {
-            if (e && e.target !== document.getElementById('detailOverlay')) return;
-            document.getElementById('detailOverlay').classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        // ═══════════ 键盘快捷键 ═══════════
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeDetail();
-                if (document.getElementById('searchInputWrap').classList.contains('open')) {
-                    closeSearch();
-                }
-            }
-            // Ctrl+K 或 / 触发搜索
-            if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && !e.ctrlKey && document.activeElement === document
-                    .body)) {
-                e.preventDefault();
-                if (currentModule) toggleSearch();
-            }
-        });
-
-        // ═══════════ 监听storage同步 ═══════════
-        window.addEventListener('storage', function(e) {
-            if (e.key === DATA_KEY && e.newValue) {
-                try {
-                    db = JSON.parse(e.newValue);
-                    if (currentModule) {
-                        renderSubPage();
-                    }
-                    renderHome();
-                } catch (err) {}
-            }
-        });
-
-        // ═══════════ 初始化 ═══════════
-        function init() {
-            renderHome();
-            // 检查URL参数，支持直接跳转
-            const params = new URLSearchParams(window.location.search);
-            const mod = params.get('module');
-            if (mod && db.modules.includes(mod)) {
-                openModule(mod);
-            }
-        }
-
-        window.onload = init;
-    </script>
+      // 初始化
+      renderHome();
+      document.getElementById('toast').style.transition = '0.3s';
+    })();
+  </script>
 </body>
 </html>
