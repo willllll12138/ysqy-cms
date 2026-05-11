@@ -199,28 +199,76 @@
                 clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1500); 
             }
 
-            // ── 全局复制函数（使用 data-copy 属性）──
-            function initCopyButtons() {
-                document.body.addEventListener('click', function(e) {
-                    const btn = e.target.closest('.copy-btn');
-                    if (!btn) return;
-                    const text = btn.getAttribute('data-copy');
-                    if (text) {
-                        navigator.clipboard.writeText(text).then(() => {
-                            toast('已复制 ✓');
-                        }).catch(() => {
-                            // 降级方案
-                            const textarea = document.createElement('textarea');
-                            textarea.value = text;
-                            document.body.appendChild(textarea);
-                            textarea.select();
-                            document.execCommand('copy');
-                            document.body.removeChild(textarea);
-                            toast('已复制 ✓');
-                        });
-                    }
-                });
+            // ── 全局复制功能（基于 data-copy 属性）──
+            document.body.addEventListener('click', function(e) {
+                const btn = e.target.closest('.copy-btn');
+                if (!btn) return;
+                const text = btn.getAttribute('data-copy');
+                if (text) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        toast('已复制 ✓');
+                    }).catch(() => {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = text;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        toast('已复制 ✓');
+                    });
+                }
+            });
+
+            // ── URL Hash 状态管理 ──
+            function updateHash() {
+                if (!currentModule) {
+                    history.replaceState(null, '', ' ');
+                    return;
+                }
+                const parts = [encodeURIComponent(currentModule)];
+                if (currentAngle && currentAngle !== '全部') parts.push('angle=' + encodeURIComponent(currentAngle));
+                if (currentCategory && currentCategory !== '全部') parts.push('cat=' + encodeURIComponent(currentCategory));
+                if (searchQuery) parts.push('q=' + encodeURIComponent(searchQuery));
+                history.replaceState(null, '', '#' + parts.join('&'));
             }
+
+            function restoreFromHash() {
+                const hash = location.hash.substring(1);
+                if (!hash) return false;
+                const parts = hash.split('&');
+                let module = null, angle = '全部', cat = '全部', q = '';
+                for (const part of parts) {
+                    if (part.includes('=')) {
+                        const [key, val] = part.split('=');
+                        if (key === 'angle') angle = decodeURIComponent(val);
+                        else if (key === 'cat') cat = decodeURIComponent(val);
+                        else if (key === 'q') q = decodeURIComponent(val);
+                    } else {
+                        module = decodeURIComponent(part);
+                    }
+                }
+                if (module && db.modules.includes(module)) {
+                    currentModule = module;
+                    currentAngle = angle;
+                    currentCategory = cat;
+                    searchQuery = q;
+                    document.getElementById('searchInput').value = q;
+                    if (q) document.getElementById('searchInputWrap').classList.add('open');
+                    document.getElementById('homeView').style.display = 'none';
+                    document.getElementById('subView').style.display = 'block';
+                    document.getElementById('subTitle').textContent = module;
+                    renderSubPage();
+                    return true;
+                }
+                return false;
+            }
+
+            // 监听浏览器前进/后退
+            window.addEventListener('popstate', function() {
+                if (!restoreFromHash()) {
+                    goHome(true);
+                }
+            });
 
             // 渲染首页模块
             function renderHome(){
@@ -242,12 +290,19 @@
                 document.getElementById('homeView').style.display='none';
                 document.getElementById('subView').style.display='block';
                 document.getElementById('subTitle').textContent=m;
-                renderSubPage(); window.scrollTo(0,0);
+                renderSubPage(); 
+                updateHash();
+                window.scrollTo(0,0);
             };
-            window.goHome=function(){
+
+            window.goHome=function(silent){
+                // silent 参数用于避免重复写入历史记录
+                currentModule=null;
                 document.getElementById('subView').style.display='none';
                 document.getElementById('homeView').style.display='block';
-                currentModule=null; renderHome(); window.scrollTo(0,0);
+                renderHome(); 
+                if (!silent) updateHash();
+                window.scrollTo(0,0);
             };
 
             function renderSubPage(){
@@ -262,6 +317,7 @@
                 if(isMoments) renderMoments();
                 if(isTest) renderTestimonials();
                 if(isCourse) renderCourses();
+                updateHash();
             }
 
             function renderMoments(){
@@ -277,7 +333,6 @@
                     const lines=p.text.split('\n');
                     const truncated=lines.length>4;
                     const displayText=truncated?lines.slice(0,4).join('\n')+'...':p.text;
-                    // 安全转义用于 data-copy 的文本（将换行保留，但不破坏属性）
                     const copyText = p.text.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
                     return `<div class="copy-card">
                         <div class="copy-text${truncated?' truncated':''}" id="text-${p.id}">${displayText.replace(/\n/g,'<br>')}
@@ -303,7 +358,11 @@
                 }
             };
 
-            window.setAngle=function(a){ currentAngle=a; renderMoments(); };
+            window.setAngle=function(a){ 
+                currentAngle=a; 
+                renderMoments(); 
+                updateHash();
+            };
 
             function renderMediaHTML(item){
                 if(item.videoUrl&&item.videoUrl.trim()){
@@ -359,7 +418,12 @@
                 }).join('');
             }
 
-            window.setCategory=function(c){ currentCategory=c; if(currentModule==='客户见证') renderTestimonials(); else if(currentModule==='课程卖点') renderCourses(); };
+            window.setCategory=function(c){ 
+                currentCategory=c; 
+                if(currentModule==='客户见证') renderTestimonials(); 
+                else if(currentModule==='课程卖点') renderCourses(); 
+                updateHash();
+            };
 
             window.toggleSearch=function(){
                 const wrap=document.getElementById('searchInputWrap');
@@ -368,9 +432,13 @@
             window.closeSearch=function(){
                 document.getElementById('searchInputWrap').classList.remove('open');
                 document.getElementById('searchInput').value='';
-                searchQuery=''; renderSubPage();
+                searchQuery=''; 
+                renderSubPage();
             };
-            window.doSearch=function(){ searchQuery=document.getElementById('searchInput').value.trim(); renderSubPage(); };
+            window.doSearch=function(){ 
+                searchQuery=document.getElementById('searchInput').value.trim(); 
+                renderSubPage(); 
+            };
 
             window.openLightbox=function(img,video){
                 const lb=document.getElementById('lightbox');
@@ -424,9 +492,10 @@
                 }
             });
 
-            // 启动
-            initCopyButtons();
-            renderHome();
+            // 启动：先尝试从 hash 恢复，否则显示首页
+            if (!restoreFromHash()) {
+                renderHome();
+            }
         })();
     </script>
 </body>
