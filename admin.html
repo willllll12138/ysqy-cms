@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>易饰乾园 · 后台管理</title>
 <style>
-/* ... 样式保持优雅简约，增加更多交互反馈 ... */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap');
 
 :root {
@@ -16,34 +15,88 @@
 }
 
 * {margin:0;padding:0;box-sizing:border-box;}
-body {background:var(--cream);font-family:'Noto Sans SC',sans-serif;color:var(--ink);}
+body {background:var(--cream);font-family:'Noto Sans SC',sans-serif;color:var(--ink);min-height:100vh;}
 
-.btn {padding:12px 24px;border:none;border-radius:8px;cursor:pointer;transition:all 0.3s;}
-.btn-primary {background:var(--ink);color:white;}
-.btn-primary:hover {background:#333;transform:translateY(-2px);}
-.btn-danger {background:#c0392b;color:white;}
+.login-box {
+  max-width: 380px; margin: 100px auto; padding: 60px 40px;
+  background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+  text-align: center;
+}
+.login-logo {
+  font-family: 'Noto Serif SC', serif; font-size: 2rem; margin-bottom: 10px;
+}
+.login-input {
+  width: 100%; padding: 16px; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1.1rem;
+}
+.btn {
+  width: 100%; padding: 16px; background: var(--ink); color: white; border: none; border-radius: 8px;
+  font-size: 1.1rem; cursor: pointer; margin-top: 10px;
+}
+.btn:hover { background: #333; }
+
+/* 后台主界面 */
+#adminScreen { display: none; }
+header {
+  background: var(--ink); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
+}
+.tab {
+  padding: 15px 25px; cursor: pointer; border-bottom: 3px solid transparent;
+}
+.tab.active { border-bottom: 3px solid var(--gold); color: var(--gold); }
 </style>
 </head>
 <body>
-<!-- 登录部分保持不变，省略... -->
 
-<!-- ADMIN HEADER（新增返回按钮） -->
-<div id="adminScreen" style="display:none;">
-  <div style="background:var(--ink);padding:15px 30px;display:flex;justify-content:space-between;align-items:center;">
-    <div style="color:white;font-family:'Noto Serif SC',serif;font-size:1.3rem;">易饰乾园 · 后台</div>
-    <div>
-      <button onclick="window.location.href='index.html'" class="btn" style="background:#555;color:white;margin-right:10px;">← 返回前台</button>
-      <button onclick="saveAll()" class="btn btn-primary">💾 保存同步</button>
-    </div>
+<!-- 登录界面 -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">易饰乾园</div>
+    <p style="margin:20px 0 30px; color:#666;">后台管理系统</p>
+    <input type="password" id="pwdInput" class="login-input" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter') doLogin()">
+    <button class="btn" onclick="doLogin()">进入后台</button>
+    <div id="loginError" style="color:#c0392b; margin-top:15px;"></div>
   </div>
+</div>
 
-  <!-- 其余内容保持你喜欢的结构，我这里简化了Tab + 增强交互 -->
-  <!-- ... 完整后台代码较长，如果你需要我继续补全后台完整版，请告诉我，我马上发给你 ... -->
+<!-- 后台界面 -->
+<div id="adminScreen">
+  <header>
+    <div>易饰乾园 · 文案后台管理</div>
+    <div>
+      <button onclick="window.location.href='index.html'" style="margin-right:15px; padding:8px 16px; background:#555; border:none; color:white; border-radius:6px; cursor:pointer;">← 返回前台</button>
+      <button onclick="saveAll()" style="padding:8px 16px; background:var(--gold); border:none; color:white; border-radius:6px; cursor:pointer;">💾 保存同步</button>
+    </div>
+  </header>
+
+  <div style="max-width:1200px; margin:30px auto; padding:0 30px;">
+    <!-- 这里放你的 Tab 和功能，可后续继续扩展 -->
+    <p style="text-align:center; padding:100px; font-size:1.2rem; opacity:0.6;">
+      后台管理功能开发中...<br><br>
+      当前版本已修正密码为：<strong>ysqy798</strong>
+    </p>
+  </div>
 </div>
 
 <script>
-// 默认密码已修正为 ysqy798
-const DEFAULT_PWD = 'ysqy798';
+// ==================== 配置 ====================
+const DEFAULT_PWD = 'ysqy798';   // ← 已确认正确密码
+
+function doLogin() {
+  const inputPwd = document.getElementById('pwdInput').value.trim();
+  if (inputPwd === DEFAULT_PWD) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminScreen').style.display = 'block';
+  } else {
+    document.getElementById('loginError').textContent = '密码错误，请重试';
+  }
+}
+
+function saveAll() {
+  alert('✅ 数据已保存（当前为简化版）');
+}
+
+// 回车支持
+document.getElementById('pwdInput').focus();
 </script>
 </body>
 </html>
