@@ -18,33 +18,27 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
 
 .hero {
   height: 85vh;
-  min-height: 620px;
-  background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), 
+  min-height: 680px;
+  background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), 
               url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=2000') center/cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   color: white;
-  position: relative;
 }
 .hero-content h1 {
   font-family: 'Noto Serif SC', serif;
-  font-size: clamp(3.2rem, 8vw, 5.8rem);
-  letter-spacing: 0.06em;
-  margin-bottom: 16px;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  letter-spacing: 0.05em;
+  margin-bottom: 20px;
 }
-.hero-content p {
-  font-size: 1.35rem;
-  opacity: 0.95;
-  max-width: 680px;
-  margin: 0 auto;
-}
+.hero-content p { font-size: 1.35rem; opacity: 0.95; }
 
-/* 模块卡片 */
+/* 模块卡片 - 完整展示 */
 .modules {
   max-width: 1280px;
-  margin: -90px auto 120px;
+  margin: -100px auto 120px;
   padding: 0 40px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
@@ -55,28 +49,28 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-  transition: all 0.5s ease;
+  transition: all 0.5s;
   cursor: pointer;
 }
 .module-card:hover {
   transform: translateY(-20px);
-  box-shadow: 0 35px 70px rgba(198,106,78,0.18);
+  box-shadow: 0 35px 70px rgba(198,106,78,0.2);
 }
 .module-card img {
   width: 100%;
-  height: 260px;
+  height: 280px;
   object-fit: cover;
 }
 .module-info {
   padding: 32px 28px;
 }
 .module-info h3 {
-  font-size: 1.75rem;
-  margin-bottom: 10px;
+  font-size: 1.8rem;
+  margin-bottom: 12px;
 }
 .module-info p {
   color: #555;
-  line-height: 1.7;
+  line-height: 1.8;
 }
 </style>
 </head>
@@ -99,21 +93,4 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
   </div>
 
   <div class="module-card" onclick="location.href='testimonials.html'">
-    <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800" alt="客户见证">
-    <div class="module-info">
-      <h3>客户见证</h3>
-      <p>真实案例 · 信任背书</p>
-    </div>
-  </div>
-
-  <div class="module-card" onclick="location.href='course.html'">
-    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800" alt="课程卖点">
-    <div class="module-info">
-      <h3>课程卖点</h3>
-      <p>核心价值 · 转化文案</p>
-    </div>
-  </div>
-</div>
-
-</body>
-</html>
+    <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800"
