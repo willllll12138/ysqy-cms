@@ -112,6 +112,7 @@
     </style>
 </head>
 <body>
+    <!-- 首页视图 -->
     <div id="homeView">
         <div class="container">
             <header class="hero">
@@ -124,6 +125,7 @@
         </div>
     </div>
 
+    <!-- 二级页面视图 -->
     <div id="subView" style="display:none;">
         <div class="container">
             <div class="sub-header">
@@ -147,18 +149,22 @@
         </div>
     </div>
 
+    <!-- 管理后台入口 -->
     <a href="admin.html" class="admin-float" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
 
+    <!-- 灯箱（图片/视频放大） -->
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
         <span class="close-lightbox" onclick="closeLightbox()">&times;</span>
         <div id="lightboxContent"></div>
     </div>
+    <!-- 详情弹窗 -->
     <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)">
         <div class="detail-modal" id="detailModal" onclick="event.stopPropagation()">
             <span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span>
             <div id="detailContent"></div>
         </div>
     </div>
+    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
@@ -184,11 +190,39 @@
             };
             let db = JSON.parse(localStorage.getItem(DATA_KEY) || 'null');
             if(!db||!db.modules){ db=JSON.parse(JSON.stringify(DEFAULT_DATA)); localStorage.setItem(DATA_KEY,JSON.stringify(db)); }
-            let currentModule=null,currentAngle='全部',currentCategory='全部',searchQuery='';
+            let currentModule=null, currentAngle='全部', currentCategory='全部', searchQuery='';
 
             function save(){ localStorage.setItem(DATA_KEY,JSON.stringify(db)); }
-            function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1500); }
+            function toast(msg){ 
+                const t=document.getElementById('toast'); 
+                t.textContent=msg; t.classList.add('show'); 
+                clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1500); 
+            }
 
+            // ── 全局复制函数（使用 data-copy 属性）──
+            function initCopyButtons() {
+                document.body.addEventListener('click', function(e) {
+                    const btn = e.target.closest('.copy-btn');
+                    if (!btn) return;
+                    const text = btn.getAttribute('data-copy');
+                    if (text) {
+                        navigator.clipboard.writeText(text).then(() => {
+                            toast('已复制 ✓');
+                        }).catch(() => {
+                            // 降级方案
+                            const textarea = document.createElement('textarea');
+                            textarea.value = text;
+                            document.body.appendChild(textarea);
+                            textarea.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(textarea);
+                            toast('已复制 ✓');
+                        });
+                    }
+                });
+            }
+
+            // 渲染首页模块
             function renderHome(){
                 const grid=document.getElementById('moduleGrid');
                 const icons={'朋友圈':'fa-pen-to-square','客户见证':'fa-comments','课程卖点':'fa-graduation-cap'};
@@ -225,31 +259,36 @@
                 document.getElementById('catTabs').style.display=(isTest||isCourse)?'flex':'none';
                 document.getElementById('cardGrid').style.display=isMoments?'grid':'none';
                 document.getElementById('testimonialList').style.display=(isTest||isCourse)?'flex':'none';
-                if(isMoments)renderMoments();
-                if(isTest)renderTestimonials();
-                if(isCourse)renderCourses();
+                if(isMoments) renderMoments();
+                if(isTest) renderTestimonials();
+                if(isCourse) renderCourses();
             }
 
             function renderMoments(){
                 const angleBar=document.getElementById('angleBar');
                 angleBar.innerHTML=['全部',...db.angles].map(a=>`<span class="angle-pill ${currentAngle===a?'active':''}" onclick="setAngle('${a}')">${a}</span>`).join('');
                 let filtered=db.posts.filter(p=>p.module==='朋友圈');
-                if(currentAngle!=='全部')filtered=filtered.filter(p=>p.angle===currentAngle);
-                if(searchQuery)filtered=filtered.filter(p=>p.text.includes(searchQuery)||p.angle.includes(searchQuery));
+                if(currentAngle!=='全部') filtered=filtered.filter(p=>p.angle===currentAngle);
+                if(searchQuery) filtered=filtered.filter(p=>p.text.includes(searchQuery)||p.angle.includes(searchQuery));
                 const grid=document.getElementById('cardGrid');
                 if(!filtered.length){grid.innerHTML='<div class="empty-state">暂无文案</div>';return;}
+
                 grid.innerHTML=filtered.map(p=>{
                     const lines=p.text.split('\n');
                     const truncated=lines.length>4;
                     const displayText=truncated?lines.slice(0,4).join('\n')+'...':p.text;
+                    // 安全转义用于 data-copy 的文本（将换行保留，但不破坏属性）
+                    const copyText = p.text.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
                     return `<div class="copy-card">
                         <div class="copy-text${truncated?' truncated':''}" id="text-${p.id}">${displayText.replace(/\n/g,'<br>')}
                         ${truncated?`<span class="expand-btn" onclick="event.stopPropagation();toggleExpand('text-${p.id}','${p.text.replace(/\n/g,'\\n').replace(/'/g,"\\'")}')">展开全文</span>`:''}
                         </div>
-                        <div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" onclick="copyText('${p.text.replace(/\n/g,'\\n').replace(/'/g,"\\'")}')"><i class="fa-regular fa-clone"></i> 复制</span></div>
+                        <div class="card-meta">
+                            <span># ${p.angle}</span>
+                            <span class="copy-btn" data-copy="${copyText}"><i class="fa-regular fa-clone"></i> 复制</span>
+                        </div>
                     </div>`;
                 }).join('');
-                window.copyText=function(t){navigator.clipboard.writeText(t.replace(/\\n/g,'\n')).then(()=>toast('已复制 ✓'));};
             }
 
             window.toggleExpand=function(id,fullText){
@@ -264,7 +303,7 @@
                 }
             };
 
-            window.setAngle=function(a){currentAngle=a;renderMoments();};
+            window.setAngle=function(a){ currentAngle=a; renderMoments(); };
 
             function renderMediaHTML(item){
                 if(item.videoUrl&&item.videoUrl.trim()){
@@ -280,52 +319,58 @@
                 const catTabs=document.getElementById('catTabs');
                 catTabs.innerHTML=['全部',...db.testimonialCategories].map(c=>`<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
                 let filtered=db.testimonials.filter(t=>t.module==='客户见证');
-                if(currentCategory!=='全部')filtered=filtered.filter(t=>t.category===currentCategory);
-                if(searchQuery)filtered=filtered.filter(t=>t.title.includes(searchQuery)||t.description.includes(searchQuery));
+                if(currentCategory!=='全部') filtered=filtered.filter(t=>t.category===currentCategory);
+                if(searchQuery) filtered=filtered.filter(t=>t.title.includes(searchQuery)||t.description.includes(searchQuery));
                 const list=document.getElementById('testimonialList');
                 if(!filtered.length){list.innerHTML='<div class="empty-state">暂无见证</div>';return;}
-                list.innerHTML=filtered.map(t=>`
-                    <div class="testimonial-item" onclick="openDetail('testimonial',${t.id})">
+
+                list.innerHTML=filtered.map(t=>{
+                    const copyText = (t.title + '\n' + t.description).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    return `<div class="testimonial-item" onclick="openDetail('testimonial',${t.id})">
                         <div class="testimonial-thumb" onclick="event.stopPropagation();openLightbox('${t.imageUrl||''}','${t.videoUrl||''}')">${renderMediaHTML(t)}</div>
                         <div class="testimonial-info">
-                            <h4>${t.title} <span class="copy-btn" onclick="event.stopPropagation();copyText('${t.title+'\\n'+t.description}')"><i class="fa-regular fa-clone"></i></span></h4>
+                            <h4>${t.title} <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();"><i class="fa-regular fa-clone"></i></span></h4>
                             <p>${t.description}</p>
                             <div class="testimonial-meta"><span class="testimonial-cat">${t.category}</span> ${t.date||''} ${t.clientName||''}</div>
                         </div>
-                    </div>`).join('');
+                    </div>`;
+                }).join('');
             }
 
             function renderCourses(){
                 const catTabs=document.getElementById('catTabs');
                 catTabs.innerHTML=['全部',...db.courseCategories].map(c=>`<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
                 let filtered=db.courses.filter(c=>c.module==='课程卖点');
-                if(currentCategory!=='全部')filtered=filtered.filter(c=>c.category===currentCategory);
-                if(searchQuery)filtered=filtered.filter(c=>c.title.includes(searchQuery)||c.description.includes(searchQuery));
+                if(currentCategory!=='全部') filtered=filtered.filter(c=>c.category===currentCategory);
+                if(searchQuery) filtered=filtered.filter(c=>c.title.includes(searchQuery)||c.description.includes(searchQuery));
                 const list=document.getElementById('testimonialList');
                 if(!filtered.length){list.innerHTML='<div class="empty-state">暂无内容</div>';return;}
-                list.innerHTML=filtered.map(c=>`
-                    <div class="testimonial-item" onclick="openDetail('course',${c.id})">
+
+                list.innerHTML=filtered.map(c=>{
+                    const copyText = (c.title + '\n' + c.description).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    return `<div class="testimonial-item" onclick="openDetail('course',${c.id})">
                         <div class="testimonial-thumb" onclick="event.stopPropagation();openLightbox('${c.imageUrl||''}','${c.videoUrl||''}')">${renderMediaHTML(c)}</div>
                         <div class="testimonial-info">
-                            <h4>${c.title} <span class="copy-btn" onclick="event.stopPropagation();copyText('${c.title+'\\n'+c.description}')"><i class="fa-regular fa-clone"></i></span></h4>
+                            <h4>${c.title} <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();"><i class="fa-regular fa-clone"></i></span></h4>
                             <p>${c.description}</p>
                             <div class="testimonial-meta"><span class="testimonial-cat">${c.category}</span> ${c.date||''}</div>
                         </div>
-                    </div>`).join('');
+                    </div>`;
+                }).join('');
             }
 
-            window.setCategory=function(c){currentCategory=c;if(currentModule==='客户见证')renderTestimonials();else if(currentModule==='课程卖点')renderCourses();};
+            window.setCategory=function(c){ currentCategory=c; if(currentModule==='客户见证') renderTestimonials(); else if(currentModule==='课程卖点') renderCourses(); };
 
             window.toggleSearch=function(){
                 const wrap=document.getElementById('searchInputWrap');
-                if(wrap.classList.contains('open')){closeSearch();}else{wrap.classList.add('open');setTimeout(()=>document.getElementById('searchInput').focus(),200);}
+                if(wrap.classList.contains('open')){ closeSearch(); }else{ wrap.classList.add('open'); setTimeout(()=>document.getElementById('searchInput').focus(),200); }
             };
             window.closeSearch=function(){
                 document.getElementById('searchInputWrap').classList.remove('open');
                 document.getElementById('searchInput').value='';
                 searchQuery=''; renderSubPage();
             };
-            window.doSearch=function(){searchQuery=document.getElementById('searchInput').value.trim();renderSubPage();};
+            window.doSearch=function(){ searchQuery=document.getElementById('searchInput').value.trim(); renderSubPage(); };
 
             window.openLightbox=function(img,video){
                 const lb=document.getElementById('lightbox');
@@ -334,44 +379,53 @@
                     content.innerHTML=`<iframe src="${video}" frameborder="0" allowfullscreen style="width:80vw;height:60vh;"></iframe>`;
                 }else if(img){
                     content.innerHTML=`<img src="${img}" onerror="this.style.display='none';this.parentElement.innerHTML='<p style=color:#fff>图片加载失败</p>'">`;
-                }else{return;}
+                }else return;
                 lb.classList.add('open');
             };
-            window.closeLightbox=function(){document.getElementById('lightbox').classList.remove('open');};
+            window.closeLightbox=function(){ document.getElementById('lightbox').classList.remove('open'); };
 
             window.openDetail=function(type,id){
                 let item;
-                if(type==='testimonial')item=db.testimonials.find(t=>t.id===id);
-                if(type==='course')item=db.courses.find(c=>c.id===id);
-                if(!item)return;
+                if(type==='testimonial') item=db.testimonials.find(t=>t.id===id);
+                if(type==='course') item=db.courses.find(c=>c.id===id);
+                if(!item) return;
                 const content=document.getElementById('detailContent');
+                const copyText = (item.title + '\n' + item.description).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
                 content.innerHTML=`
                     ${item.videoUrl?`<iframe src="${item.videoUrl}" frameborder="0" allowfullscreen style="width:100%;height:300px;"></iframe>`:
                     (item.imageUrl?`<img src="${item.imageUrl}" style="width:100%;border-radius:12px;" onclick="openLightbox('${item.imageUrl}','')">`:'')}
                     <h3 style="margin:16px 0 8px;">${item.title}</h3>
                     <p style="color:#888;font-size:0.8rem;">${item.category||''} ${item.date||''} ${item.clientName||''}</p>
                     <p style="white-space:pre-wrap;line-height:1.8;">${item.description}</p>
-                    <button class="copy-btn" onclick="copyText('${item.title+'\\n'+item.description}')"><i class="fa-regular fa-clone"></i> 复制文案</button>
+                    <button class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();"><i class="fa-regular fa-clone"></i> 复制文案</button>
                 `;
                 document.getElementById('detailOverlay').classList.add('open');
                 document.body.style.overflow='hidden';
             };
             window.closeDetail=function(e){
-                if(e&&e.target!==document.getElementById('detailOverlay'))return;
+                if(e && e.target !== document.getElementById('detailOverlay')) return;
                 document.getElementById('detailOverlay').classList.remove('open');
                 document.body.style.overflow='';
             };
-            window.copyText=function(t){navigator.clipboard.writeText(t.replace(/\\n/g,'\n')).then(()=>toast('已复制 ✓'));};
 
+            // 监听 storage 同步
             window.addEventListener('storage',(e)=>{
-                if(e.key===DATA_KEY&&e.newValue){
+                if(e.key===DATA_KEY && e.newValue){
                     db=JSON.parse(e.newValue);
-                    if(currentModule)renderSubPage();
+                    if(currentModule) renderSubPage();
                     renderHome();
                 }
             });
 
-            document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();closeLightbox();}});
+            document.addEventListener('keydown',e=>{
+                if(e.key==='Escape'){
+                    closeDetail();
+                    closeLightbox();
+                }
+            });
+
+            // 启动
+            initCopyButtons();
             renderHome();
         })();
     </script>
