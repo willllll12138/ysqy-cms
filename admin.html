@@ -1,911 +1,365 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>易饰乾园 · 后台管理</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap');
-
-:root {
-  --ink: #0e0b08;
-  --gold: #b8832a;
-  --gold2: #d4a84b;
-  --goldl: #f2dfa0;
-  --cream: #f9f4ec;
-  --warm: #ede3ce;
-  --mist: #ddd4c0;
-  --char: #2a2318;
-  --rust: #7a3520;
-  --sage: #4a6040;
-  --steel: #3a4a5a;
-  --rose: #7a3040;
-  --danger: #c0392b;
-}
-
-*{margin:0;padding:0;box-sizing:border-box;}
-body{
-  background:var(--cream);
-  font-family:'Noto Sans SC',sans-serif;
-  color:var(--ink);min-height:100vh;
-}
-
-/* ── LOGIN SCREEN ── */
-#loginScreen{
-  min-height:100vh;display:flex;
-  align-items:center;justify-content:center;
-  background:var(--ink);
-  position:relative;overflow:hidden;
-}
-#loginScreen::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 30% 50%,rgba(184,131,42,.15),transparent 55%),
-              radial-gradient(ellipse at 80% 20%,rgba(184,131,42,.08),transparent 50%);
-}
-.login-box{
-  position:relative;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(184,131,42,.25);
-  padding:48px 44px;
-  width:100%;max-width:380px;
-  text-align:center;
-}
-.login-logo{
-  font-family:'Noto Serif SC',serif;
-  font-size:1.3rem;font-weight:900;
-  color:#fff;letter-spacing:.12em;margin-bottom:6px;
-}
-.login-logo em{color:var(--gold2);font-style:normal;}
-.login-sub{
-  font-size:.62rem;letter-spacing:.25em;
-  color:rgba(255,255,255,.3);margin-bottom:36px;
-}
-.login-label{
-  font-size:.62rem;letter-spacing:.2em;
-  color:rgba(255,255,255,.45);
-  display:block;text-align:left;margin-bottom:8px;
-}
-.login-input{
-  width:100%;padding:11px 16px;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(184,131,42,.25);
-  color:#fff;font-size:.85rem;
-  font-family:inherit;outline:none;
-  transition:border-color .2s;letter-spacing:.05em;
-  margin-bottom:20px;
-}
-.login-input:focus{border-color:var(--gold);}
-.login-input::placeholder{color:rgba(255,255,255,.2);}
-.login-btn{
-  width:100%;padding:12px;
-  background:var(--gold);color:var(--ink);
-  border:none;font-size:.78rem;letter-spacing:.2em;
-  font-weight:500;cursor:pointer;font-family:inherit;
-  transition:background .2s;
-}
-.login-btn:hover{background:var(--gold2);}
-.login-error{
-  margin-top:14px;font-size:.7rem;
-  color:#e08080;letter-spacing:.1em;min-height:20px;
-}
-.login-separator{
-  margin:28px 0 20px;
-  border:none;border-top:1px solid rgba(184,131,42,.15);
-}
-.login-change-pwd{
-  font-size:.62rem;color:rgba(255,255,255,.3);
-  letter-spacing:.12em;cursor:pointer;
-  background:none;border:none;font-family:inherit;
-  transition:color .2s;
-}
-.login-change-pwd:hover{color:var(--gold);}
-
-/* ── ADMIN LAYOUT ── */
-#adminScreen{display:none;}
-
-.admin-header{
-  background:var(--ink);padding:0 28px;
-  display:flex;align-items:center;justify-content:space-between;
-  height:56px;position:sticky;top:0;z-index:200;
-  border-bottom:1px solid rgba(184,131,42,.2);
-}
-.admin-logo{
-  font-family:'Noto Serif SC',serif;
-  font-size:.95rem;font-weight:700;
-  color:#fff;letter-spacing:.1em;
-}
-.admin-logo em{color:var(--gold2);font-style:normal;}
-.header-actions{display:flex;gap:10px;align-items:center;}
-.hbtn{
-  padding:6px 14px;font-size:.62rem;letter-spacing:.12em;
-  cursor:pointer;font-family:inherit;transition:all .18s;
-  white-space:nowrap;
-}
-.hbtn-outline{
-  border:1px solid rgba(184,131,42,.35);
-  background:none;color:rgba(255,255,255,.5);
-}
-.hbtn-outline:hover{border-color:var(--gold);color:var(--gold);}
-.hbtn-gold{
-  background:var(--gold);border:none;
-  color:var(--ink);font-weight:500;
-}
-.hbtn-gold:hover{background:var(--gold2);}
-.hbtn-danger{
-  border:1px solid rgba(192,57,43,.4);
-  background:none;color:rgba(192,57,43,.6);
-}
-.hbtn-danger:hover{border-color:var(--danger);color:var(--danger);}
-
-/* STATUS BAR */
-.status-bar{
-  background:var(--char);padding:8px 28px;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:8px;
-}
-.status-text{font-size:.65rem;color:rgba(255,255,255,.4);letter-spacing:.12em;}
-.status-dot{
-  width:7px;height:7px;border-radius:50%;
-  display:inline-block;margin-right:6px;
-}
-.dot-green{background:#4a9a4a;}
-.dot-yellow{background:#c4a030;}
-.dot-red{background:var(--danger);}
-
-/* MAIN AREA */
-.admin-main{
-  max-width:1200px;margin:0 auto;
-  padding:28px 24px 80px;
-}
-
-/* SECTION TITLE */
-.sec-title{
-  font-family:'Noto Serif SC',serif;
-  font-size:.9rem;font-weight:700;
-  letter-spacing:.08em;margin-bottom:16px;
-  padding-bottom:12px;
-  border-bottom:1px solid var(--mist);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.sec-badge{
-  font-size:.6rem;letter-spacing:.15em;
-  color:var(--gold);background:#fdf7ec;
-  padding:3px 10px;font-weight:400;
-  font-family:'Noto Sans SC',sans-serif;
-}
-
-/* ADD FORM */
-.add-card{
-  background:white;border:1px solid var(--mist);
-  padding:24px;margin-bottom:32px;
-  position:relative;overflow:hidden;
-}
-.add-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--gold),var(--goldl));
-}
-.form-grid{
-  display:grid;grid-template-columns:1fr 1fr 1fr;
-  gap:14px;margin-bottom:14px;
-}
-.form-group{display:flex;flex-direction:column;gap:6px;}
-.form-label{font-size:.62rem;letter-spacing:.18em;color:#888;}
-.form-input,.form-select,.form-textarea{
-  padding:9px 12px;border:1px solid var(--mist);
-  background:var(--cream);font-size:.82rem;
-  font-family:inherit;color:var(--ink);
-  outline:none;transition:border-color .2s;
-}
-.form-input:focus,.form-select:focus,.form-textarea:focus{
-  border-color:var(--gold);background:white;
-}
-.form-textarea{
-  width:100%;min-height:140px;resize:vertical;
-  line-height:1.9;letter-spacing:.02em;
-}
-.form-hint{font-size:.58rem;color:#bbb;letter-spacing:.08em;margin-top:4px;}
-.btn-add{
-  padding:10px 28px;background:var(--ink);
-  color:var(--gold2);border:none;
-  font-size:.7rem;letter-spacing:.18em;
-  cursor:pointer;font-family:inherit;
-  transition:background .2s;
-}
-.btn-add:hover{background:var(--char);}
-.btn-add:disabled{opacity:.5;cursor:not-allowed;}
-
-/* POST LIST */
-.post-list{display:flex;flex-direction:column;gap:12px;}
-
-.post-item{
-  background:white;border:1px solid var(--mist);
-  position:relative;overflow:hidden;
-  transition:box-shadow .2s;
-}
-.post-item:hover{box-shadow:0 4px 16px rgba(0,0,0,.07);}
-
-.post-stripe{height:2px;}
-.s-gold .post-stripe{background:linear-gradient(90deg,var(--gold),var(--goldl));}
-.s-rust .post-stripe{background:linear-gradient(90deg,var(--rust),#c06040);}
-.s-sage .post-stripe{background:linear-gradient(90deg,var(--sage),#7a9a70);}
-.s-steel .post-stripe{background:linear-gradient(90deg,var(--steel),#6a8aaa);}
-.s-rose .post-stripe{background:linear-gradient(90deg,var(--rose),#b06080);}
-.s-char .post-stripe{background:linear-gradient(90deg,var(--char),#6a6050);}
-
-.post-head{
-  padding:14px 18px 10px;
-  display:flex;align-items:center;
-  justify-content:space-between;gap:12px;
-}
-.post-meta{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
-.post-no{
-  font-family:'Noto Serif SC',serif;
-  font-size:.75rem;font-weight:700;color:var(--mist);
-  flex-shrink:0;
-}
-.post-angle-badge{
-  font-size:.58rem;letter-spacing:.15em;padding:2px 8px;
-  flex-shrink:0;
-}
-.s-gold .post-angle-badge{color:var(--gold);background:#fdf7ec;}
-.s-rust .post-angle-badge{color:var(--rust);background:#fdf0ec;}
-.s-sage .post-angle-badge{color:var(--sage);background:#eff5ef;}
-.s-steel .post-angle-badge{color:var(--steel);background:#eff3f7;}
-.s-rose .post-angle-badge{color:var(--rose);background:#fdeef2;}
-.s-char .post-angle-badge{color:var(--char);background:#f2f0ec;}
-
-.post-struct-text{
-  font-size:.58rem;color:#bbb;
-  letter-spacing:.06em;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.post-actions{display:flex;gap:6px;flex-shrink:0;}
-.pbtn{
-  font-size:.6rem;letter-spacing:.1em;
-  padding:4px 10px;cursor:pointer;
-  font-family:inherit;transition:all .18s;border:1px solid var(--mist);
-  background:none;color:#aaa;
-}
-.pbtn:hover{border-color:var(--gold);color:var(--gold);}
-.pbtn-del:hover{border-color:var(--danger);color:var(--danger);}
-.pbtn-up,.pbtn-dn{padding:4px 8px;}
-
-.post-body{
-  padding:0 18px 14px;
-  font-size:.83rem;line-height:2;
-  color:var(--char);font-weight:300;
-  letter-spacing:.02em;
-  border-top:1px solid #f5f0e8;
-  margin-top:4px;padding-top:12px;
-}
-
-/* EDIT INLINE */
-.post-edit-area{
-  padding:14px 18px;
-  border-top:1px solid #f0ebe0;
-  background:#fdf9f3;
-  display:none;
-}
-.post-edit-area.open{display:block;}
-.edit-grid{
-  display:grid;grid-template-columns:1fr 1fr 1fr;
-  gap:10px;margin-bottom:10px;
-}
-.edit-textarea{
-  width:100%;min-height:120px;resize:vertical;
-  padding:9px 12px;border:1px solid var(--mist);
-  background:white;font-size:.82rem;
-  font-family:inherit;color:var(--ink);
-  outline:none;transition:border-color .2s;
-  line-height:1.9;margin-bottom:10px;
-}
-.edit-textarea:focus{border-color:var(--gold);}
-.edit-actions{display:flex;gap:8px;}
-.btn-save{
-  padding:7px 20px;background:var(--ink);
-  color:var(--gold2);border:none;font-size:.65rem;
-  letter-spacing:.15em;cursor:pointer;font-family:inherit;
-}
-.btn-cancel-edit{
-  padding:7px 16px;border:1px solid var(--mist);
-  background:none;color:#aaa;font-size:.65rem;
-  letter-spacing:.12em;cursor:pointer;font-family:inherit;
-}
-
-/* MODAL */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.55);
-  z-index:500;display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .22s;
-}
-.modal-overlay.open{opacity:1;pointer-events:auto;}
-.modal{
-  background:white;padding:36px;width:100%;max-width:420px;
-  position:relative;
-  transform:translateY(16px);transition:transform .22s;
-}
-.modal-overlay.open .modal{transform:translateY(0);}
-.modal-title{
-  font-family:'Noto Serif SC',serif;
-  font-size:1rem;font-weight:700;margin-bottom:20px;
-  letter-spacing:.06em;
-}
-.modal-label{
-  font-size:.62rem;letter-spacing:.18em;color:#888;
-  display:block;margin-bottom:6px;
-}
-.modal-input{
-  width:100%;padding:10px 14px;border:1px solid var(--mist);
-  background:var(--cream);font-size:.85rem;
-  font-family:inherit;color:var(--ink);outline:none;
-  transition:border-color .2s;margin-bottom:14px;
-}
-.modal-input:focus{border-color:var(--gold);}
-.modal-actions{display:flex;gap:10px;margin-top:6px;}
-.mbtn-primary{
-  flex:1;padding:10px;background:var(--ink);color:var(--gold2);
-  border:none;font-size:.7rem;letter-spacing:.15em;
-  cursor:pointer;font-family:inherit;
-}
-.mbtn-secondary{
-  padding:10px 18px;border:1px solid var(--mist);
-  background:none;color:#888;font-size:.7rem;
-  letter-spacing:.12em;cursor:pointer;font-family:inherit;
-}
-.modal-error{font-size:.68rem;color:var(--danger);letter-spacing:.1em;min-height:18px;}
-
-/* SEARCH FILTER */
-.filter-bar{
-  display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;
-}
-.filter-input{
-  flex:1;min-width:200px;padding:8px 14px;
-  border:1px solid var(--mist);background:white;
-  font-size:.78rem;font-family:inherit;color:var(--ink);
-  outline:none;transition:border-color .2s;
-}
-.filter-input:focus{border-color:var(--gold);}
-.filter-select{
-  padding:8px 12px;border:1px solid var(--mist);background:white;
-  font-size:.75rem;font-family:inherit;color:var(--ink);
-  outline:none;cursor:pointer;
-}
-
-/* TOAST */
-.toast{
-  position:fixed;bottom:24px;left:50%;
-  transform:translateX(-50%) translateY(14px);
-  background:var(--ink);color:#fff;
-  padding:9px 22px;font-size:.7rem;letter-spacing:.1em;
-  opacity:0;transition:all .22s;pointer-events:none;z-index:999;
-}
-.toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
-
-/* SAVING INDICATOR */
-.saving-badge{
-  font-size:.6rem;letter-spacing:.15em;
-  color:rgba(255,255,255,.4);
-  animation:pulse 1s infinite;
-}
-@keyframes pulse{0%,100%{opacity:.4;}50%{opacity:1;}}
-
-@media(max-width:680px){
-  .form-grid,.edit-grid{grid-template-columns:1fr;}
-  .admin-main{padding:20px 14px 60px;}
-  .admin-header{padding:0 14px;}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>易饰乾园 · 后台管理</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #F9F7F2;
+            --card-bg: #fff;
+            --ink: #1a1815;
+            --gold: #b8832a;
+            --border: #e0dbd0;
+            --radius: 12px;
+            --font-serif: 'Noto Serif SC', serif;
+            --font-sans: 'Noto Sans SC', sans-serif;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--bg);
+            font-family: var(--font-sans);
+            color: var(--ink);
+            padding: 24px;
+        }
+        .admin-container { max-width:900px; margin:0 auto; }
+        h1 { font-family: var(--font-serif); font-size:1.8rem; margin-bottom:24px; text-align:center; }
+        .login-box { max-width:360px; margin:80px auto; background:#fff; padding:32px; border-radius:var(--radius); box-shadow:0 4px 20px rgba(0,0,0,0.05); }
+        .login-box input { width:100%; padding:12px; margin:12px 0; border:1px solid var(--border); border-radius:8px; }
+        .btn { background:var(--ink); color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-family:inherit; }
+        .btn:hover { opacity:0.9; }
+        .section { background:var(--card-bg); border-radius:var(--radius); padding:20px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.03); }
+        .section h2 { font-size:1.1rem; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+        .tag-list { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+        .tag { background:#f0ede5; padding:4px 12px; border-radius:20px; font-size:0.8rem; display:flex; align-items:center; gap:4px; }
+        .tag i { cursor:pointer; color:#b33; }
+        .form-inline { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+        .form-inline input, .form-inline select { padding:8px 12px; border:1px solid var(--border); border-radius:8px; font-family:inherit; }
+        table { width:100%; border-collapse:collapse; margin-top:12px; }
+        th, td { text-align:left; padding:8px 6px; border-bottom:1px solid #eee; font-size:0.85rem; }
+        .action-icons i { margin:0 4px; cursor:pointer; color:#888; }
+        .action-icons i:hover { color:var(--gold); }
+        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 24px; border-radius:30px; font-size:0.8rem; opacity:0; transition:0.3s; z-index:999; }
+        .toast.show { opacity:1; }
+        @media(max-width:600px) {
+            body { padding:12px; }
+        }
+    </style>
 </head>
 <body>
-
-<!-- ── LOGIN ── -->
-<div id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">易饰乾园 · <em>后台</em></div>
-    <div class="login-sub">ADMIN PANEL · 文案管理系统</div>
-    <label class="login-label">管理员密码</label>
-    <input class="login-input" type="password" id="pwdInput"
-      placeholder="请输入密码" onkeydown="if(event.key==='Enter')doLogin()"/>
-    <button class="login-btn" onclick="doLogin()">进入后台</button>
-    <div class="login-error" id="loginError"></div>
-    <hr class="login-separator"/>
-    <button class="login-change-pwd" onclick="showChangePwdModal()">🔑 忘记密码 / 修改密码</button>
-  </div>
-</div>
-
-<!-- ── ADMIN ── -->
-<div id="adminScreen">
-
-  <div class="admin-header">
-    <div class="admin-logo">易饰乾园 · <em>文案后台</em></div>
-    <div class="header-actions">
-      <span class="saving-badge" id="savingBadge" style="display:none">⟳ 同步中…</span>
-      <button class="hbtn hbtn-outline" onclick="window.open('index.html','_blank')">↗ 查看前台</button>
-      <button class="hbtn hbtn-outline" onclick="showChangePwdModal()">🔑 修改密码</button>
-      <button class="hbtn hbtn-gold" onclick="saveAll()">☁ 保存全部</button>
-      <button class="hbtn hbtn-danger" onclick="doLogout()">退出</button>
-    </div>
-  </div>
-
-  <div class="status-bar">
-    <div class="status-text">
-      <span class="status-dot" id="statusDot"></span>
-      <span id="statusText">就绪</span>
-    </div>
-    <div class="status-text">共 <strong id="countText">0</strong> 条文案</div>
-  </div>
-
-  <div class="admin-main">
-
-    <!-- ADD -->
-    <div class="sec-title">
-      新增文案
-      <span class="sec-badge">ADD NEW</span>
-    </div>
-    <div class="add-card">
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">编号 NO.</label>
-          <input class="form-input" id="fNo" placeholder="如 31"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">角度分类</label>
-          <select class="form-select" id="fAngle">
-            <option value="数字冲击">📊 数字冲击</option>
-            <option value="旁观者视角">👁 旁观者视角</option>
-            <option value="预言式">🔮 预言式</option>
-            <option value="对话还原">💬 对话还原</option>
-            <option value="时间轴">⏳ 时间轴</option>
-            <option value="选择题">🎯 选择题</option>
-            <option value="内幕揭秘">🔓 内幕揭秘</option>
-            <option value="反常识">⚡ 反常识</option>
-            <option value="学员故事">📖 学员故事</option>
-            <option value="身体感知">🫀 身体感知</option>
-            <option value="追问式">❓ 追问式</option>
-            <option value="画面描写">🎬 画面描写</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">卡片颜色</label>
-          <select class="form-select" id="fScheme">
-            <option value="s-gold">金色 (金/黄)</option>
-            <option value="s-rust">锈红</option>
-            <option value="s-sage">松绿</option>
-            <option value="s-steel">钢蓝</option>
-            <option value="s-rose">玫红</option>
-            <option value="s-char">炭灰</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group" style="margin-bottom:10px;">
-        <label class="form-label">结构说明（选填）</label>
-        <input class="form-input" id="fStruct" placeholder="如：数据开场→场景反差→结论落地"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">文案内容（每行用回车换行）</label>
-        <textarea class="form-textarea" id="fText"
-          placeholder="第一行文案&#10;第二行文案&#10;第三行文案&#10;…"></textarea>
-        <div class="form-hint">每行对应发圈一句，建议 6 行，每行不超过 20 字</div>
-      </div>
-      <button class="btn-add" id="addBtn" onclick="addPost()">＋ 添加文案</button>
+    <div id="loginScreen" class="login-box">
+        <h2 style="text-align:center;">🔐 管理员验证</h2>
+        <input type="password" id="pwdInput" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter')login()">
+        <button class="btn" onclick="login()" style="width:100%;">进入后台</button>
+        <p id="loginError" style="color:#c33;font-size:0.8rem;margin-top:8px;"></p>
     </div>
 
-    <!-- LIST -->
-    <div class="sec-title" style="margin-top:8px;">
-      文案列表
-      <div style="display:flex;gap:10px;align-items:center;">
-        <span class="sec-badge" id="listBadge">共 0 条</span>
-      </div>
+    <div id="adminMain" style="display:none;" class="admin-container">
+        <h1>⚙️ 易饰乾园 · 库管理中心</h1>
+
+        <!-- 模块管理 -->
+        <div class="section">
+            <h2><i class="fa-solid fa-cubes"></i> 模块管理</h2>
+            <div class="tag-list" id="moduleTags"></div>
+            <div class="form-inline">
+                <input type="text" id="newModule" placeholder="新模块名称">
+                <button class="btn" onclick="addModule()">添加模块</button>
+            </div>
+        </div>
+
+        <!-- 角度管理 -->
+        <div class="section">
+            <h2><i class="fa-solid fa-tags"></i> 角度管理</h2>
+            <div class="tag-list" id="angleTags"></div>
+            <div class="form-inline">
+                <input type="text" id="newAngle" placeholder="新角度名称">
+                <button class="btn" onclick="addAngle()">添加角度</button>
+            </div>
+        </div>
+
+        <!-- 见证分类 -->
+        <div class="section">
+            <h2><i class="fa-solid fa-folder-tree"></i> 客户见证分类</h2>
+            <div class="tag-list" id="testCatTags"></div>
+            <div class="form-inline">
+                <input type="text" id="newTestCat" placeholder="新分类">
+                <button class="btn" onclick="addTestCat()">添加分类</button>
+            </div>
+        </div>
+
+        <!-- 课程分类 -->
+        <div class="section">
+            <h2><i class="fa-solid fa-graduation-cap"></i> 课程卖点分类</h2>
+            <div class="tag-list" id="courseCatTags"></div>
+            <div class="form-inline">
+                <input type="text" id="newCourseCat" placeholder="新分类">
+                <button class="btn" onclick="addCourseCat()">添加分类</button>
+            </div>
+        </div>
+
+        <!-- 朋友圈发布 -->
+        <div class="section">
+            <h2>📝 发布朋友圈文案</h2>
+            <div class="form-inline" style="margin-bottom:8px;">
+                <select id="pubAngle"></select>
+            </div>
+            <textarea id="pubText" rows="4" placeholder="文案内容，换行表示新的一段…" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-family:inherit;"></textarea>
+            <button class="btn" onclick="publishPost()" style="margin-top:8px;">发布文案</button>
+        </div>
+
+        <!-- 客户见证管理 -->
+        <div class="section">
+            <h2>🖼️ 客户见证管理</h2>
+            <table>
+                <thead><tr><th>标题</th><th>分类</th><th>操作</th></tr></thead>
+                <tbody id="testTableBody"></tbody>
+            </table>
+            <details style="margin-top:12px;">
+                <summary style="cursor:pointer;">➕ 新增/编辑见证</summary>
+                <div class="form-inline" style="margin-top:8px;flex-direction:column;align-items:flex-start;">
+                    <select id="editTestCat" style="margin-bottom:6px;"></select>
+                    <input type="text" id="editTestTitle" placeholder="标题" style="margin-bottom:6px;">
+                    <input type="text" id="editTestImage" placeholder="图片URL（可留空）" style="margin-bottom:6px;">
+                    <input type="text" id="editTestVideo" placeholder="视频URL（YouTube嵌入链接或MP4）" style="margin-bottom:6px;">
+                    <textarea id="editTestDesc" rows="3" placeholder="描述文字" style="width:100%;margin-bottom:6px;"></textarea>
+                    <input type="text" id="editTestClient" placeholder="客户名称（选填）" style="margin-bottom:6px;">
+                    <input type="text" id="editTestDate" placeholder="日期（如2024-05-15）">
+                    <input type="hidden" id="editTestId">
+                    <button class="btn" onclick="saveTestimonial()">保存见证</button>
+                </div>
+            </details>
+        </div>
+
+        <!-- 课程管理 -->
+        <div class="section">
+            <h2>📚 课程卖点管理</h2>
+            <table>
+                <thead><tr><th>标题</th><th>分类</th><th>操作</th></tr></thead>
+                <tbody id="courseTableBody"></tbody>
+            </table>
+            <details style="margin-top:12px;">
+                <summary style="cursor:pointer;">➕ 新增/编辑课程</summary>
+                <div class="form-inline" style="margin-top:8px;flex-direction:column;align-items:flex-start;">
+                    <select id="editCourseCat" style="margin-bottom:6px;"></select>
+                    <input type="text" id="editCourseTitle" placeholder="标题" style="margin-bottom:6px;">
+                    <input type="text" id="editCourseImage" placeholder="图片URL" style="margin-bottom:6px;">
+                    <input type="text" id="editCourseVideo" placeholder="视频URL" style="margin-bottom:6px;">
+                    <textarea id="editCourseDesc" rows="3" placeholder="描述" style="width:100%;margin-bottom:6px;"></textarea>
+                    <input type="text" id="editCourseDate" placeholder="日期">
+                    <input type="hidden" id="editCourseId">
+                    <button class="btn" onclick="saveCourse()">保存课程</button>
+                </div>
+            </details>
+        </div>
     </div>
 
-    <div class="filter-bar">
-      <input class="filter-input" placeholder="搜索文案内容或角度…" oninput="filterList(this.value)"/>
-      <select class="filter-select" onchange="filterAngle(this.value)">
-        <option value="">全部角度</option>
-        <option value="数字冲击">数字冲击</option>
-        <option value="旁观者视角">旁观者视角</option>
-        <option value="预言式">预言式</option>
-        <option value="对话还原">对话还原</option>
-        <option value="时间轴">时间轴</option>
-        <option value="选择题">选择题</option>
-        <option value="内幕揭秘">内幕揭秘</option>
-        <option value="反常识">反常识</option>
-        <option value="学员故事">学员故事</option>
-        <option value="身体感知">身体感知</option>
-        <option value="追问式">追问式</option>
-        <option value="画面描写">画面描写</option>
-      </select>
-    </div>
+    <div class="toast" id="toast"></div>
 
-    <div class="post-list" id="postList"></div>
-  </div>
-</div>
+    <script>
+        const DATA_KEY = 'ysqy_data_v3';
+        const ADMIN_PWD = 'ysqy798';
+        let db = JSON.parse(localStorage.getItem(DATA_KEY) || 'null') || {
+            modules: ['朋友圈','客户见证','课程卖点'],
+            angles: ['数字冲击','对话还原','情绪唤醒','场景反差'],
+            testimonialCategories: ['文昌','沙龙','成交'],
+            courseCategories: ['核心价值','课程亮点'],
+            posts: [],
+            testimonials: [],
+            courses: []
+        };
 
-<!-- ── CHANGE PASSWORD MODAL ── -->
-<div class="modal-overlay" id="pwdModal">
-  <div class="modal">
-    <div class="modal-title">🔑 修改管理密码</div>
-    <label class="modal-label">当前密码</label>
-    <input class="modal-input" type="password" id="mOldPwd" placeholder="输入当前密码"/>
-    <label class="modal-label">新密码</label>
-    <input class="modal-input" type="password" id="mNewPwd" placeholder="输入新密码（至少6位）"/>
-    <label class="modal-label">确认新密码</label>
-    <input class="modal-input" type="password" id="mConfPwd" placeholder="再次输入新密码"/>
-    <div class="modal-error" id="pwdModalError"></div>
-    <div class="modal-actions">
-      <button class="mbtn-secondary" onclick="closePwdModal()">取消</button>
-      <button class="mbtn-primary" onclick="changePassword()">确认修改</button>
-    </div>
-  </div>
-</div>
+        function save() {
+            localStorage.setItem(DATA_KEY, JSON.stringify(db));
+            window.dispatchEvent(new StorageEvent('storage', {key:DATA_KEY, newValue:JSON.stringify(db)}));
+        }
 
-<!-- ── DELETE CONFIRM MODAL ── -->
-<div class="modal-overlay" id="delModal">
-  <div class="modal">
-    <div class="modal-title">⚠ 确认删除</div>
-    <p style="font-size:.82rem;line-height:1.8;color:#666;margin-bottom:20px;">
-      删除后无法恢复，请确认是否要删除这条文案？
-    </p>
-    <div class="modal-actions">
-      <button class="mbtn-secondary" onclick="closeDelModal()">取消</button>
-      <button class="mbtn-primary" style="background:var(--danger);" onclick="confirmDelete()">确认删除</button>
-    </div>
-  </div>
-</div>
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2000);
+        }
 
-<div class="toast" id="toast"></div>
+        function login() {
+            if (document.getElementById('pwdInput').value === ADMIN_PWD) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminMain').style.display = 'block';
+                renderAll();
+            } else {
+                document.getElementById('loginError').textContent = '密码错误';
+            }
+        }
 
-<script>
-// ── JSONBin 配置（与 index.html 保持一致）──
-const BIN_ID   = 'JSONBIN_BIN_ID';
-const API_KEY  = 'JSONBIN_API_KEY';
-const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+        function renderAll() {
+            renderTags('moduleTags', db.modules, 'module');
+            renderTags('angleTags', db.angles, 'angle');
+            renderTags('testCatTags', db.testimonialCategories, 'testCat');
+            renderTags('courseCatTags', db.courseCategories, 'courseCat');
+            document.getElementById('pubAngle').innerHTML = db.angles.map(a => `<option>${a}</option>`).join('');
+            renderTestTable();
+            renderCourseTable();
+            document.getElementById('editTestCat').innerHTML = db.testimonialCategories.map(c => `<option>${c}</option>`).join('');
+            document.getElementById('editCourseCat').innerHTML = db.courseCategories.map(c => `<option>${c}</option>`).join('');
+        }
 
-// ── 密码存储 key ──
-const PWD_KEY  = 'ysqy_admin_pwd';
-const DATA_KEY = 'ysqy_posts';
-const DEFAULT_PWD = 'ysqy798';
+        function renderTags(containerId, arr, type) {
+            document.getElementById(containerId).innerHTML = arr.map(item =>
+                `<span class="tag">${item} <i class="fa-solid fa-xmark" onclick="removeItem('${type}','${item}')"></i></span>`
+            ).join('');
+        }
 
-// ── 状态 ──
-let posts = [];
-let deleteTargetIdx = -1;
-let filterQ = '';
-let filterA = '';
-let isLoggedIn = false;
+        function addItem(type, inputId) {
+            const val = document.getElementById(inputId).value.trim();
+            if (!val) return;
+            const arr = type === 'module' ? db.modules : type === 'angle' ? db.angles : type === 'testCat' ? db.testimonialCategories : db.courseCategories;
+            if (arr.includes(val)) { toast('已存在'); return; }
+            arr.push(val);
+            save(); renderAll(); document.getElementById(inputId).value = '';
+        }
+        function removeItem(type, val) {
+            const arr = type === 'module' ? db.modules : type === 'angle' ? db.angles : type === 'testCat' ? db.testimonialCategories : db.courseCategories;
+            const idx = arr.indexOf(val);
+            if (idx > -1) { arr.splice(idx,1); save(); renderAll(); }
+        }
 
-// ════════════════════════
-//   AUTH
-// ════════════════════════
-function getPwd() {
-  return localStorage.getItem(PWD_KEY) || DEFAULT_PWD;
-}
+        window.addModule = () => addItem('module','newModule');
+        window.addAngle = () => addItem('angle','newAngle');
+        window.addTestCat = () => addItem('testCat','newTestCat');
+        window.addCourseCat = () => addItem('courseCat','newCourseCat');
 
-function doLogin() {
-  const val = document.getElementById('pwdInput').value.trim();
-  if (!val) { showLoginErr('请输入密码'); return; }
-  if (val !== getPwd()) { showLoginErr('密码错误，请重试'); return; }
-  isLoggedIn = true;
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('adminScreen').style.display = 'block';
-  loadData();
-}
+        function publishPost() {
+            const angle = document.getElementById('pubAngle').value;
+            const text = document.getElementById('pubText').value.trim();
+            if (!text) return;
+            db.posts.push({ id: Date.now(), module:'朋友圈', angle, text, time: Date.now() });
+            save(); document.getElementById('pubText').value = ''; toast('已发布');
+        }
 
-function doLogout() {
-  isLoggedIn = false;
-  document.getElementById('adminScreen').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('pwdInput').value = '';
-  document.getElementById('loginError').textContent = '';
-}
+        function renderTestTable() {
+            const tbody = document.getElementById('testTableBody');
+            tbody.innerHTML = db.testimonials.map((t,i) => `
+                <tr>
+                    <td>${t.title}</td><td>${t.category}</td>
+                    <td class="action-icons">
+                        <i class="fa-solid fa-pen" onclick="editTestimonial(${i})"></i>
+                        <i class="fa-solid fa-trash" onclick="deleteTestimonial(${i})"></i>
+                    </td>
+                </tr>`).join('');
+        }
 
-function showLoginErr(msg) {
-  const el = document.getElementById('loginError');
-  el.textContent = msg;
-  setTimeout(() => el.textContent = '', 3000);
-}
+        function renderCourseTable() {
+            const tbody = document.getElementById('courseTableBody');
+            tbody.innerHTML = db.courses.map((c,i) => `
+                <tr>
+                    <td>${c.title}</td><td>${c.category}</td>
+                    <td class="action-icons">
+                        <i class="fa-solid fa-pen" onclick="editCourse(${i})"></i>
+                        <i class="fa-solid fa-trash" onclick="deleteCourse(${i})"></i>
+                    </td>
+                </tr>`).join('');
+        }
 
-// ── Change Password Modal ──
-function showChangePwdModal() {
-  document.getElementById('mOldPwd').value = '';
-  document.getElementById('mNewPwd').value = '';
-  document.getElementById('mConfPwd').value = '';
-  document.getElementById('pwdModalError').textContent = '';
-  document.getElementById('pwdModal').classList.add('open');
-}
-function closePwdModal() {
-  document.getElementById('pwdModal').classList.remove('open');
-}
-function changePassword() {
-  const old = document.getElementById('mOldPwd').value;
-  const nw  = document.getElementById('mNewPwd').value;
-  const cf  = document.getElementById('mConfPwd').value;
-  const err = document.getElementById('pwdModalError');
+        function clearTestForm() {
+            document.getElementById('editTestId').value = '';
+            document.getElementById('editTestTitle').value = '';
+            document.getElementById('editTestImage').value = '';
+            document.getElementById('editTestVideo').value = '';
+            document.getElementById('editTestDesc').value = '';
+            document.getElementById('editTestClient').value = '';
+            document.getElementById('editTestDate').value = '';
+        }
 
-  // 在登录界面用此功能时，跳过旧密码校验
-  if (isLoggedIn && old !== getPwd()) {
-    err.textContent = '当前密码不正确'; return;
-  }
-  if (!isLoggedIn && old !== getPwd()) {
-    err.textContent = '当前密码不正确'; return;
-  }
-  if (nw.length < 6) { err.textContent = '新密码至少6位'; return; }
-  if (nw !== cf) { err.textContent = '两次输入不一致'; return; }
+        window.editTestimonial = function(idx) {
+            const t = db.testimonials[idx];
+            document.getElementById('editTestId').value = idx;
+            document.getElementById('editTestCat').value = t.category;
+            document.getElementById('editTestTitle').value = t.title;
+            document.getElementById('editTestImage').value = t.imageUrl || '';
+            document.getElementById('editTestVideo').value = t.videoUrl || '';
+            document.getElementById('editTestDesc').value = t.description;
+            document.getElementById('editTestClient').value = t.clientName || '';
+            document.getElementById('editTestDate').value = t.date || '';
+        };
 
-  localStorage.setItem(PWD_KEY, nw);
-  closePwdModal();
-  toast('密码已修改 ✓');
-}
+        window.saveTestimonial = function() {
+            const idx = document.getElementById('editTestId').value;
+            const data = {
+                module: '客户见证',
+                category: document.getElementById('editTestCat').value,
+                title: document.getElementById('editTestTitle').value.trim(),
+                imageUrl: document.getElementById('editTestImage').value.trim(),
+                videoUrl: document.getElementById('editTestVideo').value.trim(),
+                description: document.getElementById('editTestDesc').value.trim(),
+                clientName: document.getElementById('editTestClient').value.trim(),
+                date: document.getElementById('editTestDate').value.trim()
+            };
+            if (!data.title || !data.description) return toast('标题和描述必填');
+            if (idx === '') {
+                data.id = Date.now();
+                db.testimonials.push(data);
+            } else {
+                db.testimonials[idx] = { ...db.testimonials[idx], ...data };
+            }
+            save(); renderAll(); clearTestForm(); toast('已保存');
+        };
 
-// ════════════════════════
-//   DATA LOAD / SAVE
-// ════════════════════════
-const DEFAULT_DATA = [
-  {no:'01',angle:'数字冲击',scheme:'s-gold',struct:'数据开场→场景反差→结论落地',text:`同样做室内设计，收入差距能有10倍 📊\n靠颜感做方案的，改稿改到怀疑人生\n靠五行色彩做方案的，签单当天就定\n区别不在于谁更努力、谁更有品味\n而在于那套判断客户的底层工具 🎯\n有这个工具的人，和没有的人，不同命`},
-  {no:'02',angle:'数字冲击',scheme:'s-gold',struct:'数字开篇→递进放大→情绪钉子',text:`10个客户说"再想想"，9个再也没回来 😮\n这个比例，很多设计师心里清楚\n但从来没有去想过为什么\n他在说"再想想"的那一刻\n其实已经替你做了一个决定了 🔑\n五行色彩秒懂客户，这才是真正的破局 🔥`},
-  {no:'03',angle:'数字冲击',scheme:'s-gold',struct:'时间数字→对比落差→钩子收尾',text:`学了三年设计，卖了两年方案 📐\n换来的是："能不能再便宜一点"\n有人入行一年，客户主动加价签单\n同一个市场，同样的产品线\n差距怎么来的，值得停下来想一想 🤔\n文化时代赋能百业，说的就是这件事 💎`},
-  {no:'04',angle:'旁观者视角',scheme:'s-rust',struct:'第三人称引入→行为观察→留白钩子',text:`我见过一个设计师，报价是同行两倍 👀\n客户坐下来，她没急着翻方案\n先聊了十分钟，聊这个客户是什么人\n聊完了，客户自己问："什么时候开始？"\n旁边同事问她怎么做到的 🤔\n她说：我只是先把人看明白了而已 🧠`},
-  {no:'05',angle:'旁观者视角',scheme:'s-rust',struct:'观察场景→对比反差→身份感植入',text:`参加过一次易学圈的分享，旁听 👁\n台上一个学员说她开单的故事\n她说她现在看房子的眼光变了\n一进门，格局、气口、住的人的性格\n三件事叠在一起，一眼就能给出判断\n我当时坐在台下，说不出话来 🔥`},
-  {no:'06',angle:'预言式',scheme:'s-steel',struct:'趋势断言→时间锚点→稀缺制造',text:`文化营销这件事，三年后会是标配 🔮\n现在学的人，到时候已经跑在前面了\n现在觉得"再看看"的人\n到时候再入场，成本会高很多\n九运离火这扇窗，不会一直开着 🔥\n先进去的人，已经在布局了 💎`},
-  {no:'07',angle:'预言式',scheme:'s-steel',struct:'未来画面→当下对比→行动召唤',text:`两年后，你再看今天做的这个决定 ⏳\n要么会说：还好那时候去学了\n要么会说：早知道当初就去学了\n这两句话的差距，就是现在这一步\n易学全案精华班，学的是整体观 🧭\n从判断到布局到落地，每步有据 🔥`},
-  {no:'08',angle:'预言式',scheme:'s-steel',struct:'行业趋势预言→提前卡位逻辑',text:`有一类设计师，五年后会消失 😮\n靠审美做方案、靠降价留客户的那种\n因为客户越来越精，AI越来越强\n剩下来的，是真正懂人的那部分人 🧠\n懂客户的性格，懂空间的走向\n五行色彩和读像思维，正在做这件事 🔥`},
-  {no:'09',angle:'对话还原',scheme:'s-rose',struct:'真实对话场景→情绪共鸣→翻转落地',text:`客户上周说了一句话，我一直在想 💬\n她说："我看了很多设计师，感觉你懂我"\n我问她为什么这么说\n她说："别人都在说方案，你在说我的生活"\n那一刻我突然明白了 🔑\n五行色彩秒懂客户，教的就是这种眼光 👀`},
-  {no:'10',angle:'对话还原',scheme:'s-rose',struct:'内心对白还原→共情→拉出解法',text:`你有没有在见完客户之后，一个人坐在车里 😣\n反复想：哪里没说对、哪里可以更好\n改了五版方案，对方还是说"再考虑一下"\n那种感觉，不是累，是茫然 😔\n不知道问题出在哪，才是最难熬的\n精华班第三模块，就是帮你找到那个点 🎯`},
-  {no:'11',angle:'对话还原',scheme:'s-rose',struct:'客户原话引用→共鸣→产品植入',text:`一个学员跟我说，她有个习惯 💬\n每次见客户之前，先在脑子里过一遍\n这个人是什么五行，喜欢什么颜色\n他现在生活里卡在哪里\n然后见面了，她只需要把这些说出来\n客户眼睛会亮，然后主动问多少钱 💰`},
-  {no:'12',angle:'时间轴',scheme:'s-sage',struct:'过去→现在→未来三段递进',text:`以前接单，靠的是价格和熟人介绍 ⏳\n现在接单，靠的是口碑和内容流量\n未来接单，靠的是——你懂人、懂势、懂空间\n这三个字，是易学全案教的底层逻辑 🧭\n先懂人，才能谈方案\n先懂势，才知道往哪里走 🔥`},
-  {no:'13',angle:'时间轴',scheme:'s-sage',struct:'时间倒序→重新审视→认知翻转',text:`回头看三年前自己做的方案 📐\n那时候觉得审美好就够了\n后来发现，审美好只是入场券 🎨\n再后来才明白，留住客户靠的是读懂他\n再再后来学了五行色彩，才真正理解\n为什么有些人卖得好，有些人一直改稿 🔥`},
-  {no:'14',angle:'选择题',scheme:'s-char',struct:'选项呈现→结果分叉→身份引导',text:`做生意，其实只有两种走法 🎯\n第一种：一直找流量，一直在引客户\n第二种：把根扎下去，让客户主动来找\n前者越做越累，后者越做越稳 🌱\n文化营销+易学全案，走的是第二条路\n你现在走的是哪一条？ 🤔`},
-  {no:'15',angle:'选择题',scheme:'s-char',struct:'二选一框架→价值锚定→促行动',text:`学设计有两件事可以花时间 ⏳\n一件是打磨审美，一件是读懂人性\n审美好，你会有作品集\n读懂人性，你会有签单率 💰\n两件事都重要，但99%的人只做了一件\n精华班五行色彩那一块，是补那另一半 🔥`},
-  {no:'16',angle:'选择题',scheme:'s-char',struct:'三路分叉→最优解揭晓→卖压收尾',text:`做了生意没起色，一般有三条解法 🤔\n换赛道、降价格、或者搞清楚根在哪里\n前两条很多人都试过，代价也都清楚 😮\n第三条才是真正的解题方向 🌱\n用中国文化植入商业，解决经营根源\n这是精华班第四模块教的核心 💎`},
-  {no:'17',angle:'内幕揭秘',scheme:'s-gold',struct:'秘密感开场→信息差制造→价值落地',text:`那些签单顺的设计师，有件事没说 🔓\n见客户之前，他们已经知道对方要什么了\n不是靠经验，也不是靠运气猜的\n而是靠一套判断人的系统在看 👀\n五行一对，性格、需求、顾虑全出来\n这套东西，精华班第三模块有完整的讲 🧠`},
-  {no:'18',angle:'内幕揭秘',scheme:'s-gold',struct:'行业内幕→揭底→制造落差感',text:`跑赢文化营销这波的人，有个共性 🔓\n他们比别人早了一步知道九运的方向\n不是靠预测，靠的是时势的读懂能力\n文化时代来临，流量向有根有脉的人流 🌱\n那些突然爆单的同行，这是他们的秘密\n乘离火之势，就是精华班的第一课 🔥`},
-  {no:'19',angle:'反常识',scheme:'s-rust',struct:'打破常识→停顿留白→新认知植入',text:`做设计，拼命提升审美可能是弯路 ⚡\n客户从来没有用"审美"来选设计师\n他用的是"感觉对不对"、"懂不懂我" 🤔\n而这两件事，审美解决不了\n五行色彩才是那把真正的钥匙 🔑\n学完你就会明白，签单和美学没多大关系 💡`},
-  {no:'20',angle:'反常识',scheme:'s-rust',struct:'反直觉结论→论据支撑→延伸卖压',text:`生意做不起来，多数人觉得要多发内容 ⚡\n发了三个月，数据有了，钱还是没来\n真正让生意转顺的，很少靠发圈频次 🤔\n靠的是那个根有没有扎稳\n商业的根，比内容更底层\n为何而来，才是精华班要解决的第一个问题 🌱`},
-  {no:'21',angle:'反常识',scheme:'s-rust',struct:'悖论句式→认知冲突→解法给出',text:`有些人越学越多，越学越迷 😮\n越多方法，越不知道用哪个\n有些人只学了一套底层逻辑\n结果反而越做越清晰、越做越顺 ✨\n知识本身不是答案，框架才是\n易学全案精华班，给你的就是那个框架 🧠`},
-  {no:'22',angle:'学员故事',scheme:'s-sage',struct:'小人物切入→具体细节→结果反差',text:`学员里有个做了八年软装的姐姐 📖\n她说，以前见客户全靠状态好不好\n状态好就签，状态差就僵在那里\n学完五行色彩那一块之后，她说变了 🎨\n变的不是话术，是见人的眼光变了\n现在见客户，她说心里有底了 🔥`},
-  {no:'23',angle:'学员故事',scheme:'s-sage',struct:'时间跨度→转折点聚焦→普适性延伸',text:`有个学员，做了五年实体生意 📖\n前四年半，靠熟人维持，勉强不亏\n有半年学了易学的经营根源那一块\n她说那半年，她才第一次弄明白 🌱\n自己的生意为什么一直卡在那里\n不是环境的问题，是根的问题 💎`},
-  {no:'24',angle:'学员故事',scheme:'s-sage',struct:'对话金句→画面感→情感共鸣',text:`课上有人问老师一个问题 📖\n说为什么家里有钱了，但总是不安心\n老师没有直接回答，先问了他三个问题 🤔\n问完了，那个学员沉默了大概一分钟\n然后说："我现在知道哪里不对了"\n五行智慧助力五福，讲的就是这件事 🪷`},
-  {no:'25',angle:'身体感知',scheme:'s-rose',struct:'身体状态描写→情绪植入→共鸣引爆',text:`你有没有那种感觉 🫀\n走进一个客户的家，身体会有点紧\n说不出哪里不对，就是不舒服\n这种感觉不是气场这么玄\n是空间里的布局在说话，动线在说话\n学会读像，才知道那种感觉来自哪里 👀`},
-  {no:'26',angle:'身体感知',scheme:'s-rose',struct:'感官细节→情绪唤起→认知转化',text:`住进一个颜色不对的房间，会累 🎨\n睡醒了感觉没睡够，情绪一直压着\n很多人换了床垫、换了窗帘、换了灯\n就是找不到那个让人放松的感觉\n五行色彩告诉你，问题在颜色属性上 🧠\n适合你的色，才是真正的疗愈空间 ✨`},
-  {no:'27',angle:'追问式',scheme:'s-steel',struct:'连环追问→层层剥皮→核心落地',text:`你上一次接到主动找来的客户，是什么时候 ❓\n那次成交的核心原因，你说得出来吗\n如果那个原因可以被复制，你复制了吗 🤔\n大多数人的生意，好的时候说不清为什么好\n差的时候也说不清为什么差\n易学全案，帮你把这件事说清楚 🧠`},
-  {no:'28',angle:'追问式',scheme:'s-steel',struct:'问题叠加→情绪积压→解法出口',text:`做生意做到一半，突然停下来问自己 ❓\n我这条路，对吗\n我现在做的事，有根吗\n赚到的钱，留得住吗\n家里稳，业里也稳，这两件事可以同时吗 🪷\n为何而来，是精华班帮你回答的第一件事 🌱`},
-  {no:'29',angle:'画面描写',scheme:'s-char',struct:'电影镜头式开场→代入感→产品连接',text:`想象一个画面 🎬\n你走进一个新客户的家，环顾一圈\n心里已经有了方向：这家人需要什么\n不是猜的，是看出来的\n格局说话，色彩说话，动线说话\n读像思维，让你成为那个能读懂的人 👀`},
-  {no:'30',angle:'画面描写',scheme:'s-char',struct:'结果画面先行→倒推过程→行动钩子',text:`想象两年后的自己 🎬\n见客户不慌，开口就到点上\n方案不改三版，客户当场拍板\n家里和事业，同时都在往前走\n这个画面，不是想象出来的\n是一套东西学到位之后，自然发生的 💎`},
-];
+        window.deleteTestimonial = function(idx) {
+            if (!confirm('确认删除？')) return;
+            db.testimonials.splice(idx,1);
+            save(); renderAll();
+        };
 
-async function loadData() {
-  setStatus('loading', '加载中…');
-  if (BIN_ID === 'JSONBIN_BIN_ID') {
-    posts = JSON.parse(localStorage.getItem(DATA_KEY) || 'null') || DEFAULT_DATA;
-    setStatus('ok', '本地模式（未配置云端）');
-    renderList();
-    return;
-  }
-  try {
-    const res = await fetch(`${BASE_URL}/latest`, {
-      headers: { 'X-Master-Key': API_KEY }
-    });
-    if (!res.ok) throw new Error(res.status);
-    const json = await res.json();
-    posts = json.record.posts || DEFAULT_DATA;
-    setStatus('ok', '已从云端加载');
-  } catch(e) {
-    posts = JSON.parse(localStorage.getItem(DATA_KEY) || 'null') || DEFAULT_DATA;
-    setStatus('warn', '云端加载失败，显示本地缓存');
-  }
-  renderList();
-}
+        window.editCourse = function(idx) {
+            const c = db.courses[idx];
+            document.getElementById('editCourseId').value = idx;
+            document.getElementById('editCourseCat').value = c.category;
+            document.getElementById('editCourseTitle').value = c.title;
+            document.getElementById('editCourseImage').value = c.imageUrl || '';
+            document.getElementById('editCourseVideo').value = c.videoUrl || '';
+            document.getElementById('editCourseDesc').value = c.description;
+            document.getElementById('editCourseDate').value = c.date || '';
+        };
 
-async function saveAll() {
-  // 本地存储（始终执行）
-  localStorage.setItem(DATA_KEY, JSON.stringify(posts));
-  // 触发 index.html 的 storage 事件同步
-  window.dispatchEvent(new StorageEvent('storage', { key: DATA_KEY, newValue: JSON.stringify(posts) }));
+        window.saveCourse = function() {
+            const idx = document.getElementById('editCourseId').value;
+            const data = {
+                module: '课程卖点',
+                category: document.getElementById('editCourseCat').value,
+                title: document.getElementById('editCourseTitle').value.trim(),
+                imageUrl: document.getElementById('editCourseImage').value.trim(),
+                videoUrl: document.getElementById('editCourseVideo').value.trim(),
+                description: document.getElementById('editCourseDesc').value.trim(),
+                date: document.getElementById('editCourseDate').value.trim()
+            };
+            if (!data.title || !data.description) return toast('标题和描述必填');
+            if (idx === '') {
+                data.id = Date.now();
+                db.courses.push(data);
+            } else {
+                db.courses[idx] = { ...db.courses[idx], ...data };
+            }
+            save(); renderAll(); clearCourseForm(); toast('已保存');
+        };
 
-  if (BIN_ID === 'JSONBIN_BIN_ID') {
-    toast('已保存到本地 ✓（配置云端后可跨设备同步）');
-    return;
-  }
-  showSaving(true);
-  try {
-    const res = await fetch(BASE_URL, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Master-Key': API_KEY
-      },
-      body: JSON.stringify({ posts })
-    });
-    if (!res.ok) throw new Error(res.status);
-    setStatus('ok', '已同步到云端 ' + new Date().toLocaleTimeString());
-    toast('已保存并同步云端 ✓');
-  } catch(e) {
-    setStatus('warn', '云端保存失败，已保存本地');
-    toast('本地已保存，云端同步失败');
-  }
-  showSaving(false);
-}
+        function clearCourseForm() {
+            document.getElementById('editCourseId').value = '';
+            document.getElementById('editCourseTitle').value = '';
+            document.getElementById('editCourseImage').value = '';
+            document.getElementById('editCourseVideo').value = '';
+            document.getElementById('editCourseDesc').value = '';
+            document.getElementById('editCourseDate').value = '';
+        }
 
-// ════════════════════════
-//   CRUD
-// ════════════════════════
-function addPost() {
-  const no     = document.getElementById('fNo').value.trim();
-  const angle  = document.getElementById('fAngle').value;
-  const scheme = document.getElementById('fScheme').value;
-  const struct = document.getElementById('fStruct').value.trim();
-  const text   = document.getElementById('fText').value.trim();
+        window.deleteCourse = function(idx) {
+            if (!confirm('确认删除？')) return;
+            db.courses.splice(idx,1);
+            save(); renderAll();
+        };
 
-  if (!no)   { toast('请填写编号'); return; }
-  if (!text) { toast('请填写文案内容'); return; }
-
-  posts.push({ no, angle, scheme, struct, text });
-  saveAll();
-  renderList();
-  toast('文案已添加 ✓');
-
-  // 清空表单
-  document.getElementById('fNo').value = '';
-  document.getElementById('fStruct').value = '';
-  document.getElementById('fText').value = '';
-}
-
-function movePost(idx, dir) {
-  const newIdx = idx + dir;
-  if (newIdx < 0 || newIdx >= posts.length) return;
-  [posts[idx], posts[newIdx]] = [posts[newIdx], posts[idx]];
-  saveAll();
-  renderList();
-}
-
-function openEdit(idx) {
-  // 关闭其他编辑区
-  document.querySelectorAll('.post-edit-area.open').forEach(el => el.classList.remove('open'));
-  const area = document.getElementById(`edit-${idx}`);
-  if (area) area.classList.add('open');
-}
-
-function cancelEdit(idx) {
-  const area = document.getElementById(`edit-${idx}`);
-  if (area) area.classList.remove('open');
-}
-
-function saveEdit(idx) {
-  const no     = document.getElementById(`eno-${idx}`).value.trim();
-  const angle  = document.getElementById(`eangle-${idx}`).value;
-  const scheme = document.getElementById(`escheme-${idx}`).value;
-  const struct = document.getElementById(`estruct-${idx}`).value.trim();
-  const text   = document.getElementById(`etext-${idx}`).value.trim();
-
-  if (!text) { toast('文案内容不能为空'); return; }
-  posts[idx] = { no, angle, scheme, struct, text };
-  saveAll();
-  renderList();
-  toast('已保存修改 ✓');
-}
-
-function promptDelete(idx) {
-  deleteTargetIdx = idx;
-  document.getElementById('delModal').classList.add('open');
-}
-function closeDelModal() {
-  document.getElementById('delModal').classList.remove('open');
-  deleteTargetIdx = -1;
-}
-function confirmDelete() {
-  if (deleteTargetIdx < 0) return;
-  posts.splice(deleteTargetIdx, 1);
-  saveAll();
-  renderList();
-  closeDelModal();
-  toast('已删除 ✓');
-}
-
-// ════════════════════════
-//   RENDER
-// ════════════════════════
-function getFilteredIndices() {
-  return posts.map((p, i) => i).filter(i => {
-    const p = posts[i];
-    const matchQ = !filterQ || p.text.includes(filterQ) || p.angle.includes(filterQ);
-    const matchA = !filterA || p.angle === filterA;
-    return matchQ && matchA;
-  });
-}
-
-function renderList() {
-  const container = document.getElementById('postList');
-  const badge = document.getElementById('listBadge');
-  const countText = document.getElementById('countText');
-  const indices = getFilteredIndices();
-
-  badge.textContent = `共 ${posts.length} 条 / 显示 ${indices.length} 条`;
-  countText.textContent = posts.length;
-
-  if (!indices.length) {
-    container.innerHTML = '<div style="text-align:center;padding:40px;color:#bbb;font-size:.82rem;letter-spacing:.12em;">暂无匹配文案</div>';
-    return;
-  }
-
-  container.innerHTML = indices.map(i => {
-    const p = posts[i];
-    const lines = p.text.split('\n').join('<br>');
-    const isFirst = i === 0;
-    const isLast  = i === posts.length - 1;
-    return `
-    <div class="post-item ${p.scheme}">
-      <div class="post-stripe"></div>
-      <div class="post-head">
-        <div class="post-meta">
-          <span class="post-no">${p.no}</span>
-          <span class="post-angle-badge">${p.angle}</span>
-          <span class="post-struct-text">${p.struct||''}</span>
-        </div>
-        <div class="post-actions">
-          <button class="pbtn pbtn-up" onclick="movePost(${i},-1)" ${isFirst?'disabled':''} title="上移">↑</button>
-          <button class="pbtn pbtn-dn" onclick="movePost(${i},1)"  ${isLast ?'disabled':''} title="下移">↓</button>
-          <button class="pbtn" onclick="openEdit(${i})">编辑</button>
-          <button class="pbtn pbtn-del" onclick="promptDelete(${i})">删除</button>
-        </div>
-      </div>
-      <div class="post-body">${lines}</div>
-      <div class="post-edit-area" id="edit-${i}">
-        <div class="edit-grid">
-          <div class="form-group">
-            <label class="form-label">编号</label>
-            <input class="form-input" id="eno-${i}" value="${escHtml(p.no)}"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">角度</label>
-            <select class="form-select" id="eangle-${i}">
-              ${['数字冲击','旁观者视角','预言式','对话还原','时间轴','选择题','内幕揭秘','反常识','学员故事','身体感知','追问式','画面描写']
-                .map(a=>`<option value="${a}" ${a===p.angle?'selected':''}>${a}</option>`).join('')}
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">颜色</label>
-            <select class="form-select" id="escheme-${i}">
-              ${[['s-gold','金色'],['s-rust','锈红'],['s-sage','松绿'],['s-steel','钢蓝'],['s-rose','玫红'],['s-char','炭灰']]
-                .map(([v,l])=>`<option value="${v}" ${v===p.scheme?'selected':''}>${l}</option>`).join('')}
-            </select>
-          </div>
-        </div>
-        <div class="form-group" style="margin-bottom:10px;">
-          <label class="form-label">结构说明</label>
-          <input class="form-input" id="estruct-${i}" value="${escHtml(p.struct||'')}"/>
-        </div>
-        <textarea class="edit-textarea" id="etext-${i}">${escHtml(p.text)}</textarea>
-        <div class="edit-actions">
-          <button class="btn-cancel-edit" onclick="cancelEdit(${i})">取消</button>
-          <button class="btn-save" onclick="saveEdit(${i})">保存修改</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function filterList(v) { filterQ = v.trim(); renderList(); }
-function filterAngle(v) { filterA = v; renderList(); }
-
-// ════════════════════════
-//   UI HELPERS
-// ════════════════════════
-function setStatus(type, msg) {
-  const dot  = document.getElementById('statusDot');
-  const text = document.getElementById('statusText');
-  dot.className  = 'status-dot ' + (type==='ok'?'dot-green':type==='warn'?'dot-yellow':'dot-red');
-  text.textContent = msg;
-}
-function showSaving(on) {
-  document.getElementById('savingBadge').style.display = on ? 'inline' : 'none';
-}
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('on');
-  setTimeout(() => t.classList.remove('on'), 2200);
-}
-function escHtml(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-</script>
+        window.onload = () => {
+            // 保持登录密码框焦点
+        };
+    </script>
 </body>
 </html>
