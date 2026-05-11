@@ -3,177 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>易饰乾园 · 发圈文案库</title>
+<title>易饰乾园</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap');
 
 :root {
   --bg: #F7F5F0;
-  --card: #FFFFFF;
   --ink: #1D1D1F;
   --gold: #C66A4E;
-  --mist: #E5E0D8;
 }
 
-* {margin:0;padding:0;box-sizing:border-box;}
-body {background: var(--bg); font-family: 'Noto Sans SC', sans-serif; color: var(--ink); min-height: 100vh;}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: var(--ink); }
 
-.hero { padding: 100px 40px 60px; text-align: center; }
-.hero h1 { font-family: 'Noto Serif SC', serif; font-size: clamp(2.8rem, 8vw, 4.5rem); letter-spacing: 0.08em; }
-.hero h1 em { color: var(--gold); }
-.hero-desc { font-size: 1.1rem; color: #666; letter-spacing: 0.15em; margin-top: 8px; }
-
-/* 优化后的模块 & 角度下拉 */
-.filter-bar {
-  background: var(--bg);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: 30px 40px;
-  border-bottom: 1px solid var(--mist);
+.hero {
+  height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=2000') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  color: white;
+  position: relative;
 }
-.filter-bar select {
-  padding: 14px 28px;
-  border-radius: 50px;
-  border: 1px solid var(--mist);
+.hero-content h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  margin-bottom: 16px;
+}
+.hero-content p { font-size: 1.3rem; opacity: 0.9; }
+
+.modules {
+  max-width: 1200px;
+  margin: -80px auto 80px;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+.module-card {
   background: white;
-  font-size: 1rem;
-  margin: 0 12px;
-  min-width: 210px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: all 0.4s;
   cursor: pointer;
-  font-family: 'Noto Sans SC', sans-serif;
-  color: #444;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-.filter-bar select:focus {
-  outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 4px rgba(198,106,78,0.1);
+.module-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 25px 50px rgba(198,106,78,0.15);
 }
-.filter-bar select:hover {
-  border-color: var(--gold);
+.module-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
 }
-
-/* 卡片 */
-.grid { max-width: 1280px; margin: 40px auto; padding: 0 30px 100px; display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 28px; }
-
-.card { background: var(--card); border: 1px solid var(--mist); border-radius: 20px; overflow: hidden; transition: all 0.5s; }
-.card:hover { transform: translateY(-12px); box-shadow: 0 30px 60px rgba(0,0,0,0.08); }
-
-.card-stripe { height: 4px; }
-.s-gold .card-stripe { background: linear-gradient(90deg, #C66A4E, #d4a84b); }
-
-.card-head { padding: 18px 24px 10px; display: flex; justify-content: space-between; align-items: center; }
-.card-angle { font-size: 0.85rem; padding: 4px 12px; border-radius: 20px; background: #fdf0e8; color: var(--gold); }
-.card-no { font-family: 'Noto Serif SC', serif; font-size: 1.1rem; font-weight: 700; color: #999; }
-
-.card-body { padding: 10px 24px 20px; line-height: 1.95; font-size: 1.05rem; }
-.card-foot { padding: 14px 24px; border-top: 1px solid var(--mist); display: flex; justify-content: space-between; align-items: center; color: #777; }
-.btn-copy { padding: 6px 22px; border: 1px solid var(--mist); border-radius: 30px; background: transparent; cursor: pointer; }
-.btn-copy:hover { border-color: var(--gold); color: var(--gold); }
+.module-card h3 {
+  padding: 24px 24px 8px;
+  font-size: 1.5rem;
+}
+.module-card p {
+  padding: 0 24px 28px;
+  color: #666;
+}
 </style>
 </head>
 <body>
 
 <div class="hero">
-  <h1>易饰乾园 · <em>发圈文案库</em></h1>
-  <p class="hero-desc">极简文案资产 · 驱动品牌自然生长</p>
+  <div class="hero-content">
+    <h1>易饰乾园</h1>
+    <p>极简文案资产 · 驱动品牌自然生长</p>
+  </div>
 </div>
 
-<div class="filter-bar">
-  <select id="moduleSelect" onchange="filterByModule()">
-    <option value="ALL">全部模块</option>
-    <option value="朋友圈">朋友圈</option>
-  </select>
-  <select id="angleSelect" onchange="filterByAngle()">
-    <option value="ALL">全部角度</option>
-  </select>
-</div>
-
-<div class="grid" id="grid"></div>
-
-<div style="text-align:center;padding:60px;color:#888;">
-  <a href="admin.html" style="color:var(--gold);">后台管理</a>
+<div class="modules">
+  <div class="module-card" onclick="goToModule('friends')">
+    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800" alt="朋友圈">
+    <h3>朋友圈</h3>
+    <p>高转化发圈文案库</p>
+  </div>
+  <div class="module-card" onclick="goToModule('testimonials')">
+    <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800" alt="客户见证">
+    <h3>客户见证</h3>
+    <p>真实案例 · 信任背书</p>
+  </div>
+  <div class="module-card" onclick="goToModule('course')">
+    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800" alt="课程卖点">
+    <h3>课程卖点</h3>
+    <p>核心价值 · 转化文案</p>
+  </div>
 </div>
 
 <script>
-// 30条完整数据（已包含）
-const DEFAULT_DATA = [ /* 完整30条数据，同上一个版本 */ ];
-
-let allData = [];
-let currentModule = 'ALL';
-let currentAngle = 'ALL';
-
-function loadData() {
-  allData = DEFAULT_DATA;
-  renderModuleSelect();
-  renderAngleSelect();
-  render();
+function goToModule(page) {
+  window.location.href = `${page}.html`;
 }
-
-function renderModuleSelect() {
-  const html = `
-    <option value="ALL">全部模块</option>
-    <option value="朋友圈">朋友圈</option>
-  `;
-  document.getElementById('moduleSelect').innerHTML = html;
-}
-
-function renderAngleSelect() {
-  const angles = ['ALL', ...new Set(allData.map(d => d.angle))];
-  let html = angles.map(a => `<option value="${a}">${a === 'ALL' ? '全部角度' : a}</option>`).join('');
-  document.getElementById('angleSelect').innerHTML = html;
-}
-
-function filterByModule() {
-  currentModule = document.getElementById('moduleSelect').value;
-  render();
-}
-
-function filterByAngle() {
-  currentAngle = document.getElementById('angleSelect').value;
-  render();
-}
-
-function render() {
-  const grid = document.getElementById('grid');
-  let filtered = allData.filter(d => {
-    const moduleMatch = currentModule === 'ALL' || true; // 目前只有朋友圈
-    const angleMatch = currentAngle === 'ALL' || d.angle === currentAngle;
-    return moduleMatch && angleMatch;
-  });
-
-  filtered.forEach((item, idx) => item.displayNo = String(idx + 1).padStart(2, '0'));
-
-  grid.innerHTML = filtered.map(d => {
-    const lines = d.text.split('\n').join('<br>');
-    return `
-    <div class="card ${d.scheme}">
-      <div class="card-stripe"></div>
-      <div class="card-head">
-        <span class="card-angle">${d.angle}</span>
-        <span class="card-no">${d.displayNo}</span>
-      </div>
-      <div class="card-body">${lines}</div>
-      <div class="card-foot">
-        <span>${d.struct||''}</span>
-        <button class="btn-copy" onclick="copyOne(this,'${d.text.replace(/\n/g,'\\n')}')">复制</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function copyOne(btn, text) {
-  navigator.clipboard.writeText(text.replace(/\\n/g,'\n')).then(() => {
-    const old = btn.textContent;
-    btn.textContent = '✓ 已复制';
-    setTimeout(() => btn.textContent = old, 1600);
-  });
-}
-
-window.onload = loadData;
 </script>
 </body>
 </html>
