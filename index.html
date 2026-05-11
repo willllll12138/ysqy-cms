@@ -17,8 +17,10 @@
 body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink);}
 
 .hero {
-  height: 100vh;
-  background: linear-gradient(rgba(29,29,31,0.45), rgba(29,29,31,0.45)), url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=2000') center/cover no-repeat;
+  height: 85vh;
+  min-height: 620px;
+  background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), 
+              url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=2000') center/cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,15 +30,21 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
 }
 .hero-content h1 {
   font-family: 'Noto Serif SC', serif;
-  font-size: clamp(3.2rem, 9vw, 6rem);
+  font-size: clamp(3.2rem, 8vw, 5.8rem);
+  letter-spacing: 0.06em;
   margin-bottom: 16px;
-  letter-spacing: 0.05em;
 }
-.hero-content p { font-size: 1.35rem; opacity: 0.95; }
+.hero-content p {
+  font-size: 1.35rem;
+  opacity: 0.95;
+  max-width: 680px;
+  margin: 0 auto;
+}
 
+/* 模块卡片 */
 .modules {
   max-width: 1280px;
-  margin: -80px auto 100px;
+  margin: -90px auto 120px;
   padding: 0 40px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
@@ -47,12 +55,12 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-  transition: all 0.5s;
+  transition: all 0.5s ease;
   cursor: pointer;
 }
 .module-card:hover {
   transform: translateY(-20px);
-  box-shadow: 0 30px 70px rgba(198,106,78,0.2);
+  box-shadow: 0 35px 70px rgba(198,106,78,0.18);
 }
 .module-card img {
   width: 100%;
@@ -60,14 +68,14 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
   object-fit: cover;
 }
 .module-info {
-  padding: 28px;
+  padding: 32px 28px;
 }
 .module-info h3 {
-  font-size: 1.65rem;
-  margin-bottom: 8px;
+  font-size: 1.75rem;
+  margin-bottom: 10px;
 }
 .module-info p {
-  color: #666;
+  color: #555;
   line-height: 1.7;
 }
 </style>
@@ -76,7 +84,7 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
 
 <div class="hero">
   <div class="hero-content">
-    <h1>易饰乾园素材库</h1>
+    <h1>易饰乾园</h1>
     <p>极简文案资产 · 驱动品牌自然生长</p>
   </div>
 </div>
@@ -89,7 +97,7 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
       <p>高转化发圈文案库</p>
     </div>
   </div>
-  
+
   <div class="module-card" onclick="location.href='testimonials.html'">
     <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800" alt="客户见证">
     <div class="module-info">
@@ -97,7 +105,7 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
       <p>真实案例 · 信任背书</p>
     </div>
   </div>
-  
+
   <div class="module-card" onclick="location.href='course.html'">
     <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800" alt="课程卖点">
     <div class="module-info">
