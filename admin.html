@@ -17,641 +17,159 @@
             --gold-pale: #f7f0e0;
             --bordeaux: #8b3a3a;
             --sage: #5a6b4d;
-            --border: rgba(0, 0, 0, 0.06);
-            --border-strong: rgba(0, 0, 0, 0.12);
+            --border: rgba(0,0,0,0.06);
+            --border-strong: rgba(0,0,0,0.12);
             --radius-sm: 10px;
             --radius-md: 18px;
             --radius-lg: 24px;
             --radius-full: 50px;
-            --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.07);
-            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.08);
-            --transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 30px rgba(0,0,0,0.07);
+            --transition: 0.3s cubic-bezier(0.23,1,0.32,1);
             --font-serif: 'Noto Serif SC', 'Songti SC', serif;
             --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            background: var(--bg);
-            font-family: var(--font-sans);
-            color: var(--ink);
-            line-height: 1.6;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            background:var(--bg);
+            font-family:var(--font-sans);
+            color:var(--ink);
+            line-height:1.6;
+            min-height:100vh;
         }
         body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--gold), var(--bordeaux), var(--sage));
-            z-index: 1000;
+            content:''; position:fixed; top:0; left:0; right:0; height:3px;
+            background:linear-gradient(90deg,var(--gold),var(--bordeaux),var(--sage));
+            z-index:1000;
         }
-
-        /* ── 登录界面 ── */
-        .login-screen {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg);
-        }
+        .container { max-width:960px; margin:0 auto; padding:0 24px; }
+        /* 登录 */
+        .login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; }
         .login-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 48px 40px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border);
+            background:var(--card-bg); border-radius:var(--radius-lg); padding:48px 36px;
+            max-width:400px; width:100%; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.08);
         }
-        .login-card .hero-tag {
-            display: inline-block;
-            font-size: 0.7rem;
-            letter-spacing: 0.35em;
-            color: var(--gold);
-            background: var(--gold-pale);
-            padding: 6px 18px;
-            border-radius: var(--radius-full);
-            margin-bottom: 16px;
-            font-weight: 500;
-        }
-        .login-card h1 {
-            font-family: var(--font-serif);
-            font-size: 1.8rem;
-            font-weight: 900;
-            letter-spacing: 0.06em;
-            margin-bottom: 8px;
-        }
-        .login-card .sub {
-            font-size: 0.8rem;
-            color: var(--ink-light);
-            margin-bottom: 28px;
-            letter-spacing: 0.1em;
-        }
-        .login-card input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-full);
-            font-family: inherit;
-            font-size: 0.9rem;
-            outline: none;
-            transition: var(--transition);
-            text-align: center;
-            letter-spacing: 0.1em;
-            background: var(--bg);
-        }
-        .login-card input:focus {
-            border-color: var(--gold);
-            background: #fff;
-        }
-        .login-card .btn-login {
-            width: 100%;
-            margin-top: 16px;
-            padding: 14px;
-            background: var(--ink);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius-full);
-            font-size: 0.85rem;
-            letter-spacing: 0.1em;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-        .login-card .btn-login:hover {
-            background: #2b2b2b;
-        }
-        .login-error {
-            color: #c33;
-            font-size: 0.75rem;
-            margin-top: 10px;
-            min-height: 20px;
-            letter-spacing: 0.06em;
-        }
+        .login-card .hero-tag { display:inline-block; font-size:0.7rem; letter-spacing:0.35em; color:var(--gold); background:var(--gold-pale); padding:6px 18px; border-radius:var(--radius-full); margin-bottom:16px; }
+        .login-card h1 { font-family:var(--font-serif); font-size:1.8rem; margin-bottom:12px; }
+        .login-card .sub { font-size:0.8rem; color:var(--ink-light); margin-bottom:24px; }
+        .login-card input { width:100%; padding:14px 18px; border:1.5px solid var(--border); border-radius:var(--radius-full); text-align:center; font-size:1rem; outline:none; margin-bottom:16px; background:var(--bg); }
+        .btn { background:var(--ink); color:#fff; border:none; padding:12px 24px; border-radius:var(--radius-full); cursor:pointer; font-family:inherit; font-weight:500; letter-spacing:0.05em; transition:0.2s; }
+        .btn:hover { background:#2b2b2b; }
+        .btn-outline { background:transparent; color:var(--ink); border:1.5px solid #ddd; }
+        .btn-outline:hover { background:#f5f5f5; }
+        .login-links { margin-top:16px; display:flex; justify-content:center; gap:20px; }
+        .login-links a { color:var(--ink-light); font-size:0.8rem; text-decoration:none; transition:0.2s; }
+        .login-links a:hover { color:var(--gold); }
+        .login-error { color:#c33; font-size:0.8rem; min-height:20px; }
 
-        /* ── 主管理界面 ── */
-        .admin-container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 32px 24px 80px;
-        }
-        .admin-header {
-            text-align: center;
-            padding: 40px 0 32px;
-        }
-        .admin-header .hero-tag {
-            display: inline-block;
-            font-size: 0.7rem;
-            letter-spacing: 0.35em;
-            color: var(--gold);
-            background: var(--gold-pale);
-            padding: 6px 18px;
-            border-radius: var(--radius-full);
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-        .admin-header h1 {
-            font-family: var(--font-serif);
-            font-size: 2rem;
-            font-weight: 900;
-            letter-spacing: 0.06em;
-        }
-        .admin-header .hero-line {
-            width: 50px;
-            height: 2px;
-            background: var(--gold);
-            margin: 16px auto 0;
-            border-radius: 2px;
-        }
-
-        /* ── 横向大板块卡片 ── */
-        .panel-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 18px;
-            margin-bottom: 36px;
-        }
+        /* 主界面 */
+        .admin-header { display:flex; align-items:center; justify-content:space-between; padding:32px 0 24px; flex-wrap:wrap; gap:12px; }
+        .admin-header h1 { font-family:var(--font-serif); font-size:1.8rem; }
+        .panel-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-bottom:28px; }
         .panel-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 28px 24px;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            position: relative;
-            overflow: hidden;
+            background:var(--card-bg); border-radius:var(--radius-lg); padding:20px 16px; cursor:pointer;
+            border:1px solid var(--border); transition:0.2s; display:flex; align-items:center; gap:12px; box-shadow:var(--shadow-sm);
         }
-        .panel-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--border-strong);
-        }
-        .panel-card.active {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(184, 131, 42, 0.1);
-        }
-        .panel-card.active::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--gold-light);
-        }
-        .panel-card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-md);
-            background: var(--gold-pale);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            color: var(--gold);
-            flex-shrink: 0;
-        }
-        .panel-card-info h3 {
-            font-family: var(--font-serif);
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            margin-bottom: 2px;
-        }
-        .panel-card-info span {
-            font-size: 0.7rem;
-            color: var(--ink-light);
-            letter-spacing: 0.06em;
-        }
-        .panel-card-arrow {
-            margin-left: auto;
-            color: #ccc;
-            font-size: 0.8rem;
-            transition: var(--transition);
-        }
-        .panel-card:hover .panel-card-arrow {
-            color: var(--gold);
-            transform: translateX(3px);
-        }
-
-        /* ── 内容区域 ── */
-        .content-area {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-            min-height: 300px;
-        }
-        .content-area h2 {
-            font-family: var(--font-serif);
-            font-size: 1.2rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .content-area h2 .badge {
-            font-size: 0.65rem;
-            background: var(--gold-pale);
-            color: var(--gold);
-            padding: 3px 10px;
-            border-radius: var(--radius-full);
-            font-weight: 400;
-            letter-spacing: 0.08em;
-        }
-
-        /* 小目录标签 */
-        .sub-tabs {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 18px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid var(--border);
-        }
-        .sub-tab {
-            padding: 7px 16px;
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            font-size: 0.76rem;
-            letter-spacing: 0.05em;
-            background: transparent;
-            color: var(--ink-light);
-            border: 1.5px solid transparent;
-            transition: var(--transition);
-            font-family: inherit;
-        }
-        .sub-tab:hover {
-            color: var(--ink);
-            background: #f5f2ea;
-        }
-        .sub-tab.active {
-            background: var(--ink);
-            color: #fff;
-            font-weight: 500;
-        }
-
-        /* 列表表格 */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .data-table th,
-        .data-table td {
-            text-align: left;
-            padding: 12px 10px;
-            border-bottom: 1px solid #f0ede5;
-            font-size: 0.82rem;
-            letter-spacing: 0.03em;
-        }
-        .data-table th {
-            font-weight: 600;
-            color: var(--ink-light);
-            font-size: 0.7rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-        .data-table tr:hover td {
-            background: #fdfbf5;
-        }
-        .action-icons {
-            display: flex;
-            gap: 8px;
-        }
-        .action-icons i {
-            cursor: pointer;
-            color: #bbb;
-            padding: 4px;
-            border-radius: 6px;
-            transition: var(--transition);
-            font-size: 0.85rem;
-        }
-        .action-icons i.fa-pen:hover {
-            color: var(--gold);
-            background: var(--gold-pale);
-        }
-        .action-icons i.fa-trash:hover {
-            color: #c33;
-            background: #fde8e8;
-        }
-
-        /* 添加按钮 */
-        .btn-add {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 10px 20px;
-            background: var(--ink);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius-full);
-            font-size: 0.78rem;
-            letter-spacing: 0.06em;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 500;
-            transition: var(--transition);
-            margin-top: 12px;
-        }
-        .btn-add:hover {
-            background: #2b2b2b;
-        }
-        .btn-outline {
-            background: transparent;
-            color: var(--ink-light);
-            border: 1.5px solid var(--border);
-            padding: 8px 18px;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            cursor: pointer;
-            font-family: inherit;
-            letter-spacing: 0.06em;
-            transition: var(--transition);
-        }
-        .btn-outline:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-
-        /* 模态框 */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .modal {
-            background: #fff;
-            border-radius: var(--radius-lg);
-            padding: 32px 28px;
-            width: 90%;
-            max-width: 520px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-        }
-        .modal h3 {
-            font-family: var(--font-serif);
-            font-size: 1.1rem;
-            margin-bottom: 18px;
-            letter-spacing: 0.04em;
-        }
-        .modal .form-group {
-            margin-bottom: 14px;
-        }
-        .modal .form-group label {
-            display: block;
-            font-size: 0.7rem;
-            letter-spacing: 0.08em;
-            color: var(--ink-light);
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
-        .modal .form-group input,
-        .modal .form-group select,
-        .modal .form-group textarea {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1.5px solid #e0dbd0;
-            border-radius: var(--radius-sm);
-            font-family: inherit;
-            font-size: 0.85rem;
-            outline: none;
-            transition: var(--transition);
-            background: #fdfdfb;
-            resize: vertical;
-        }
-        .modal .form-group input:focus,
-        .modal .form-group select:focus,
-        .modal .form-group textarea:focus {
-            border-color: var(--gold);
-            background: #fff;
-        }
-        .modal .form-group textarea {
-            min-height: 90px;
-        }
-        .modal .btn-group {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-        .modal .btn-save {
-            padding: 10px 24px;
-            background: var(--ink);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 500;
-            letter-spacing: 0.06em;
-            font-size: 0.8rem;
-            transition: var(--transition);
-        }
-        .modal .btn-save:hover {
-            background: #2b2b2b;
-        }
-        .modal .btn-cancel {
-            padding: 10px 20px;
-            background: transparent;
-            border: 1.5px solid #ddd;
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.8rem;
-            letter-spacing: 0.06em;
-            color: #888;
-            transition: var(--transition);
-        }
-        .modal .btn-cancel:hover {
-            border-color: #bbb;
-            color: #555;
-        }
-
-        /* 标签管理小标签 */
-        .tag-manage-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-        .tag-manage-item {
-            background: #f0ede5;
-            padding: 6px 14px;
-            border-radius: var(--radius-full);
-            font-size: 0.78rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: var(--transition);
-        }
-        .tag-manage-item i {
-            cursor: pointer;
-            color: #b33;
-            font-size: 0.65rem;
-            transition: var(--transition);
-        }
-        .tag-manage-item i:hover {
-            color: #d44;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(14px);
-            background: var(--ink);
-            color: #fff;
-            padding: 11px 26px;
-            border-radius: var(--radius-full);
-            font-size: 0.8rem;
-            letter-spacing: 0.06em;
-            opacity: 0;
-            transition: all 0.3s;
-            pointer-events: none;
-            z-index: 3000;
-            box-shadow: var(--shadow-lg);
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* 空状态 */
-        .empty-row td {
-            text-align: center;
-            padding: 40px;
-            color: #ccc;
-            letter-spacing: 0.06em;
-        }
-
-        @media (max-width: 680px) {
-            .panel-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            .panel-card {
-                padding: 18px 14px;
-                gap: 10px;
-            }
-            .content-area {
-                padding: 18px;
-            }
-            .modal {
-                width: 95%;
-                padding: 22px 16px;
-            }
-            .data-table th,
-            .data-table td {
-                padding: 8px 6px;
-                font-size: 0.72rem;
-            }
+        .panel-card.active { border-color:var(--gold); box-shadow:0 0 0 3px rgba(184,131,42,0.1); }
+        .panel-card:hover { transform:translateY(-2px); }
+        .panel-card-icon { font-size:1.3rem; color:var(--gold); }
+        .panel-card-info h3 { font-size:0.95rem; font-weight:600; }
+        .panel-card-info span { font-size:0.7rem; color:var(--ink-light); }
+        .content-area { background:var(--card-bg); border-radius:var(--radius-lg); padding:28px; border:1px solid var(--border); min-height:300px; }
+        .tag-list { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 16px; }
+        .tag-item { background:#f0ede5; padding:6px 14px; border-radius:var(--radius-full); font-size:0.8rem; display:flex; align-items:center; gap:6px; }
+        .tag-item i { cursor:pointer; color:#b33; font-size:0.7rem; }
+        .tag-item .edit-tag { color:var(--gold); cursor:pointer; }
+        .form-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+        .form-row input, .form-row select, .form-row textarea { padding:9px 14px; border:1.5px solid #e0dbd0; border-radius:var(--radius-full); font-family:inherit; font-size:0.82rem; outline:none; background:#fdfdfb; }
+        .form-row textarea { border-radius:var(--radius-md); width:100%; min-height:90px; resize:vertical; }
+        .data-table { width:100%; border-collapse:collapse; margin-top:12px; }
+        .data-table th, .data-table td { text-align:left; padding:10px 8px; border-bottom:1px solid #eee; font-size:0.82rem; }
+        .data-table th { font-weight:600; color:var(--ink-light); font-size:0.7rem; letter-spacing:0.05em; }
+        .action-icons { display:flex; gap:5px; }
+        .action-icons i { cursor:pointer; color:#bbb; padding:4px; border-radius:6px; }
+        .action-icons i:hover { color:var(--gold); background:var(--gold-pale); }
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:2000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:0.3s; }
+        .modal-overlay.open { opacity:1; pointer-events:auto; }
+        .modal { background:#fff; border-radius:var(--radius-lg); padding:32px; max-width:500px; width:90%; max-height:80vh; overflow-y:auto; position:relative; }
+        .modal h3 { font-family:var(--font-serif); margin-bottom:16px; }
+        .modal .form-group { margin-bottom:12px; }
+        .modal .form-group label { display:block; font-size:0.72rem; letter-spacing:0.05em; margin-bottom:4px; color:var(--ink-light); }
+        .modal .form-group input, .modal .form-group select, .modal .form-group textarea { width:100%; padding:10px 14px; border:1.5px solid #e0dbd0; border-radius:8px; font-family:inherit; background:#fdfdfb; outline:none; }
+        .modal .btn-group { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 24px; border-radius:30px; font-size:0.8rem; opacity:0; transition:0.3s; z-index:3000; pointer-events:none; }
+        .toast.show { opacity:1; }
+        @media (max-width:680px) {
+            .panel-grid { grid-template-columns:1fr 1fr; }
         }
     </style>
 </head>
 <body>
-
-    <!-- ═══════════ 登录界面 ═══════════ -->
+    <!-- 登录界面 -->
     <div id="loginScreen" class="login-screen">
         <div class="login-card">
             <div class="hero-tag">ADMIN PANEL</div>
             <h1>易饰乾园 · 后台</h1>
             <p class="sub">文案资产管理系统</p>
             <input type="password" id="pwdInput" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter')login()">
-            <button class="btn-login" onclick="login()">进入管理后台</button>
+            <button class="btn" onclick="login()">进入后台</button>
             <div class="login-error" id="loginError"></div>
+            <div class="login-links">
+                <a href="#" onclick="showChangePwdModal()">修改密码</a>
+                <a href="#" onclick="showForgotPwdModal()">忘记密码？</a>
+            </div>
         </div>
     </div>
 
-    <!-- ═══════════ 管理主界面 ═══════════ -->
+    <!-- 管理主界面 -->
     <div id="adminMain" style="display:none;">
-        <div class="admin-container">
-            <header class="admin-header">
-                <div class="hero-tag">YISHI QIANYUAN</div>
-                <h1>库管理中心</h1>
-                <div class="hero-line"></div>
-            </header>
-
-            <!-- 横向大板块 -->
-            <div class="panel-grid">
-                <div class="panel-card active" onclick="switchPanel('modules')" id="panel-modules">
-                    <div class="panel-card-icon"><i class="fa-solid fa-cubes"></i></div>
-                    <div class="panel-card-info"><h3>模块与分类</h3><span>管理模块、角度、分类</span></div>
-                    <div class="panel-card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </div>
-                <div class="panel-card" onclick="switchPanel('posts')" id="panel-posts">
-                    <div class="panel-card-icon"><i class="fa-solid fa-pen-to-square"></i></div>
-                    <div class="panel-card-info"><h3>朋友圈文案</h3><span>发布与管理文案</span></div>
-                    <div class="panel-card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </div>
-                <div class="panel-card" onclick="switchPanel('testimonials')" id="panel-testimonials">
-                    <div class="panel-card-icon"><i class="fa-solid fa-comments"></i></div>
-                    <div class="panel-card-info"><h3>客户见证</h3><span>管理见证与多媒体</span></div>
-                    <div class="panel-card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </div>
-                <div class="panel-card" onclick="switchPanel('courses')" id="panel-courses">
-                    <div class="panel-card-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-                    <div class="panel-card-info"><h3>课程卖点</h3><span>管理课程内容</span></div>
-                    <div class="panel-card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        <div class="container">
+            <div class="admin-header">
+                <h1>⚙️ 库管理中心</h1>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <a href="index.html" class="btn-outline" style="padding:8px 16px;border-radius:var(--radius-full);text-decoration:none;color:var(--ink);">← 返回前台</a>
+                    <button class="btn-outline" onclick="exportData()">📤 导出数据</button>
+                    <label class="btn-outline" style="cursor:pointer;padding:8px 16px;">📥 导入数据<input type="file" id="importFile" style="display:none" onchange="importData(this)"></label>
                 </div>
             </div>
-
-            <!-- 内容区域 -->
+            <div class="panel-grid">
+                <div class="panel-card active" onclick="switchPanel('modules')">
+                    <div class="panel-card-icon"><i class="fa-solid fa-cubes"></i></div>
+                    <div class="panel-card-info"><h3>模块与分类</h3><span>管理模块、分类</span></div>
+                </div>
+                <div class="panel-card" onclick="switchPanel('posts')">
+                    <div class="panel-card-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <div class="panel-card-info"><h3>朋友圈文案</h3><span>角度 & 文案管理</span></div>
+                </div>
+                <div class="panel-card" onclick="switchPanel('testimonials')">
+                    <div class="panel-card-icon"><i class="fa-solid fa-comments"></i></div>
+                    <div class="panel-card-info"><h3>客户见证</h3><span>见证内容管理</span></div>
+                </div>
+                <div class="panel-card" onclick="switchPanel('courses')">
+                    <div class="panel-card-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div class="panel-card-info"><h3>课程卖点</h3><span>课程内容管理</span></div>
+                </div>
+            </div>
             <div class="content-area" id="contentArea"></div>
         </div>
     </div>
 
-    <!-- ═══════════ 编辑模态框 ═══════════ -->
+    <!-- 模态框 -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
         <div class="modal" id="modalBox" onclick="event.stopPropagation()">
-            <h3 id="modalTitle">编辑</h3>
-            <div id="modalBody"></div>
-            <div class="btn-group">
-                <button class="btn-cancel" onclick="closeModal()">取消</button>
-                <button class="btn-save" id="modalSaveBtn" onclick="saveFromModal()">保存</button>
-            </div>
+            <div id="modalContent"></div>
         </div>
     </div>
-
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
         (function() {
             const DATA_KEY = 'ysqy_data_v3';
-            const ADMIN_PWD = 'ysqy798';
-            const DEFAULT_DATA = {
+            const DEFAULT_PWD = 'ysqy798';
+            const RESET_CODE = 'ysqy_reset';
+
+            // 默认数据库结构
+            const DEFAULT_DB = {
                 modules: ['朋友圈', '客户见证', '课程卖点'],
                 angles: ['数字冲击', '对话还原', '情绪唤醒', '场景反差', '旁观者视角', '预言式', '时间轴', '选择题',
                     '内幕揭秘', '反常识', '学员故事', '身体感知', '追问式', '画面描写'
@@ -668,10 +186,11 @@
                 ],
                 testimonials: [
                     { id: 101, module: '客户见证', category: '成交', imageUrl: '', videoUrl: '', title: '林女士 · 软装设计师',
-                        description: '学了五行色彩后，第一个月签单率提升40%。客户说"你懂我"，这种感觉太好了。', clientName: '林女士',
-                        date: '2024-05-15' },
+                        description: '学了五行色彩后，第一个月签单率提升40%。客户说"你懂我"，这种感觉太好了。',
+                        clientName: '林女士', date: '2024-05-15' },
                     { id: 102, module: '客户见证', category: '文昌', imageUrl: '', videoUrl: '', title: '张先生 · 企业主',
-                        description: '调整办公室文昌位后，团队效率明显提升，业绩稳步增长。', clientName: '张先生', date: '2024-05-10' }
+                        description: '调整办公室文昌位后，团队效率明显提升，业绩稳步增长。', clientName: '张先生',
+                    date: '2024-05-10' }
                 ],
                 courses: [
                     { id: 201, module: '课程卖点', category: '核心价值', imageUrl: '', videoUrl: '', title: '五行色彩诊断系统',
@@ -681,17 +200,15 @@
                 ]
             };
 
+            // 初始化或加载数据
             let db = JSON.parse(localStorage.getItem(DATA_KEY) || 'null');
             if (!db || !db.modules) {
-                db = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                db = JSON.parse(JSON.stringify(DEFAULT_DB));
                 localStorage.setItem(DATA_KEY, JSON.stringify(db));
             }
 
-            function save() {
-                localStorage.setItem(DATA_KEY, JSON.stringify(db));
-                window.dispatchEvent(new StorageEvent('storage', { key: DATA_KEY, newValue: JSON.stringify(db) }));
-            }
-
+            function getPwd() { return localStorage.getItem('ysqy_admin_pwd') || DEFAULT_PWD; }
+            function save() { localStorage.setItem(DATA_KEY, JSON.stringify(db)); }
             function toast(msg) {
                 const t = document.getElementById('toast');
                 t.textContent = msg;
@@ -700,30 +217,131 @@
                 t._t = setTimeout(() => t.classList.remove('show'), 2000);
             }
 
-            let currentPanel = 'modules';
-            let modalCallback = null;
-
-            // ── 登录 ──
+            // ── 登录相关 ──
             window.login = function() {
-                if (document.getElementById('pwdInput').value === ADMIN_PWD) {
+                if (document.getElementById('pwdInput').value === getPwd()) {
                     document.getElementById('loginScreen').style.display = 'none';
                     document.getElementById('adminMain').style.display = 'block';
                     switchPanel('modules');
                 } else {
-                    document.getElementById('loginError').textContent = '密码错误，请重试';
+                    document.getElementById('loginError').textContent = '密码错误';
                     setTimeout(() => document.getElementById('loginError').textContent = '', 2500);
                 }
             };
 
-            // ── 板块切换 ──
+            window.showChangePwdModal = function() {
+                openModal('修改管理密码', `
+                    <div class="form-group"><label>当前密码</label><input type="password" id="oldPwdChg" placeholder="当前密码" onkeydown="if(event.key==='Enter')changePwd()"></div>
+                    <div class="form-group"><label>新密码（至少4位）</label><input type="password" id="newPwd1" placeholder="新密码"></div>
+                    <div class="form-group"><label>确认新密码</label><input type="password" id="newPwd2" placeholder="再次输入"></div>
+                    <div class="btn-group">
+                        <button class="btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn" onclick="changePwd()">确认修改</button>
+                    </div>
+                `);
+            };
+
+            window.changePwd = function() {
+                const old = document.getElementById('oldPwdChg').value;
+                const n1 = document.getElementById('newPwd1').value;
+                const n2 = document.getElementById('newPwd2').value;
+                if (old !== getPwd()) return toast('当前密码错误');
+                if (n1.length < 4) return toast('新密码至少4位');
+                if (n1 !== n2) return toast('两次输入不一致');
+                localStorage.setItem('ysqy_admin_pwd', n1);
+                closeModal();
+                toast('密码已修改 ✓');
+            };
+
+            window.showForgotPwdModal = function() {
+                openModal('重置密码', `
+                    <p style="margin-bottom:12px;">请输入重置暗号（默认暗号：ysqy_reset）</p>
+                    <input type="text" id="forgotCode" placeholder="重置暗号" style="width:100%;padding:10px;margin-bottom:16px;border:1px solid #ddd;border-radius:8px;" onkeydown="if(event.key==='Enter')resetPwd()">
+                    <div class="btn-group">
+                        <button class="btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn" onclick="resetPwd()">重置为默认密码</button>
+                    </div>
+                `);
+            };
+
+            window.resetPwd = function() {
+                const code = document.getElementById('forgotCode').value;
+                if (code === RESET_CODE) {
+                    localStorage.removeItem('ysqy_admin_pwd');
+                    closeModal();
+                    toast('已重置为默认密码 ysqy798');
+                } else {
+                    toast('暗号错误');
+                }
+            };
+
+            // ── 面板切换 ──
+            let currentPanel = 'modules';
             window.switchPanel = function(panel) {
                 currentPanel = panel;
-                document.querySelectorAll('.panel-card').forEach(c => c.classList.remove('active'));
-                const activeCard = document.getElementById('panel-' + panel);
-                if (activeCard) activeCard.classList.add('active');
+                document.querySelectorAll('.panel-card').forEach(card => card.classList.remove('active'));
+                const panels = ['modules', 'posts', 'testimonials', 'courses'];
+                const idx = panels.indexOf(panel);
+                if (idx >= 0) document.querySelectorAll('.panel-card')[idx].classList.add('active');
                 renderContent();
             };
 
+            // ── 通用标签编辑/删除 ──
+            window.editTagGlobal = function(type, oldVal) {
+                const newVal = prompt('将 "' + oldVal + '" 修改为：', oldVal);
+                if (newVal && newVal.trim() !== '' && newVal !== oldVal) {
+                    const arr = db[type];
+                    const idx = arr.indexOf(oldVal);
+                    if (idx !== -1) {
+                        arr[idx] = newVal.trim();
+                        // 更新所有引用此分类的数据
+                        if (type === 'testimonialCategories') {
+                            db.testimonials.forEach(t => { if (t.category === oldVal) t.category = newVal; });
+                        } else if (type === 'courseCategories') {
+                            db.courses.forEach(c => { if (c.category === oldVal) c.category = newVal; });
+                        } else if (type === 'angles') {
+                            db.posts.forEach(p => { if (p.angle === oldVal) p.angle = newVal; });
+                        } else if (type === 'modules') {
+                            // 模块改名需要同步所有内容
+                            db.posts.forEach(p => { if (p.module === oldVal) p.module = newVal; });
+                            db.testimonials.forEach(t => { if (t.module === oldVal) t.module = newVal; });
+                            db.courses.forEach(c => { if (c.module === oldVal) c.module = newVal; });
+                        }
+                        save();
+                        renderContent();
+                        toast('已修改 ✓');
+                    }
+                }
+            };
+
+            window.deleteTagGlobal = function(type, val) {
+                if (!confirm('确定删除 "' + val + '" 吗？ 相关数据可能无法显示。')) return;
+                const arr = db[type];
+                const idx = arr.indexOf(val);
+                if (idx !== -1) {
+                    arr.splice(idx, 1);
+                    save();
+                    renderContent();
+                    toast('已删除');
+                }
+            };
+
+            window.addTagGlobal = function(type, inputId) {
+                const input = document.getElementById(inputId);
+                const val = input.value.trim();
+                if (!val) return;
+                if (db[type].includes(val)) {
+                    toast('已存在');
+                    return;
+                }
+                db[type].push(val);
+                save();
+                input.value = '';
+                renderContent();
+                toast('已添加');
+            };
+
+            // ── 绘制内容区 ──
             function renderContent() {
                 const area = document.getElementById('contentArea');
                 switch (currentPanel) {
@@ -742,104 +360,140 @@
                 }
             }
 
-            // ── 模块与分类面板 ──
+            // 模块与分类面板
             function renderModulesPanel() {
                 return `
-                <h2>📦 模块管理 <span class="badge">首页大分类</span></h2>
-                <div class="tag-manage-list" id="moduleTagList">
-                  ${db.modules.map(m => `<span class="tag-manage-item">${m} <i class="fa-solid fa-xmark" onclick="deleteItem('modules','${m}')"></i></span>`).join('')}
-                </div>
-                <div class="form-row" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                  <input type="text" id="newModuleInput" placeholder="新模块名称" style="padding:9px 14px;border:1.5px solid #e0dbd0;border-radius:var(--radius-full);font-family:inherit;font-size:0.82rem;outline:none;flex:1;min-width:160px;">
-                  <button class="btn-add" onclick="addItem('modules','newModuleInput')">➕ 添加模块</button>
-                </div>
+                    <h3>📦 模块管理</h3>
+                    <div class="tag-list">
+                        ${db.modules.map(m => `<span class="tag-item">${m} <i class="edit-tag fa-solid fa-pen" onclick="editTagGlobal('modules','${m}')"></i> <i class="fa-solid fa-xmark" onclick="deleteTagGlobal('modules','${m}')"></i></span>`).join('')}
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="newModInput" placeholder="新模块名称">
+                        <button class="btn" onclick="addTagGlobal('modules','newModInput')">添加模块</button>
+                    </div>
 
-                <h2 style="margin-top:28px;">🏷️ 角度管理 <span class="badge">朋友圈筛选</span></h2>
-                <div class="tag-manage-list" id="angleTagList">
-                  ${db.angles.map(a => `<span class="tag-manage-item">${a} <i class="fa-solid fa-xmark" onclick="deleteItem('angles','${a}')"></i></span>`).join('')}
-                </div>
-                <div class="form-row" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                  <input type="text" id="newAngleInput" placeholder="新角度名称" style="padding:9px 14px;border:1.5px solid #e0dbd0;border-radius:var(--radius-full);font-family:inherit;font-size:0.82rem;outline:none;flex:1;min-width:160px;">
-                  <button class="btn-add" onclick="addItem('angles','newAngleInput')">➕ 添加角度</button>
-                </div>
+                    <h3 style="margin-top:24px;">📂 客户见证分类</h3>
+                    <div class="tag-list">
+                        ${db.testimonialCategories.map(c => `<span class="tag-item">${c} <i class="edit-tag fa-solid fa-pen" onclick="editTagGlobal('testimonialCategories','${c}')"></i> <i class="fa-solid fa-xmark" onclick="deleteTagGlobal('testimonialCategories','${c}')"></i></span>`).join('')}
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="newTestCatInput" placeholder="新分类">
+                        <button class="btn" onclick="addTagGlobal('testimonialCategories','newTestCatInput')">添加分类</button>
+                    </div>
 
-                <h2 style="margin-top:28px;">📂 客户见证分类</h2>
-                <div class="tag-manage-list" id="testCatTagList">
-                  ${db.testimonialCategories.map(c => `<span class="tag-manage-item">${c} <i class="fa-solid fa-xmark" onclick="deleteItem('testimonialCategories','${c}')"></i></span>`).join('')}
-                </div>
-                <div class="form-row" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                  <input type="text" id="newTestCatInput" placeholder="新分类名称" style="padding:9px 14px;border:1.5px solid #e0dbd0;border-radius:var(--radius-full);font-family:inherit;font-size:0.82rem;outline:none;flex:1;min-width:160px;">
-                  <button class="btn-add" onclick="addItem('testimonialCategories','newTestCatInput')">➕ 添加分类</button>
-                </div>
-
-                <h2 style="margin-top:28px;">🎓 课程卖点分类</h2>
-                <div class="tag-manage-list" id="courseCatTagList">
-                  ${db.courseCategories.map(c => `<span class="tag-manage-item">${c} <i class="fa-solid fa-xmark" onclick="deleteItem('courseCategories','${c}')"></i></span>`).join('')}
-                </div>
-                <div class="form-row" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                  <input type="text" id="newCourseCatInput" placeholder="新分类名称" style="padding:9px 14px;border:1.5px solid #e0dbd0;border-radius:var(--radius-full);font-family:inherit;font-size:0.82rem;outline:none;flex:1;min-width:160px;">
-                  <button class="btn-add" onclick="addItem('courseCategories','newCourseCatInput')">➕ 添加分类</button>
-                </div>
-              `;
+                    <h3 style="margin-top:24px;">🎓 课程卖点分类</h3>
+                    <div class="tag-list">
+                        ${db.courseCategories.map(c => `<span class="tag-item">${c} <i class="edit-tag fa-solid fa-pen" onclick="editTagGlobal('courseCategories','${c}')"></i> <i class="fa-solid fa-xmark" onclick="deleteTagGlobal('courseCategories','${c}')"></i></span>`).join('')}
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="newCourseCatInput" placeholder="新分类">
+                        <button class="btn" onclick="addTagGlobal('courseCategories','newCourseCatInput')">添加分类</button>
+                    </div>
+                `;
             }
 
-            window.addItem = function(type, inputId) {
-                const val = document.getElementById(inputId).value.trim();
-                if (!val) return;
-                const arr = db[type];
-                if (!arr) return;
-                if (arr.includes(val)) { toast('已存在该项'); return; }
-                arr.push(val);
-                save();
-                document.getElementById(inputId).value = '';
-                renderContent();
-                toast('已添加 ✓');
-            };
-            window.deleteItem = function(type, val) {
-                const arr = db[type];
-                if (!arr) return;
-                const idx = arr.indexOf(val);
-                if (idx > -1) {
-                    arr.splice(idx, 1);
-                    save();
-                    renderContent();
-                    toast('已删除');
-                }
-            };
-
-            // ── 朋友圈面板 ──
+            // 朋友圈文案面板（包含角度管理）
             function renderPostsPanel() {
+                const anglesHTML = db.angles.map(a => `<span class="tag-item">${a} <i class="edit-tag fa-solid fa-pen" onclick="editTagGlobal('angles','${a}')"></i> <i class="fa-solid fa-xmark" onclick="deleteTagGlobal('angles','${a}')"></i></span>`).join('');
                 const angleOptions = db.angles.map(a => `<option value="${a}">${a}</option>`).join('');
-                return `
-                <h2>📝 发布新文案</h2>
-                <div class="form-row" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
-                  <select id="pubAngle" style="padding:9px 14px;border:1.5px solid #e0dbd0;border-radius:var(--radius-full);font-family:inherit;font-size:0.82rem;outline:none;">${angleOptions}</select>
-                </div>
-                <textarea id="pubText" rows="5" placeholder="文案内容，换行表示新段落…" style="width:100%;padding:12px 16px;border:1.5px solid #e0dbd0;border-radius:var(--radius-md);font-family:inherit;font-size:0.85rem;resize:vertical;outline:none;background:#fdfdfb;"></textarea>
-                <button class="btn-add" onclick="publishPost()" style="margin-top:10px;">📤 发布文案</button>
-
-                <h2 style="margin-top:28px;">📋 已发布文案 <span class="badge">共 ${db.posts.filter(p=>p.module==='朋友圈').length} 条</span></h2>
-                <table class="data-table">
-                  <thead><tr><th>角度</th><th>内容预览</th><th style="width:80px;">操作</th></tr></thead>
-                  <tbody>
-                    ${db.posts.filter(p=>p.module==='朋友圈').length === 0 ? '<tr class="empty-row"><td colspan="3">暂无文案</td></tr>' :
-                      db.posts.filter(p=>p.module==='朋友圈').map((p,i) => {
-                        const globalIdx = db.posts.indexOf(p);
-                        return `<tr>
-                          <td><span style="background:var(--gold-pale);color:var(--gold);padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;">${p.angle}</span></td>
-                          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.text.replace(/\n/g,' | ')}</td>
-                          <td class="action-icons">
+                const postsHTML = db.posts.filter(p => p.module === '朋友圈').map((p, idx) => {
+                    const globalIdx = db.posts.indexOf(p);
+                    return `<tr>
+                        <td><input type="checkbox" class="post-check" data-idx="${globalIdx}"></td>
+                        <td><span class="tag-item" style="font-size:0.7rem;">${p.angle}</span></td>
+                        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.text.replace(/\n/g,' | ')}</td>
+                        <td class="action-icons">
+                            <i class="fa-solid fa-arrow-up" onclick="movePost(${globalIdx}, -1)" title="上移"></i>
+                            <i class="fa-solid fa-arrow-down" onclick="movePost(${globalIdx}, 1)" title="下移"></i>
                             <i class="fa-solid fa-pen" onclick="editPost(${globalIdx})" title="编辑"></i>
                             <i class="fa-solid fa-trash" onclick="deletePost(${globalIdx})" title="删除"></i>
-                          </td>
-                        </tr>`;
-                      }).join('')
-                    }
-                  </tbody>
-                </table>
-              `;
+                        </td>
+                    </tr>`;
+                }).join('');
+
+                return `
+                    <h3>🏷️ 角度管理</h3>
+                    <div class="tag-list">${anglesHTML}</div>
+                    <div class="form-row">
+                        <input type="text" id="newAngleInput" placeholder="新角度名称">
+                        <button class="btn" onclick="addTagGlobal('angles','newAngleInput')">添加角度</button>
+                    </div>
+
+                    <h3 style="margin-top:24px;">📝 发布新文案</h3>
+                    <div class="form-row">
+                        <select id="pubAngle" style="padding:9px 14px;border-radius:var(--radius-full);">${angleOptions}</select>
+                    </div>
+                    <textarea id="pubText" rows="4" placeholder="输入文案内容，换行分段…" style="width:100%;resize:vertical;padding:12px;border-radius:var(--radius-md);border:1px solid #ddd;"></textarea>
+                    <button class="btn" onclick="publishPost()" style="margin-top:8px;">发布文案</button>
+
+                    <h3 style="margin-top:24px;">📋 已发布文案 <span style="font-size:0.7rem;color:var(--ink-light);">（共 ${db.posts.filter(p=>p.module==='朋友圈').length} 条）</span></h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr><th><input type="checkbox" id="selectAllPosts" title="全选"></th><th>角度</th><th>内容预览</th><th style="width:110px;">操作</th></tr>
+                        </thead>
+                        <tbody>${postsHTML || '<tr><td colspan="4" style="text-align:center;color:#ccc;padding:40px;">暂无文案</td></tr>'}</tbody>
+                    </table>
+                    <button class="btn-outline" onclick="batchDeletePosts()" style="margin-top:8px;">🗑️ 删除选中</button>
+                `;
             }
 
+            // 客户见证面板
+            function renderTestimonialsPanel() {
+                const testsHTML = db.testimonials.filter(t => t.module === '客户见证').map((t, idx) => {
+                    const globalIdx = db.testimonials.indexOf(t);
+                    return `<tr>
+                        <td><input type="checkbox" class="test-check" data-idx="${globalIdx}"></td>
+                        <td><strong>${t.title}</strong></td>
+                        <td><span class="tag-item" style="font-size:0.7rem;">${t.category}</span></td>
+                        <td>${t.date || ''}</td>
+                        <td class="action-icons">
+                            <i class="fa-solid fa-arrow-up" onclick="moveTestimonial(${globalIdx}, -1)"></i>
+                            <i class="fa-solid fa-arrow-down" onclick="moveTestimonial(${globalIdx}, 1)"></i>
+                            <i class="fa-solid fa-pen" onclick="editTestimonial(${globalIdx})"></i>
+                            <i class="fa-solid fa-trash" onclick="deleteTestimonial(${globalIdx})"></i>
+                        </td>
+                    </tr>`;
+                }).join('');
+                return `
+                    <h3>🖼️ 客户见证 <span style="font-size:0.7rem;color:var(--ink-light);">（${db.testimonials.filter(t=>t.module==='客户见证').length} 条）</span></h3>
+                    <button class="btn" onclick="openTestimonialForm()">➕ 新增见证</button>
+                    <table class="data-table" style="margin-top:12px;">
+                        <thead><tr><th width="30"></th><th>标题</th><th>分类</th><th>日期</th><th style="width:110px;">操作</th></tr></thead>
+                        <tbody>${testsHTML || '<tr><td colspan="5" style="text-align:center;color:#ccc;padding:40px;">暂无见证</td></tr>'}</tbody>
+                    </table>
+                    <button class="btn-outline" onclick="batchDeleteTests()" style="margin-top:8px;">🗑️ 删除选中</button>
+                `;
+            }
+
+            // 课程面板
+            function renderCoursesPanel() {
+                const coursesHTML = db.courses.filter(c => c.module === '课程卖点').map((c, idx) => {
+                    const globalIdx = db.courses.indexOf(c);
+                    return `<tr>
+                        <td><input type="checkbox" class="course-check" data-idx="${globalIdx}"></td>
+                        <td><strong>${c.title}</strong></td>
+                        <td><span class="tag-item" style="font-size:0.7rem;">${c.category}</span></td>
+                        <td>${c.date || ''}</td>
+                        <td class="action-icons">
+                            <i class="fa-solid fa-arrow-up" onclick="moveCourse(${globalIdx}, -1)"></i>
+                            <i class="fa-solid fa-arrow-down" onclick="moveCourse(${globalIdx}, 1)"></i>
+                            <i class="fa-solid fa-pen" onclick="editCourse(${globalIdx})"></i>
+                            <i class="fa-solid fa-trash" onclick="deleteCourse(${globalIdx})"></i>
+                        </td>
+                    </tr>`;
+                }).join('');
+                return `
+                    <h3>📚 课程卖点 <span style="font-size:0.7rem;color:var(--ink-light);">（${db.courses.filter(c=>c.module==='课程卖点').length} 条）</span></h3>
+                    <button class="btn" onclick="openCourseForm()">➕ 新增课程</button>
+                    <table class="data-table" style="margin-top:12px;">
+                        <thead><tr><th width="30"></th><th>标题</th><th>分类</th><th>日期</th><th style="width:110px;">操作</th></tr></thead>
+                        <tbody>${coursesHTML || '<tr><td colspan="5" style="text-align:center;color:#ccc;padding:40px;">暂无内容</td></tr>'}</tbody>
+                    </table>
+                    <button class="btn-outline" onclick="batchDeleteCourses()" style="margin-top:8px;">🗑️ 删除选中</button>
+                `;
+            }
+
+            // ── 文案操作 ──
             window.publishPost = function() {
                 const angle = document.getElementById('pubAngle').value;
                 const text = document.getElementById('pubText').value.trim();
@@ -850,257 +504,326 @@
                 renderContent();
                 toast('发布成功 ✓');
             };
+
+            window.movePost = function(idx, dir) {
+                const newIdx = idx + dir;
+                if (newIdx < 0 || newIdx >= db.posts.length) return;
+                [db.posts[idx], db.posts[newIdx]] = [db.posts[newIdx], db.posts[idx]];
+                save();
+                renderContent();
+            };
+
             window.editPost = function(idx) {
                 const p = db.posts[idx];
-                const angleOptions = db.angles.map(a => `<option value="${a}" ${a===p.angle?'selected':''}>${a}</option>`).join('');
                 openModal('编辑文案', `
-                  <div class="form-group">
-                    <label>角度分类</label>
-                    <select id="editPostAngle">${angleOptions}</select>
-                  </div>
-                  <div class="form-group">
-                    <label>文案内容</label>
-                    <textarea id="editPostText">${p.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
-                  </div>
-                  <input type="hidden" id="editPostIdx" value="${idx}">
-                `, () => {
-                    const newAngle = document.getElementById('editPostAngle').value;
-                    const newText = document.getElementById('editPostText').value.trim();
-                    if (!newText) return toast('内容不能为空');
-                    db.posts[idx].angle = newAngle;
-                    db.posts[idx].text = newText;
-                    save();
-                    renderContent();
-                    closeModalDirect();
-                    toast('已更新 ✓');
-                });
+                    <div class="form-group"><label>角度</label><select id="editPostAngle">${db.angles.map(a => `<option value="${a}" ${a===p.angle?'selected':''}>${a}</option>`).join('')}</select></div>
+                    <div class="form-group"><label>文案内容</label><textarea id="editPostText" rows="6">${p.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></div>
+                    <input type="hidden" id="editPostIdx" value="${idx}">
+                    <div class="btn-group">
+                        <button class="btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn" onclick="saveEditPost()">保存修改</button>
+                    </div>
+                `);
             };
+
+            window.saveEditPost = function() {
+                const idx = parseInt(document.getElementById('editPostIdx').value);
+                const angle = document.getElementById('editPostAngle').value;
+                const text = document.getElementById('editPostText').value.trim();
+                if (!text) return toast('内容不能为空');
+                db.posts[idx].angle = angle;
+                db.posts[idx].text = text;
+                save();
+                closeModal();
+                renderContent();
+                toast('已更新 ✓');
+            };
+
             window.deletePost = function(idx) {
-                if (!confirm('确认删除这条文案？')) return;
+                if (!confirm('确认删除这条文案吗？')) return;
                 db.posts.splice(idx, 1);
                 save();
                 renderContent();
-                toast('已删除');
             };
 
-            // ── 客户见证面板 ──
-            function renderTestimonialsPanel() {
-                const catOptions = db.testimonialCategories.map(c => `<option value="${c}">${c}</option>`).join('');
-                return `
-                <h2>🖼️ 客户见证 <span class="badge">共 ${db.testimonials.filter(t=>t.module==='客户见证').length} 条</span></h2>
-                <button class="btn-add" onclick="openTestimonialForm()">➕ 新增见证</button>
-                <table class="data-table" style="margin-top:12px;">
-                  <thead><tr><th>标题</th><th>分类</th><th>日期</th><th style="width:80px;">操作</th></tr></thead>
-                  <tbody>
-                    ${db.testimonials.filter(t=>t.module==='客户见证').length === 0 ? '<tr class="empty-row"><td colspan="4">暂无见证</td></tr>' :
-                      db.testimonials.filter(t=>t.module==='客户见证').map((t,i) => {
-                        const globalIdx = db.testimonials.indexOf(t);
-                        return `<tr>
-                          <td>${t.title}</td>
-                          <td><span style="background:var(--gold-pale);color:var(--gold);padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;">${t.category}</span></td>
-                          <td>${t.date||''}</td>
-                          <td class="action-icons">
-                            <i class="fa-solid fa-pen" onclick="editTestimonial(${globalIdx})" title="编辑"></i>
-                            <i class="fa-solid fa-trash" onclick="deleteTestimonial(${globalIdx})" title="删除"></i>
-                          </td>
-                        </tr>`;
-                      }).join('')
-                    }
-                  </tbody>
-                </table>
-              `;
-            }
+            window.batchDeletePosts = function() {
+                const checks = document.querySelectorAll('.post-check:checked');
+                if (!checks.length) return;
+                if (!confirm(`确认删除选中的 ${checks.length} 条文案？`)) return;
+                const indices = [...checks].map(c => parseInt(c.dataset.idx)).sort((a, b) => b - a);
+                indices.forEach(i => db.posts.splice(i, 1));
+                save();
+                renderContent();
+                toast('已批量删除');
+            };
 
+            // ── 见证操作 ──
             window.openTestimonialForm = function() {
-                const catOptions = db.testimonialCategories.map(c => `<option value="${c}">${c}</option>`).join('');
                 openModal('新增见证', `
-                  <div class="form-group"><label>分类</label><select id="tCat">${catOptions}</select></div>
-                  <div class="form-group"><label>标题 *</label><input type="text" id="tTitle" placeholder="如：林女士 · 软装设计师"></div>
-                  <div class="form-group"><label>图片URL</label><input type="text" id="tImage" placeholder="https://...jpg"></div>
-                  <div class="form-group"><label>视频URL（YouTube嵌入或MP4）</label><input type="text" id="tVideo" placeholder="https://..."></div>
-                  <div class="form-group"><label>描述 *</label><textarea id="tDesc" placeholder="见证详细内容…"></textarea></div>
-                  <div class="form-group"><label>客户名称</label><input type="text" id="tClient" placeholder="选填"></div>
-                  <div class="form-group"><label>日期</label><input type="text" id="tDate" placeholder="2024-05-15"></div>
-                `, () => {
-                    const title = document.getElementById('tTitle').value.trim();
-                    const desc = document.getElementById('tDesc').value.trim();
-                    if (!title || !desc) return toast('标题和描述为必填项');
-                    db.testimonials.push({
-                        id: Date.now(),
-                        module: '客户见证',
-                        category: document.getElementById('tCat').value,
-                        title,
-                        imageUrl: document.getElementById('tImage').value.trim(),
-                        videoUrl: document.getElementById('tVideo').value.trim(),
-                        description: desc,
-                        clientName: document.getElementById('tClient').value.trim(),
-                        date: document.getElementById('tDate').value.trim()
-                    });
-                    save();
-                    renderContent();
-                    closeModalDirect();
-                    toast('见证已添加 ✓');
-                });
+                    <div class="form-group"><label>分类</label><select id="tCat">${db.testimonialCategories.map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
+                    <div class="form-group"><label>标题 *</label><input type="text" id="tTitle" placeholder="见证标题"></div>
+                    <div class="form-group"><label>图片 URL</label><input type="text" id="tImage" placeholder="https://..."></div>
+                    <div class="form-group"><label>视频 URL</label><input type="text" id="tVideo" placeholder="https://..."></div>
+                    <div class="form-group"><label>描述 *</label><textarea id="tDesc" rows="4" placeholder="见证详细内容"></textarea></div>
+                    <div class="form-group"><label>客户名称</label><input type="text" id="tClient" placeholder="如：林女士"></div>
+                    <div class="form-group"><label>日期</label><input type="text" id="tDate" placeholder="2024-05-15"></div>
+                    <div class="btn-group">
+                        <button class="btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn" onclick="saveNewTestimonial()">保存</button>
+                    </div>
+                `);
             };
+
+            window.saveNewTestimonial = function() {
+                const title = document.getElementById('tTitle').value.trim();
+                const desc = document.getElementById('tDesc').value.trim();
+                if (!title || !desc) return toast('标题和描述不能为空');
+                const item = {
+                    id: Date.now(),
+                    module: '客户见证',
+                    category: document.getElementById('tCat').value,
+                    title,
+                    imageUrl: document.getElementById('tImage').value.trim(),
+                    videoUrl: document.getElementById('tVideo').value.trim(),
+                    description: desc,
+                    clientName: document.getElementById('tClient').value.trim(),
+                    date: document.getElementById('tDate').value.trim()
+                };
+                db.testimonials.push(item);
+                save();
+                closeModal();
+                renderContent();
+                toast('见证已添加 ✓');
+            };
+
             window.editTestimonial = function(idx) {
                 const t = db.testimonials[idx];
-                const catOptions = db.testimonialCategories.map(c => `<option value="${c}" ${c===t.category?'selected':''}>${c}</option>`).join('');
                 openModal('编辑见证', `
-                  <div class="form-group"><label>分类</label><select id="tCat">${catOptions}</select></div>
-                  <div class="form-group"><label>标题</label><input type="text" id="tTitle" value="${t.title.replace(/"/g,'&quot;')}"></div>
-                  <div class="form-group"><label>图片URL</label><input type="text" id="tImage" value="${t.imageUrl||''}"></div>
-                  <div class="form-group"><label>视频URL</label><input type="text" id="tVideo" value="${t.videoUrl||''}"></div>
-                  <div class="form-group"><label>描述</label><textarea id="tDesc">${t.description.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></div>
-                  <div class="form-group"><label>客户名称</label><input type="text" id="tClient" value="${t.clientName||''}"></div>
-                  <div class="form-group"><label>日期</label><input type="text" id="tDate" value="${t.date||''}"></div>
-                  <input type="hidden" id="editTestIdx" value="${idx}">
-                `, () => {
-                    const title = document.getElementById('tTitle').value.trim();
-                    const desc = document.getElementById('tDesc').value.trim();
-                    if (!title || !desc) return toast('标题和描述为必填项');
-                    db.testimonials[idx].category = document.getElementById('tCat').value;
-                    db.testimonials[idx].title = title;
-                    db.testimonials[idx].imageUrl = document.getElementById('tImage').value.trim();
-                    db.testimonials[idx].videoUrl = document.getElementById('tVideo').value.trim();
-                    db.testimonials[idx].description = desc;
-                    db.testimonials[idx].clientName = document.getElementById('tClient').value.trim();
-                    db.testimonials[idx].date = document.getElementById('tDate').value.trim();
-                    save();
-                    renderContent();
-                    closeModalDirect();
-                    toast('见证已更新 ✓');
-                });
+                    <div class="form-group"><label>分类</label><select id="tCat">${db.testimonialCategories.map(c => `<option value="${c}" ${c===t.category?'selected':''}>${c}</option>`).join('')}</select></div>
+                    <div class="form-group"><label>标题</label><input type="text" id="tTitle" value="${t.title.replace(/"/g,'&quot;')}"></div>
+                    <div class="form-group"><label>图片 URL</label><input type="text" id="tImage" value="${t.imageUrl || ''}"></div>
+                    <div class="form-group"><label>视频 URL</label><input type="text" id="tVideo" value="${t.videoUrl || ''}"></div>
+                    <div class="form-group"><label>描述</label><textarea id="tDesc" rows="4">${t.description.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></div>
+                    <div class="form-group"><label>客户名称</label><input type="text" id="tClient" value="${t.clientName || ''}"></div>
+                    <div class="form-group"><label>日期</label><input type="text" id="tDate" value="${t.date || ''}"></div>
+                    <input type="hidden" id="editTestIdx" value="${idx}">
+                    <div class="btn-group">
+                        <button class="btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn" onclick="saveEditTestimonial()">保存修改</button>
+                    </div>
+                `);
             };
+
+            window.saveEditTestimonial = function() {
+                const idx = parseInt(document.getElementById('editTestIdx').value);
+                const title = document.getElementById('tTitle').value.trim();
+                const desc = document.getElementById('tDesc').value.trim();
+                if (!title || !desc) return toast('标题和描述不能为空');
+                db.testimonials[idx].category = document.getElementById('tCat').value;
+                db.testimonials[idx].title = title;
+                db.testimonials[idx].imageUrl = document.getElementById('tImage').value.trim();
+                db.testimonials[idx].videoUrl = document.getElementById('tVideo').value.trim();
+                db.testimonials[idx].description = desc;
+                db.testimonials[idx].clientName = document.getElementById('tClient').value.trim();
+                db.testimonials[idx].date = document.getElementById('tDate').value.trim();
+                save();
+                closeModal();
+                renderContent();
+                toast('见证已更新 ✓');
+            };
+
+            window.moveTestimonial = function(idx, dir) {
+                const newIdx = idx + dir;
+                if (newIdx < 0 || newIdx >= db.testimonials.length) return;
+                [db.testimonials[idx], db.testimonials[newIdx]] = [db.testimonials[newIdx], db.testimonials[idx]];
+                save();
+                renderContent();
+            };
+
             window.deleteTestimonial = function(idx) {
                 if (!confirm('确认删除这条见证？')) return;
                 db.testimonials.splice(idx, 1);
                 save();
                 renderContent();
-                toast('已删除');
             };
 
-            // ── 课程面板 ──
-            function renderCoursesPanel() {
-                const catOptions = db.courseCategories.map(c => `<option value="${c}">${c}</option>`).join('');
-                return `
-                <h2>📚 课程卖点 <span class="badge">共 ${db.courses.filter(c=>c.module==='课程卖点').length} 条</span></h2>
-                <button class="btn-add" onclick="openCourseForm()">➕ 新增课程内容</button>
-                <table class="data-table" style="margin-top:12px;">
-                  <thead><tr><th>标题</th><th>分类</th><th>日期</th><th style="width:80px;">操作</th></tr></thead>
-                  <tbody>
-                    ${db.courses.filter(c=>c.module==='课程卖点').length === 0 ? '<tr class="empty-row"><td colspan="4">暂无内容</td></tr>' :
-                      db.courses.filter(c=>c.module==='课程卖点').map((c,i) => {
-                        const globalIdx = db.courses.indexOf(c);
-                        return `<tr>
-                          <td>${c.title}</td>
-                          <td><span style="background:var(--gold-pale);color:var(--gold);padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;">${c.category}</span></td>
-                          <td>${c.date||''}</td>
-                          <td class="action-icons">
-                            <i class="fa-solid fa-pen" onclick="editCourse(${globalIdx})" title="编辑"></i>
-                            <i class="fa-solid fa-trash" onclick="deleteCourse(${globalIdx})" title="删除"></i>
-                          </td>
-                        </tr>`;
-                      }).join('')
-                    }
-                  </tbody>
-                </table>
-              `;
-            }
+            window.batchDeleteTests = function() {
+                const checks = document.querySelectorAll('.test-check:checked');
+                if (!checks.length) return;
+                if (!confirm(`确认删除选中的 ${checks.length} 条见证？`)) return;
+                const indices = [...checks].map(c => parseInt(c.dataset.idx)).sort((a, b) => b - a);
+                indices.forEach(i => db.testimonials.splice(i, 1));
+                save();
+                renderContent();
+                toast('已批量删除');
+            };
 
+            // ── 课程操作 ──
             window.openCourseForm = function() {
-                const catOptions = db.courseCategories.map(c => `<option value="${c}">${c}</option>`).join('');
-                openModal('新增课程内容', `
-                  <div class="form-group"><label>分类</label><select id="cCat">${catOptions}</select></div>
-                  <div class="form-group"><label>标题 *</label><input type="text" id="cTitle" placeholder="课程卖点标题"></div>
-                  <div class="form-group"><label>图片URL</label><input type="text" id="cImage" placeholder="https://...jpg"></div>
-                  <div class="form-group"><label>视频URL</label><input type="text" id="cVideo" placeholder="https://..."></div>
-                  <div class="form-group"><label>描述 *</label><textarea id="cDesc" placeholder="课程详细描述…"></textarea></div>
-                  <div class="form-group"><label>日期</label><input type="text" id="cDate" placeholder="2024-05-01"></div>
-                `, () => {
-                    const title = document.getElementById('cTitle').value.trim();
-                    const desc = document.getElementById('cDesc').value.trim();
-                    if (!title || !desc) return toast('标题和描述为必填项');
-                    db.courses.push({
-                        id: Date.now(),
-                        module: '课程卖点',
-                        category: document.getElementById('cCat').value,
-                        title,
-                        imageUrl: document.getElementById('cImage').value.trim(),
-                        videoUrl: document.getElementById('cVideo').value.trim(),
-                        description: desc,
-                        date: document.getElementById('cDate').value.trim()
-                    });
-                    save();
-                    renderContent();
-                    closeModalDirect();
-                    toast('课程内容已添加 ✓');
-                });
+                openModal('新增课程', `
+                    <div class="form-group"><label>分类</label><select id="cCat">${db.courseCategories.map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
+                    <div class="form-group"><label>标题 *</label><input type="text" id="cTitle" placeholder="课程标题"></div>
+                    <div class="form-group"><label>图片 URL</label><input type="text" id="cImage" placeholder="https://..."></div>
+                    <div class="form-group"><label>视频 URL</label><input type="text" id="cVideo" placeholder="https://..."></div>
+                    <div class="form-group"><label>描述 *</label><textarea id="cDesc" rows="4" placeholder="课程描述"></textarea></div>
+                    <div class="form-group"><label>日期</label><input type="text" id="cDate" placeholder="2024-05-01"></div>
+                    <div class="btn-group">
+                        <button class="btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn" onclick="saveNewCourse()">保存</button>
+                    </div>
+                `);
             };
+
+            window.saveNewCourse = function() {
+                const title = document.getElementById('cTitle').value.trim();
+                const desc = document.getElementById('cDesc').value.trim();
+                if (!title || !desc) return toast('标题和描述不能为空');
+                const item = {
+                    id: Date.now(),
+                    module: '课程卖点',
+                    category: document.getElementById('cCat').value,
+                    title,
+                    imageUrl: document.getElementById('cImage').value.trim(),
+                    videoUrl: document.getElementById('cVideo').value.trim(),
+                    description: desc,
+                    date: document.getElementById('cDate').value.trim()
+                };
+                db.courses.push(item);
+                save();
+                closeModal();
+                renderContent();
+                toast('课程已添加 ✓');
+            };
+
             window.editCourse = function(idx) {
                 const c = db.courses[idx];
-                const catOptions = db.courseCategories.map(cat => `<option value="${cat}" ${cat===c.category?'selected':''}>${cat}</option>`).join('');
-                openModal('编辑课程内容', `
-                  <div class="form-group"><label>分类</label><select id="cCat">${catOptions}</select></div>
-                  <div class="form-group"><label>标题</label><input type="text" id="cTitle" value="${c.title.replace(/"/g,'&quot;')}"></div>
-                  <div class="form-group"><label>图片URL</label><input type="text" id="cImage" value="${c.imageUrl||''}"></div>
-                  <div class="form-group"><label>视频URL</label><input type="text" id="cVideo" value="${c.videoUrl||''}"></div>
-                  <div class="form-group"><label>描述</label><textarea id="cDesc">${c.description.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></div>
-                  <div class="form-group"><label>日期</label><input type="text" id="cDate" value="${c.date||''}"></div>
-                  <input type="hidden" id="editCourseIdx" value="${idx}">
-                `, () => {
-                    const title = document.getElementById('cTitle').value.trim();
-                    const desc = document.getElementById('cDesc').value.trim();
-                    if (!title || !desc) return toast('标题和描述为必填项');
-                    db.courses[idx].category = document.getElementById('cCat').value;
-                    db.courses[idx].title = title;
-                    db.courses[idx].imageUrl = document.getElementById('cImage').value.trim();
-                    db.courses[idx].videoUrl = document.getElementById('cVideo').value.trim();
-                    db.courses[idx].description = desc;
-                    db.courses[idx].date = document.getElementById('cDate').value.trim();
-                    save();
-                    renderContent();
-                    closeModalDirect();
-                    toast('课程内容已更新 ✓');
-                });
+                openModal('编辑课程', `
+                    <div class="form-group"><label>分类</label><select id="cCat">${db.courseCategories.map(cat => `<option value="${cat}" ${cat===c.category?'selected':''}>${cat}</option>`).join('')}</select></div>
+                    <div class="form-group"><label>标题</label><input type="text" id="cTitle" value="${c.title.replace(/"/g,'&quot;')}"></div>
+                    <div class="form-group"><label>图片 URL</label><input type="text" id="cImage" value="${c.imageUrl || ''}"></div>
+                    <div class="form-group"><label>视频 URL</label><input type="text" id="cVideo" value="${c.videoUrl || ''}"></div>
+                    <div class="form-group"><label>描述</label><textarea id="cDesc" rows="4">${c.description.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></div>
+                    <div class="form-group"><label>日期</label><input type="text" id="cDate" value="${c.date || ''}"></div>
+                    <input type="hidden" id="editCourseIdx" value="${idx}">
+                    <div class="btn-group">
+                        <button class="btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn" onclick="saveEditCourse()">保存修改</button>
+                    </div>
+                `);
             };
+
+            window.saveEditCourse = function() {
+                const idx = parseInt(document.getElementById('editCourseIdx').value);
+                const title = document.getElementById('cTitle').value.trim();
+                const desc = document.getElementById('cDesc').value.trim();
+                if (!title || !desc) return toast('标题和描述不能为空');
+                db.courses[idx].category = document.getElementById('cCat').value;
+                db.courses[idx].title = title;
+                db.courses[idx].imageUrl = document.getElementById('cImage').value.trim();
+                db.courses[idx].videoUrl = document.getElementById('cVideo').value.trim();
+                db.courses[idx].description = desc;
+                db.courses[idx].date = document.getElementById('cDate').value.trim();
+                save();
+                closeModal();
+                renderContent();
+                toast('课程已更新 ✓');
+            };
+
+            window.moveCourse = function(idx, dir) {
+                const newIdx = idx + dir;
+                if (newIdx < 0 || newIdx >= db.courses.length) return;
+                [db.courses[idx], db.courses[newIdx]] = [db.courses[newIdx], db.courses[idx]];
+                save();
+                renderContent();
+            };
+
             window.deleteCourse = function(idx) {
                 if (!confirm('确认删除？')) return;
                 db.courses.splice(idx, 1);
                 save();
                 renderContent();
-                toast('已删除');
             };
 
-            // ── 模态框 ──
-            function openModal(title, bodyHTML, callback) {
-                document.getElementById('modalTitle').textContent = title;
-                document.getElementById('modalBody').innerHTML = bodyHTML;
-                document.getElementById('modalOverlay').classList.add('open');
-                modalCallback = callback;
-            }
+            window.batchDeleteCourses = function() {
+                const checks = document.querySelectorAll('.course-check:checked');
+                if (!checks.length) return;
+                if (!confirm(`确认删除选中的 ${checks.length} 条课程？`)) return;
+                const indices = [...checks].map(c => parseInt(c.dataset.idx)).sort((a, b) => b - a);
+                indices.forEach(i => db.courses.splice(i, 1));
+                save();
+                renderContent();
+                toast('已批量删除');
+            };
 
+            // ── 数据导入导出 ──
+            window.exportData = function() {
+                const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'ysqy_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                toast('数据已导出');
+            };
+
+            window.importData = function(input) {
+                const file = input.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const newData = JSON.parse(e.target.result);
+                        if (newData.modules && newData.angles) {
+                            if (confirm('导入将覆盖当前所有数据，确定继续？')) {
+                                db = newData;
+                                save();
+                                renderContent();
+                                toast('导入成功 ✓');
+                            }
+                        } else {
+                            toast('无效的数据文件');
+                        }
+                    } catch (err) {
+                        toast('解析失败，请检查文件格式');
+                    }
+                };
+                reader.readAsText(file);
+                input.value = '';
+            };
+
+            // ── 模态框公共方法 ──
+            function openModal(title, html) {
+                document.getElementById('modalContent').innerHTML = `<h3>${title}</h3>` + html;
+                document.getElementById('modalOverlay').classList.add('open');
+                // 焦点移到第一个输入框
+                setTimeout(() => {
+                    const firstInput = document.querySelector('#modalBox input, #modalBox textarea');
+                    if (firstInput) firstInput.focus();
+                }, 100);
+            }
             window.closeModal = function(e) {
                 if (e && e.target !== document.getElementById('modalOverlay')) return;
-                closeModalDirect();
-            };
-
-            function closeModalDirect() {
                 document.getElementById('modalOverlay').classList.remove('open');
-                modalCallback = null;
-            }
-
-            window.saveFromModal = function() {
-                if (modalCallback) modalCallback();
             };
-
-            // 键盘关闭
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeModalDirect();
+                if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('open')) {
+                    closeModal();
                 }
             });
 
-            // 初始化：检查是否已登录（简单处理，每次刷新需重新登录）
+            // ── 全选复选框 ──
+            document.addEventListener('change', function(e) {
+                if (e.target.id === 'selectAllPosts') {
+                    const checks = document.querySelectorAll('.post-check');
+                    checks.forEach(c => c.checked = e.target.checked);
+                }
+            });
+
+            // 初始化
+            window.onload = function() {
+                // 如果已登录（跳过登录界面），实际需要密码；直接展示登录界面
+            };
         })();
     </script>
 </body>
