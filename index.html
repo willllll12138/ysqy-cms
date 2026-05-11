@@ -112,7 +112,6 @@
     </style>
 </head>
 <body>
-    <!-- 首页视图 -->
     <div id="homeView">
         <div class="container">
             <header class="hero">
@@ -125,7 +124,6 @@
         </div>
     </div>
 
-    <!-- 二级页面视图 -->
     <div id="subView" style="display:none;">
         <div class="container">
             <div class="sub-header">
@@ -149,22 +147,18 @@
         </div>
     </div>
 
-    <!-- 管理后台入口 -->
     <a href="admin.html" class="admin-float" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
 
-    <!-- 灯箱（图片/视频放大） -->
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
         <span class="close-lightbox" onclick="closeLightbox()">&times;</span>
         <div id="lightboxContent"></div>
     </div>
-    <!-- 详情弹窗 -->
     <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)">
         <div class="detail-modal" id="detailModal" onclick="event.stopPropagation()">
             <span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span>
             <div id="detailContent"></div>
         </div>
     </div>
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
@@ -199,27 +193,55 @@
                 clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1500); 
             }
 
-            // ── 全局复制功能（基于 data-copy 属性）──
-            document.body.addEventListener('click', function(e) {
-                const btn = e.target.closest('.copy-btn');
-                if (!btn) return;
+            // ── 全局复制函数（修复版）──
+            window.handleCopy = function(btn) {
                 const text = btn.getAttribute('data-copy');
-                if (text) {
-                    navigator.clipboard.writeText(text).then(() => {
-                        toast('已复制 ✓');
-                    }).catch(() => {
-                        const textarea = document.createElement('textarea');
-                        textarea.value = text;
-                        document.body.appendChild(textarea);
-                        textarea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(textarea);
-                        toast('已复制 ✓');
-                    });
-                }
-            });
+                if (!text) return;
+                navigator.clipboard.writeText(text).then(() => {
+                    toast('已复制 ✓');
+                }).catch(() => {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    toast('已复制 ✓');
+                });
+            };
 
-            // ── URL Hash 状态管理 ──
+            // 渲染首页模块
+            function renderHome(){
+                const grid=document.getElementById('moduleGrid');
+                const icons={'朋友圈':'fa-pen-to-square','客户见证':'fa-comments','课程卖点':'fa-graduation-cap'};
+                grid.innerHTML=db.modules.map(m=>`
+                    <div class="module-card" onclick="openModule('${m}')">
+                        <div class="module-card-icon"><i class="fa-solid ${icons[m]||'fa-folder'}"></i></div>
+                        <div class="module-card-title">${m}</div>
+                        <div class="module-card-desc">点击查看内容</div>
+                        <div class="module-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    </div>`).join('');
+            }
+
+            window.openModule=function(m){
+                currentModule=m; currentAngle='全部'; currentCategory='全部'; searchQuery='';
+                document.getElementById('searchInput').value='';
+                document.getElementById('searchInputWrap').classList.remove('open');
+                document.getElementById('homeView').style.display='none';
+                document.getElementById('subView').style.display='block';
+                document.getElementById('subTitle').textContent=m;
+                renderSubPage(); window.scrollTo(0,0);
+                updateHash();
+            };
+            window.goHome=function(silent){
+                currentModule=null;
+                document.getElementById('subView').style.display='none';
+                document.getElementById('homeView').style.display='block';
+                renderHome(); 
+                if (!silent) updateHash();
+                window.scrollTo(0,0);
+            };
+
             function updateHash() {
                 if (!currentModule) {
                     history.replaceState(null, '', ' ');
@@ -263,47 +285,11 @@
                 return false;
             }
 
-            // 监听浏览器前进/后退
             window.addEventListener('popstate', function() {
                 if (!restoreFromHash()) {
                     goHome(true);
                 }
             });
-
-            // 渲染首页模块
-            function renderHome(){
-                const grid=document.getElementById('moduleGrid');
-                const icons={'朋友圈':'fa-pen-to-square','客户见证':'fa-comments','课程卖点':'fa-graduation-cap'};
-                grid.innerHTML=db.modules.map(m=>`
-                    <div class="module-card" onclick="openModule('${m}')">
-                        <div class="module-card-icon"><i class="fa-solid ${icons[m]||'fa-folder'}"></i></div>
-                        <div class="module-card-title">${m}</div>
-                        <div class="module-card-desc">点击查看内容</div>
-                        <div class="module-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                    </div>`).join('');
-            }
-
-            window.openModule=function(m){
-                currentModule=m; currentAngle='全部'; currentCategory='全部'; searchQuery='';
-                document.getElementById('searchInput').value='';
-                document.getElementById('searchInputWrap').classList.remove('open');
-                document.getElementById('homeView').style.display='none';
-                document.getElementById('subView').style.display='block';
-                document.getElementById('subTitle').textContent=m;
-                renderSubPage(); 
-                updateHash();
-                window.scrollTo(0,0);
-            };
-
-            window.goHome=function(silent){
-                // silent 参数用于避免重复写入历史记录
-                currentModule=null;
-                document.getElementById('subView').style.display='none';
-                document.getElementById('homeView').style.display='block';
-                renderHome(); 
-                if (!silent) updateHash();
-                window.scrollTo(0,0);
-            };
 
             function renderSubPage(){
                 if(!currentModule)return;
@@ -340,7 +326,7 @@
                         </div>
                         <div class="card-meta">
                             <span># ${p.angle}</span>
-                            <span class="copy-btn" data-copy="${copyText}"><i class="fa-regular fa-clone"></i> 复制</span>
+                            <span class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this); event.stopPropagation();"><i class="fa-regular fa-clone"></i> 复制</span>
                         </div>
                     </div>`;
                 }).join('');
@@ -388,7 +374,7 @@
                     return `<div class="testimonial-item" onclick="openDetail('testimonial',${t.id})">
                         <div class="testimonial-thumb" onclick="event.stopPropagation();openLightbox('${t.imageUrl||''}','${t.videoUrl||''}')">${renderMediaHTML(t)}</div>
                         <div class="testimonial-info">
-                            <h4>${t.title} <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();"><i class="fa-regular fa-clone"></i></span></h4>
+                            <h4>${t.title} <span class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this); event.stopPropagation();"><i class="fa-regular fa-clone"></i></span></h4>
                             <p>${t.description}</p>
                             <div class="testimonial-meta"><span class="testimonial-cat">${t.category}</span> ${t.date||''} ${t.clientName||''}</div>
                         </div>
@@ -410,7 +396,7 @@
                     return `<div class="testimonial-item" onclick="openDetail('course',${c.id})">
                         <div class="testimonial-thumb" onclick="event.stopPropagation();openLightbox('${c.imageUrl||''}','${c.videoUrl||''}')">${renderMediaHTML(c)}</div>
                         <div class="testimonial-info">
-                            <h4>${c.title} <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();"><i class="fa-regular fa-clone"></i></span></h4>
+                            <h4>${c.title} <span class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this); event.stopPropagation();"><i class="fa-regular fa-clone"></i></span></h4>
                             <p>${c.description}</p>
                             <div class="testimonial-meta"><span class="testimonial-cat">${c.category}</span> ${c.date||''}</div>
                         </div>
@@ -465,7 +451,7 @@
                     <h3 style="margin:16px 0 8px;">${item.title}</h3>
                     <p style="color:#888;font-size:0.8rem;">${item.category||''} ${item.date||''} ${item.clientName||''}</p>
                     <p style="white-space:pre-wrap;line-height:1.8;">${item.description}</p>
-                    <button class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();"><i class="fa-regular fa-clone"></i> 复制文案</button>
+                    <button class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制文案</button>
                 `;
                 document.getElementById('detailOverlay').classList.add('open');
                 document.body.style.overflow='hidden';
@@ -476,7 +462,6 @@
                 document.body.style.overflow='';
             };
 
-            // 监听 storage 同步
             window.addEventListener('storage',(e)=>{
                 if(e.key===DATA_KEY && e.newValue){
                     db=JSON.parse(e.newValue);
@@ -492,7 +477,6 @@
                 }
             });
 
-            // 启动：先尝试从 hash 恢复，否则显示首页
             if (!restoreFromHash()) {
                 renderHome();
             }
