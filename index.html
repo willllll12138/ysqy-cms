@@ -1,478 +1,407 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>易饰乾园 · 发圈文案库</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>易饰乾园 · 文案资产库 v3.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-page: #F7F5F0;       /* 柔和米色底 */
+            --bg-card: #FFFFFF;
+            --primary-ink: #1D1D1F;   /* 苹果风墨黑 */
+            --accent-terracotta: #C66A4E; /* 陶土色 (活力) */
+            --soft-sage: #849688;     /* 鼠尾草绿 (简约) */
+            --border-color: rgba(0,0,0,0.06);
+            --font-serif: 'Noto Serif SC', serif;
+            --font-sans: 'Noto Sans SC', sans-serif;
+            --transition-smooth: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
 
-:root {
-  --ink: #0e0b08;
-  --gold: #b8832a;
-  --gold2: #d4a84b;
-  --goldl: #f2dfa0;
-  --cream: #f9f4ec;
-  --mist: #ddd4c0;
-  --char: #2a2318;
-  --rust: #7a3520;
-  --sage: #4a6040;
-  --steel: #3a4a5a;
-  --rose: #7a3040;
-}
+        /* --- 基础样式优化 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: var(--bg-page); 
+            font-family: var(--font-sans); 
+            color: var(--primary-ink);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-*{margin:0;padding:0;box-sizing:border-box}
+        /* --- 丝滑动效 --- */
+        .fade-in-up {
+            animation: fadeInUp 0.8s var(--transition-smooth) forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-body{
-  background:var(--cream);
-  font-family:'Noto Sans SC',sans-serif;
-  color:var(--ink);
-  min-height:100vh;
-}
+        /* --- 导航与模块切换 (类似17yongai) --- */
+        .app-header {
+            padding: 80px 40px 40px;
+            text-align: center;
+        }
 
-/* HERO */
-.hero{
-  background:var(--ink);
-  padding:56px 32px 44px;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-.hero::before{
-  content:'';
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse at 25% 60%,rgba(184,131,42,.15) 0%,transparent 55%),
-              radial-gradient(ellipse at 80% 20%,rgba(184,131,42,.08) 0%,transparent 50%);
-}
-.hero::after{
-  content:'';
-  position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-}
-.hero-eyebrow{
-  font-size:.6rem;letter-spacing:.45em;color:var(--gold);
-  margin-bottom:20px;display:flex;align-items:center;
-  justify-content:center;gap:16px;position:relative;
-}
-.hero-eyebrow::before,.hero-eyebrow::after{
-  content:'';width:32px;height:1px;background:rgba(184,131,42,.35);
-}
-.hero h1{
-  font-family:'Noto Serif SC',serif;
-  font-size:clamp(1.5rem,4vw,2.2rem);
-  font-weight:900;color:#fff;
-  letter-spacing:.1em;line-height:1.25;position:relative;
-}
-.hero h1 em{color:var(--gold2);font-style:normal;}
-.hero-desc{
-  margin-top:12px;font-size:.72rem;
-  color:rgba(255,255,255,.38);letter-spacing:.22em;position:relative;
-}
-.hero-stats{
-  margin-top:32px;display:flex;justify-content:center;gap:44px;position:relative;
-}
-.stat-num{
-  font-family:'Noto Serif SC',serif;font-size:1.9rem;font-weight:700;
-  color:var(--gold2);line-height:1;
-}
-.stat-label{font-size:.58rem;color:rgba(255,255,255,.35);letter-spacing:.2em;margin-top:5px;}
+        .main-title {
+            font-family: var(--font-serif);
+            font-size: 3.5rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+        }
 
-/* LEGEND TABS */
-.legend-wrap{
-  background:var(--char);
-  position:sticky;top:0;z-index:100;
-  overflow-x:auto;scrollbar-width:none;
-}
-.legend-wrap::-webkit-scrollbar{display:none;}
-.legend{
-  display:flex;padding:0 20px;min-width:max-content;
-}
-.leg-btn{
-  flex-shrink:0;padding:13px 16px;
-  font-size:.65rem;letter-spacing:.12em;
-  color:rgba(255,255,255,.38);cursor:pointer;
-  border:none;border-bottom:2px solid transparent;
-  background:none;font-family:inherit;
-  transition:all .18s;white-space:nowrap;
-}
-.leg-btn:hover{color:rgba(255,255,255,.7);}
-.leg-btn.on{color:var(--gold2);border-bottom-color:var(--gold2);}
+        .module-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-/* TOOLBAR */
-.toolbar{
-  max-width:1160px;margin:32px auto 20px;
-  padding:0 22px;display:flex;gap:10px;align-items:center;
-}
-.search{
-  flex:1;padding:9px 16px;
-  border:1px solid var(--mist);background:white;
-  font-size:.8rem;font-family:inherit;color:var(--ink);
-  outline:none;transition:border-color .2s;
-}
-.search:focus{border-color:var(--gold);}
-.search::placeholder{color:#ccc;}
-.btn-top{
-  padding:9px 16px;font-size:.65rem;letter-spacing:.13em;
-  cursor:pointer;font-family:inherit;white-space:nowrap;
-  transition:all .2s;border:1px solid var(--mist);
-  background:white;color:#888;
-}
-.btn-top:hover{border-color:var(--gold);color:var(--gold);}
-.btn-copy-all{
-  padding:9px 18px;background:var(--ink);color:var(--gold2);
-  border:none;font-size:.65rem;letter-spacing:.14em;
-  cursor:pointer;font-family:inherit;white-space:nowrap;
-  transition:background .2s;
-}
-.btn-copy-all:hover{background:var(--char);}
+        .module-tab {
+            padding: 15px 0;
+            font-size: 1.1rem;
+            cursor: pointer;
+            position: relative;
+            opacity: 0.4;
+            transition: var(--transition-smooth);
+        }
+        .module-tab.active {
+            opacity: 1;
+            font-weight: 500;
+        }
+        .module-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 2px;
+            background: var(--primary-ink);
+        }
 
-/* LOADING */
-.loading{
-  text-align:center;padding:80px 24px;color:#bbb;
-  font-size:.85rem;letter-spacing:.15em;
-  grid-column:1/-1;
-}
-.loading-spinner{
-  width:32px;height:32px;border:2px solid var(--mist);
-  border-top-color:var(--gold);border-radius:50%;
-  animation:spin .8s linear infinite;
-  margin:0 auto 16px;
-}
-@keyframes spin{to{transform:rotate(360deg);}}
+        /* --- 角度过滤 (Pills样式) --- */
+        .angle-bar {
+            display: flex;
+            gap: 12px;
+            padding: 20px 40px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            position: sticky;
+            top: 0;
+            background: rgba(247, 245, 240, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 90;
+        }
+        .angle-bar::-webkit-scrollbar { display: none; }
 
-/* GRID */
-.grid{
-  max-width:1160px;margin:0 auto;
-  padding:0 22px 80px;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(310px,1fr));
-  gap:14px;
-}
+        .angle-pill {
+            padding: 8px 24px;
+            border-radius: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            white-space: nowrap;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition-smooth);
+        }
+        .angle-pill.active {
+            background: var(--primary-ink);
+            color: white;
+            border-color: var(--primary-ink);
+        }
 
-/* CARD */
-.card{
-  background:white;border:1px solid var(--mist);
-  position:relative;overflow:hidden;
-  transition:transform .2s,box-shadow .2s;
-  animation:fadeUp .3s ease both;
-}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.09);}
+        /* --- 文案卡片网格 --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 40px;
+        }
 
-.card-stripe{height:3px;}
-.s-gold .card-stripe{background:linear-gradient(90deg,var(--gold),var(--goldl));}
-.s-rust .card-stripe{background:linear-gradient(90deg,var(--rust),#c06040);}
-.s-sage .card-stripe{background:linear-gradient(90deg,var(--sage),#7a9a70);}
-.s-steel .card-stripe{background:linear-gradient(90deg,var(--steel),#6a8aaa);}
-.s-rose .card-stripe{background:linear-gradient(90deg,var(--rose),#b06080);}
-.s-char .card-stripe{background:linear-gradient(90deg,var(--char),#6a6050);}
+        .copy-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 35px;
+            transition: var(--transition-smooth);
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .copy-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.06);
+            border-color: var(--border-color);
+        }
 
-.card-head{
-  padding:16px 18px 0;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.card-angle{
-  font-size:.55rem;letter-spacing:.18em;font-weight:500;padding:3px 8px;
-}
-.s-gold .card-angle{color:var(--gold);background:#fdf7ec;}
-.s-rust .card-angle{color:var(--rust);background:#fdf0ec;}
-.s-sage .card-angle{color:var(--sage);background:#eff5ef;}
-.s-steel .card-angle{color:var(--steel);background:#eff3f7;}
-.s-rose .card-angle{color:var(--rose);background:#fdeef2;}
-.s-char .card-angle{color:var(--char);background:#f2f0ec;}
+        .copy-text {
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            white-space: pre-wrap;
+        }
 
-.card-no{
-  font-family:'Noto Serif SC',serif;
-  font-size:.7rem;font-weight:700;color:var(--mist);
-}
-.card-body{
-  padding:14px 18px 4px;
-  font-size:.875rem;line-height:2.1;
-  font-weight:300;color:var(--char);letter-spacing:.025em;
-}
-.card-foot{
-  padding:10px 18px 14px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.card-struct{font-size:.55rem;color:#bbb;letter-spacing:.1em;}
-.btn-copy{
-  font-size:.58rem;letter-spacing:.1em;padding:3px 10px;
-  border:1px solid var(--mist);background:none;color:#bbb;
-  cursor:pointer;font-family:inherit;transition:all .18s;
-}
-.btn-copy:hover{border-color:var(--gold);color:var(--gold);}
-.btn-copy.ok{border-color:var(--sage);color:var(--sage);}
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #999;
+        }
 
-.empty{
-  text-align:center;padding:60px;color:#ccc;
-  font-size:.85rem;letter-spacing:.12em;grid-column:1/-1;
-}
+        /* --- 后台管理抽屉 --- */
+        .drawer {
+            position: fixed;
+            right: -100%; top: 0; width: 480px; height: 100vh;
+            background: white; z-index: 1000; padding: 50px;
+            box-shadow: -20px 0 60px rgba(0,0,0,0.1);
+            transition: var(--transition-smooth);
+            overflow-y: auto;
+        }
+        .drawer.open { right: 0; }
 
-/* TOAST */
-.toast{
-  position:fixed;bottom:24px;left:50%;
-  transform:translateX(-50%) translateY(12px);
-  background:var(--ink);color:#fff;
-  padding:8px 20px;font-size:.7rem;letter-spacing:.1em;
-  opacity:0;transition:all .22s;pointer-events:none;z-index:999;
-}
-.toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+        .admin-btn {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: var(--primary-ink); color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 999; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
 
-/* FOOTER */
-.footer{
-  text-align:center;padding:20px;
-  font-size:.6rem;color:#ccc;letter-spacing:.15em;
-  border-top:1px solid var(--mist);
-}
-.footer a{color:var(--gold);text-decoration:none;}
-.footer a:hover{text-decoration:underline;}
+        .manage-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #EEE;
+        }
 
-/* ERROR BANNER */
-.error-banner{
-  background:#fff3f0;border:1px solid #f0b0a0;
-  padding:12px 20px;font-size:.75rem;color:var(--rust);
-  letter-spacing:.08em;text-align:center;
-  max-width:1160px;margin:16px auto 0;
-}
+        input, textarea, select {
+            width: 100%; padding: 15px; margin-top: 8px; margin-bottom: 20px;
+            border: 1px solid #EEE; border-radius: 12px; font-family: inherit;
+        }
+        .btn-action {
+            padding: 15px; width: 100%; border: none; border-radius: 12px;
+            background: var(--primary-ink); color: white; cursor: pointer; font-weight: 500;
+        }
 
-@media(max-width:580px){
-  .grid{grid-template-columns:1fr;padding:0 14px 60px;}
-  .hero{padding:40px 18px 32px;}
-  .hero-stats{gap:24px;}
-  .toolbar{padding:0 14px;flex-wrap:wrap;}
-}
-</style>
+        .tag-manager {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;
+        }
+        .tag-item {
+            background: #F0F0F0; padding: 4px 12px; border-radius: 6px; font-size: 0.8rem;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .tag-item i { cursor: pointer; color: #CC0000; }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .drawer { width: 100%; }
+            .main-title { font-size: 2.2rem; }
+            .card-grid { padding: 20px; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="hero">
-  <div class="hero-eyebrow">YISHI QIANYUAN · 精华班文案库</div>
-  <h1>易饰乾园 · <em>发圈文案库</em></h1>
-  <p class="hero-desc">12种卖压切法 · 实时云端同步 · 随时更新</p>
-  <div class="hero-stats">
-    <div><div class="stat-num" id="totalCount">—</div><div class="stat-label">条文案</div></div>
-    <div><div class="stat-num">12</div><div class="stat-label">种角度</div></div>
-    <div><div class="stat-num">5</div><div class="stat-label">大模块</div></div>
-  </div>
-</div>
+    <div class="admin-btn" onclick="toggleDrawer()"><i class="fa-solid fa-sliders"></i></div>
 
-<div class="legend-wrap">
-  <div class="legend" id="legend">
-    <button class="leg-btn on" onclick="flt('ALL',this)">全部</button>
-    <button class="leg-btn" onclick="flt('数字冲击',this)">📊 数字冲击</button>
-    <button class="leg-btn" onclick="flt('旁观者视角',this)">👁 旁观者视角</button>
-    <button class="leg-btn" onclick="flt('预言式',this)">🔮 预言式</button>
-    <button class="leg-btn" onclick="flt('对话还原',this)">💬 对话还原</button>
-    <button class="leg-btn" onclick="flt('时间轴',this)">⏳ 时间轴</button>
-    <button class="leg-btn" onclick="flt('选择题',this)">🎯 选择题</button>
-    <button class="leg-btn" onclick="flt('内幕揭秘',this)">🔓 内幕揭秘</button>
-    <button class="leg-btn" onclick="flt('反常识',this)">⚡ 反常识</button>
-    <button class="leg-btn" onclick="flt('学员故事',this)">📖 学员故事</button>
-    <button class="leg-btn" onclick="flt('身体感知',this)">🫀 身体感知</button>
-    <button class="leg-btn" onclick="flt('追问式',this)">❓ 追问式</button>
-    <button class="leg-btn" onclick="flt('画面描写',this)">🎬 画面描写</button>
-  </div>
-</div>
+    <header class="app-header">
+        <div class="hero-sub" style="letter-spacing: 0.4em; font-size: 0.8rem; opacity: 0.5; margin-bottom: 10px;">YISHI QIANYUAN</div>
+        <h1 class="main-title">易饰乾园</h1>
+        <p style="opacity: 0.6; font-weight: 300;">极简文案资产 · 驱动品牌生长</p>
+        
+        <div class="module-tabs" id="module-tabs">
+            </div>
+    </header>
 
-<div id="errorBanner" class="error-banner" style="display:none;"></div>
+    <div class="angle-bar" id="angle-bar">
+        </div>
 
-<div class="toolbar">
-  <input class="search" placeholder="搜索关键词…" oninput="doSearch(this.value)"/>
-  <button class="btn-top" onclick="window.location.reload()">🔄 刷新</button>
-  <button class="btn-copy-all" onclick="copyAll()">复制全部</button>
-</div>
+    <main class="card-grid" id="card-grid">
+        </main>
 
-<div class="grid" id="grid">
-  <div class="loading">
-    <div class="loading-spinner"></div>
-    正在加载文案数据…
-  </div>
-</div>
+    <div class="drawer" id="admin-drawer">
+        <i class="fa-solid fa-xmark" style="position:absolute; top:30px; left:30px; cursor:pointer;" onclick="toggleDrawer()"></i>
+        <h2 style="font-family: var(--font-serif); margin-bottom: 30px;">库管理中心</h2>
 
-<div class="toast" id="toast"></div>
+        <div id="admin-auth">
+            <p style="margin-bottom: 10px; font-size: 0.9rem; opacity: 0.6;">身份校验</p>
+            <input type="password" id="admin-pwd" placeholder="输入进入密码...">
+            <button class="btn-action" onclick="verifyAdmin()">进入管理</button>
+        </div>
 
-<div class="footer">
-  易饰乾园 · 文案管理系统 &nbsp;|&nbsp;
-  <a href="admin.html">后台管理</a>
-</div>
+        <div id="admin-content" style="display: none;">
+            <div class="manage-section">
+                <h3><i class="fa-solid fa-plus-circle"></i> 发布新文案</h3>
+                <select id="new-module"></select>
+                <select id="new-angle"></select>
+                <textarea id="new-text" placeholder="在这里输入文案正文..." rows="6"></textarea>
+                <button class="btn-action" onclick="publishCopy()">立即同步发布</button>
+            </div>
 
-<script>
-// ── JSONBin 配置 ──
-const BIN_ID   = 'JSONBIN_BIN_ID';   // 部署时替换
-const API_KEY  = 'JSONBIN_API_KEY';  // 部署时替换
-const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+            <div class="manage-section">
+                <h3><i class="fa-solid fa-tags"></i> 模块/角度管理</h3>
+                <p style="font-size: 0.8rem; margin: 15px 0 5px;">管理“模块”（顶部大类）：</p>
+                <div class="tag-manager" id="module-manager"></div>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="add-module-input" placeholder="新模块名..." style="margin-bottom:0">
+                    <button onclick="addTag('modules')" style="padding:10px; border-radius:12px; border:1px solid #CCC; background:none;">添加</button>
+                </div>
 
-// ── 默认数据（首次部署 / API 失败时兜底）──
-const DEFAULT_DATA = [
-  {no:'01',angle:'数字冲击',scheme:'s-gold',struct:'数据开场→场景反差→结论落地',
-   text:`同样做室内设计，收入差距能有10倍 📊\n靠颜感做方案的，改稿改到怀疑人生\n靠五行色彩做方案的，签单当天就定\n区别不在于谁更努力、谁更有品味\n而在于那套判断客户的底层工具 🎯\n有这个工具的人，和没有的人，不同命`},
-  {no:'02',angle:'数字冲击',scheme:'s-gold',struct:'数字开篇→递进放大→情绪钉子',
-   text:`10个客户说"再想想"，9个再也没回来 😮\n这个比例，很多设计师心里清楚\n但从来没有去想过为什么\n他在说"再想想"的那一刻\n其实已经替你做了一个决定了 🔑\n五行色彩秒懂客户，这才是真正的破局 🔥`},
-  {no:'03',angle:'数字冲击',scheme:'s-gold',struct:'时间数字→对比落差→钩子收尾',
-   text:`学了三年设计，卖了两年方案 📐\n换来的是："能不能再便宜一点"\n有人入行一年，客户主动加价签单\n同一个市场，同样的产品线\n差距怎么来的，值得停下来想一想 🤔\n文化时代赋能百业，说的就是这件事 💎`},
-  {no:'04',angle:'旁观者视角',scheme:'s-rust',struct:'第三人称引入→行为观察→留白钩子',
-   text:`我见过一个设计师，报价是同行两倍 👀\n客户坐下来，她没急着翻方案\n先聊了十分钟，聊这个客户是什么人\n聊完了，客户自己问："什么时候开始？"\n旁边同事问她怎么做到的 🤔\n她说：我只是先把人看明白了而已 🧠`},
-  {no:'05',angle:'旁观者视角',scheme:'s-rust',struct:'观察场景→对比反差→身份感植入',
-   text:`参加过一次易学圈的分享，旁听 👁\n台上一个学员说她开单的故事\n她说她现在看房子的眼光变了\n一进门，格局、气口、住的人的性格\n三件事叠在一起，一眼就能给出判断\n我当时坐在台下，说不出话来 🔥`},
-  {no:'06',angle:'预言式',scheme:'s-steel',struct:'趋势断言→时间锚点→稀缺制造',
-   text:`文化营销这件事，三年后会是标配 🔮\n现在学的人，到时候已经跑在前面了\n现在觉得"再看看"的人\n到时候再入场，成本会高很多\n九运离火这扇窗，不会一直开着 🔥\n先进去的人，已经在布局了 💎`},
-  {no:'07',angle:'预言式',scheme:'s-steel',struct:'未来画面→当下对比→行动召唤',
-   text:`两年后，你再看今天做的这个决定 ⏳\n要么会说：还好那时候去学了\n要么会说：早知道当初就去学了\n这两句话的差距，就是现在这一步\n易学全案精华班，学的是整体观 🧭\n从判断到布局到落地，每步有据 🔥`},
-  {no:'08',angle:'预言式',scheme:'s-steel',struct:'行业趋势预言→提前卡位逻辑',
-   text:`有一类设计师，五年后会消失 😮\n靠审美做方案、靠降价留客户的那种\n因为客户越来越精，AI越来越强\n剩下来的，是真正懂人的那部分人 🧠\n懂客户的性格，懂空间的走向\n五行色彩和读像思维，正在做这件事 🔥`},
-  {no:'09',angle:'对话还原',scheme:'s-rose',struct:'真实对话场景→情绪共鸣→翻转落地',
-   text:`客户上周说了一句话，我一直在想 💬\n她说："我看了很多设计师，感觉你懂我"\n我问她为什么这么说\n她说："别人都在说方案，你在说我的生活"\n那一刻我突然明白了 🔑\n五行色彩秒懂客户，教的就是这种眼光 👀`},
-  {no:'10',angle:'对话还原',scheme:'s-rose',struct:'内心对白还原→共情→拉出解法',
-   text:`你有没有在见完客户之后，一个人坐在车里 😣\n反复想：哪里没说对、哪里可以更好\n改了五版方案，对方还是说"再考虑一下"\n那种感觉，不是累，是茫然 😔\n不知道问题出在哪，才是最难熬的\n精华班第三模块，就是帮你找到那个点 🎯`},
-  {no:'11',angle:'对话还原',scheme:'s-rose',struct:'客户原话引用→共鸣→产品植入',
-   text:`一个学员跟我说，她有个习惯 💬\n每次见客户之前，先在脑子里过一遍\n这个人是什么五行，喜欢什么颜色\n他现在生活里卡在哪里\n然后见面了，她只需要把这些说出来\n客户眼睛会亮，然后主动问多少钱 💰`},
-  {no:'12',angle:'时间轴',scheme:'s-sage',struct:'过去→现在→未来三段递进',
-   text:`以前接单，靠的是价格和熟人介绍 ⏳\n现在接单，靠的是口碑和内容流量\n未来接单，靠的是——你懂人、懂势、懂空间\n这三个字，是易学全案教的底层逻辑 🧭\n先懂人，才能谈方案\n先懂势，才知道往哪里走 🔥`},
-  {no:'13',angle:'时间轴',scheme:'s-sage',struct:'时间倒序→重新审视→认知翻转',
-   text:`回头看三年前自己做的方案 📐\n那时候觉得审美好就够了\n后来发现，审美好只是入场券 🎨\n再后来才明白，留住客户靠的是读懂他\n再再后来学了五行色彩，才真正理解\n为什么有些人卖得好，有些人一直改稿 🔥`},
-  {no:'14',angle:'选择题',scheme:'s-char',struct:'选项呈现→结果分叉→身份引导',
-   text:`做生意，其实只有两种走法 🎯\n第一种：一直找流量，一直在引客户\n第二种：把根扎下去，让客户主动来找\n前者越做越累，后者越做越稳 🌱\n文化营销+易学全案，走的是第二条路\n你现在走的是哪一条？ 🤔`},
-  {no:'15',angle:'选择题',scheme:'s-char',struct:'二选一框架→价值锚定→促行动',
-   text:`学设计有两件事可以花时间 ⏳\n一件是打磨审美，一件是读懂人性\n审美好，你会有作品集\n读懂人性，你会有签单率 💰\n两件事都重要，但99%的人只做了一件\n精华班五行色彩那一块，是补那另一半 🔥`},
-  {no:'16',angle:'选择题',scheme:'s-char',struct:'三路分叉→最优解揭晓→卖压收尾',
-   text:`做了生意没起色，一般有三条解法 🤔\n换赛道、降价格、或者搞清楚根在哪里\n前两条很多人都试过，代价也都清楚 😮\n第三条才是真正的解题方向 🌱\n用中国文化植入商业，解决经营根源\n这是精华班第四模块教的核心 💎`},
-  {no:'17',angle:'内幕揭秘',scheme:'s-gold',struct:'秘密感开场→信息差制造→价值落地',
-   text:`那些签单顺的设计师，有件事没说 🔓\n见客户之前，他们已经知道对方要什么了\n不是靠经验，也不是靠运气猜的\n而是靠一套判断人的系统在看 👀\n五行一对，性格、需求、顾虑全出来\n这套东西，精华班第三模块有完整的讲 🧠`},
-  {no:'18',angle:'内幕揭秘',scheme:'s-gold',struct:'行业内幕→揭底→制造落差感',
-   text:`跑赢文化营销这波的人，有个共性 🔓\n他们比别人早了一步知道九运的方向\n不是靠预测，靠的是时势的读懂能力\n文化时代来临，流量向有根有脉的人流 🌱\n那些突然爆单的同行，这是他们的秘密\n乘离火之势，就是精华班的第一课 🔥`},
-  {no:'19',angle:'反常识',scheme:'s-rust',struct:'打破常识→停顿留白→新认知植入',
-   text:`做设计，拼命提升审美可能是弯路 ⚡\n客户从来没有用"审美"来选设计师\n他用的是"感觉对不对"、"懂不懂我" 🤔\n而这两件事，审美解决不了\n五行色彩才是那把真正的钥匙 🔑\n学完你就会明白，签单和美学没多大关系 💡`},
-  {no:'20',angle:'反常识',scheme:'s-rust',struct:'反直觉结论→论据支撑→延伸卖压',
-   text:`生意做不起来，多数人觉得要多发内容 ⚡\n发了三个月，数据有了，钱还是没来\n真正让生意转顺的，很少靠发圈频次 🤔\n靠的是那个根有没有扎稳\n商业的根，比内容更底层\n为何而来，才是精华班要解决的第一个问题 🌱`},
-  {no:'21',angle:'反常识',scheme:'s-rust',struct:'悖论句式→认知冲突→解法给出',
-   text:`有些人越学越多，越学越迷 😮\n越多方法，越不知道用哪个\n有些人只学了一套底层逻辑\n结果反而越做越清晰、越做越顺 ✨\n知识本身不是答案，框架才是\n易学全案精华班，给你的就是那个框架 🧠`},
-  {no:'22',angle:'学员故事',scheme:'s-sage',struct:'小人物切入→具体细节→结果反差',
-   text:`学员里有个做了八年软装的姐姐 📖\n她说，以前见客户全靠状态好不好\n状态好就签，状态差就僵在那里\n学完五行色彩那一块之后，她说变了 🎨\n变的不是话术，是见人的眼光变了\n现在见客户，她说心里有底了 🔥`},
-  {no:'23',angle:'学员故事',scheme:'s-sage',struct:'时间跨度→转折点聚焦→普适性延伸',
-   text:`有个学员，做了五年实体生意 📖\n前四年半，靠熟人维持，勉强不亏\n有半年学了易学的经营根源那一块\n她说那半年，她才第一次弄明白 🌱\n自己的生意为什么一直卡在那里\n不是环境的问题，是根的问题 💎`},
-  {no:'24',angle:'学员故事',scheme:'s-sage',struct:'对话金句→画面感→情感共鸣',
-   text:`课上有人问老师一个问题 📖\n说为什么家里有钱了，但总是不安心\n老师没有直接回答，先问了他三个问题 🤔\n问完了，那个学员沉默了大概一分钟\n然后说："我现在知道哪里不对了"\n五行智慧助力五福，讲的就是这件事 🪷`},
-  {no:'25',angle:'身体感知',scheme:'s-rose',struct:'身体状态描写→情绪植入→共鸣引爆',
-   text:`你有没有那种感觉 🫀\n走进一个客户的家，身体会有点紧\n说不出哪里不对，就是不舒服\n这种感觉不是气场这么玄\n是空间里的布局在说话，动线在说话\n学会读像，才知道那种感觉来自哪里 👀`},
-  {no:'26',angle:'身体感知',scheme:'s-rose',struct:'感官细节→情绪唤起→认知转化',
-   text:`住进一个颜色不对的房间，会累 🎨\n睡醒了感觉没睡够，情绪一直压着\n很多人换了床垫、换了窗帘、换了灯\n就是找不到那个让人放松的感觉\n五行色彩告诉你，问题在颜色属性上 🧠\n适合你的色，才是真正的疗愈空间 ✨`},
-  {no:'27',angle:'追问式',scheme:'s-steel',struct:'连环追问→层层剥皮→核心落地',
-   text:`你上一次接到主动找来的客户，是什么时候 ❓\n那次成交的核心原因，你说得出来吗\n如果那个原因可以被复制，你复制了吗 🤔\n大多数人的生意，好的时候说不清为什么好\n差的时候也说不清为什么差\n易学全案，帮你把这件事说清楚 🧠`},
-  {no:'28',angle:'追问式',scheme:'s-steel',struct:'问题叠加→情绪积压→解法出口',
-   text:`做生意做到一半，突然停下来问自己 ❓\n我这条路，对吗\n我现在做的事，有根吗\n赚到的钱，留得住吗\n家里稳，业里也稳，这两件事可以同时吗 🪷\n为何而来，是精华班帮你回答的第一件事 🌱`},
-  {no:'29',angle:'画面描写',scheme:'s-char',struct:'电影镜头式开场→代入感→产品连接',
-   text:`想象一个画面 🎬\n你走进一个新客户的家，环顾一圈\n心里已经有了方向：这家人需要什么\n不是猜的，是看出来的\n格局说话，色彩说话，动线说话\n读像思维，让你成为那个能读懂的人 👀`},
-  {no:'30',angle:'画面描写',scheme:'s-char',struct:'结果画面先行→倒推过程→行动钩子',
-   text:`想象两年后的自己 🎬\n见客户不慌，开口就到点上\n方案不改三版，客户当场拍板\n家里和事业，同时都在往前走\n这个画面，不是想象出来的\n是一套东西学到位之后，自然发生的 💎`},
-];
+                <p style="font-size: 0.8rem; margin: 15px 0 5px;">管理“角度”（二级筛选）：</p>
+                <div class="tag-manager" id="angle-manager"></div>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="add-angle-input" placeholder="新角度名..." style="margin-bottom:0">
+                    <button onclick="addTag('angles')" style="padding:10px; border-radius:12px; border:1px solid #CCC; background:none;">添加</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-// ── 状态 ──
-let allData = [];
-let curAngle = 'ALL';
-let curQ = '';
-let isLocalMode = false;
+    <script>
+        // --- 初始化配置 (请替换为您自己的 JSONBin 凭证) ---
+        const BIN_ID = 'YOUR_BIN_ID'; 
+        const MASTER_KEY = 'YOUR_MASTER_KEY';
+        const ACCESS_PWD = 'ysqy_admin_pwd'; // 管理密码
 
-// ── 读取数据 ──
-async function loadData() {
-  // 若未配置 JSONBin，直接使用默认数据
-  if (BIN_ID === 'JSONBIN_BIN_ID') {
-    isLocalMode = true;
-    allData = JSON.parse(localStorage.getItem('ysqy_posts') || 'null') || DEFAULT_DATA;
-    updateCount();
-    render();
-    return;
-  }
-  try {
-    const res = await fetch(`${BASE_URL}/latest`, {
-      headers: { 'X-Master-Key': API_KEY }
-    });
-    if (!res.ok) throw new Error('API错误 ' + res.status);
-    const json = await res.json();
-    allData = json.record.posts || DEFAULT_DATA;
-  } catch(e) {
-    showError('云端加载失败，已切换本地模式：' + e.message);
-    allData = JSON.parse(localStorage.getItem('ysqy_posts') || 'null') || DEFAULT_DATA;
-  }
-  updateCount();
-  render();
-}
+        let db = {
+            modules: ["朋友圈", "课程手册", "品牌故事"],
+            angles: ["数字冲击", "对话还原", "情绪唤醒", "场景反差"],
+            posts: []
+        };
 
-function updateCount() {
-  document.getElementById('totalCount').textContent = allData.length;
-}
+        let currentModule = "朋友圈";
+        let currentAngle = "全部";
 
-// ── 渲染 ──
-function render() {
-  const grid = document.getElementById('grid');
-  let list = allData;
-  if (curAngle !== 'ALL') list = list.filter(d => d.angle === curAngle);
-  if (curQ) list = list.filter(d =>
-    d.text.includes(curQ) || d.angle.includes(curQ) || (d.struct||'').includes(curQ)
-  );
-  if (!list.length) {
-    grid.innerHTML = '<div class="empty">暂无匹配文案</div>';
-    return;
-  }
-  grid.innerHTML = list.map((d, i) => {
-    const lines = d.text.split('\n').join('<br>');
-    const escapedText = d.text.replace(/`/g,'\\`').replace(/\\/g,'\\\\');
-    return `
-    <div class="card ${d.scheme}" style="animation-delay:${i*0.04}s">
-      <div class="card-stripe"></div>
-      <div class="card-head">
-        <span class="card-angle">${d.angle}</span>
-        <span class="card-no">${d.no}</span>
-      </div>
-      <div class="card-body">${lines}</div>
-      <div class="card-foot">
-        <span class="card-struct">${d.struct||''}</span>
-        <button class="btn-copy" onclick="cpOne(this,\`${escapedText}\`)">复制</button>
-      </div>
-    </div>`;
-  }).join('');
-}
+        // --- 核心功能：数据交互 ---
+        async function loadData() {
+            if(BIN_ID === 'YOUR_BIN_ID') {
+                // 本地演示数据
+                renderAll();
+                return;
+            }
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': MASTER_KEY }
+                });
+                const data = await res.json();
+                db = data.record;
+                renderAll();
+            } catch(e) { console.error("加载失败", e); }
+        }
 
-function flt(angle, btn) {
-  curAngle = angle;
-  document.querySelectorAll('.leg-btn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  render();
-}
-function doSearch(v) { curQ = v.trim(); render(); }
+        async function syncToCloud() {
+            if(BIN_ID === 'YOUR_BIN_ID') return alert("请先在代码中配置您的 JSONBin ID");
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+                    body: JSON.stringify(db)
+                });
+                renderAll();
+            } catch(e) { alert("同步失败"); }
+        }
 
-function cpOne(btn, text) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✓';
-    btn.classList.add('ok');
-    toast('已复制 ✓');
-    setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('ok'); }, 1800);
-  });
-}
-function copyAll() {
-  const list = curAngle === 'ALL' ? allData : allData.filter(d => d.angle === curAngle);
-  const all = list.map(d => `【${d.no} · ${d.angle}】\n${d.text}`).join('\n\n---\n\n');
-  navigator.clipboard.writeText(all).then(() => toast(`已复制 ${list.length} 条文案 ✓`));
-}
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('on');
-  setTimeout(() => t.classList.remove('on'), 2000);
-}
-function showError(msg) {
-  const b = document.getElementById('errorBanner');
-  b.style.display = 'block'; b.textContent = '⚠ ' + msg;
-}
+        // --- 核心功能：渲染 ---
+        function renderAll() {
+            renderModules();
+            renderAngles();
+            renderCards();
+            renderManager(); // 管理界面的标签
+        }
 
-loadData();
+        function renderModules() {
+            const container = document.getElementById('module-tabs');
+            container.innerHTML = db.modules.map(m => `
+                <div class="module-tab ${currentModule === m ? 'active' : ''}" onclick="setModule('${m}')">${m}</div>
+            `).join('');
 
-// ── 监听 localStorage 变化（同浏览器跨标签页同步）──
-window.addEventListener('storage', e => {
-  if (e.key === 'ysqy_posts') {
-    allData = JSON.parse(e.newValue) || DEFAULT_DATA;
-    updateCount();
-    render();
-  }
-});
-</script>
+            // 更新发布下拉框
+            document.getElementById('new-module').innerHTML = db.modules.map(m => `<option value="${m}">${m}</option>`).join('');
+        }
+
+        function renderAngles() {
+            const container = document.getElementById('angle-bar');
+            const list = ["全部", ...db.angles];
+            container.innerHTML = list.map(a => `
+                <div class="angle-pill ${currentAngle === a ? 'active' : ''}" onclick="setAngle('${a}')">${a}</div>
+            `).join('');
+
+            // 更新发布下拉框
+            document.getElementById('new-angle').innerHTML = db.angles.map(a => `<option value="${a}">${a}</option>`).join('');
+        }
+
+        function renderCards() {
+            const container = document.getElementById('card-grid');
+            let filtered = db.posts.filter(p => p.module === currentModule);
+            if(currentAngle !== "全部") filtered = filtered.filter(p => p.angle === currentAngle);
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:100px; opacity:0.3;">暂无此类文案，点击右下角发布</p>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map((p, i) => `
+                <div class="copy-card fade-in-up" style="animation-delay: ${i*0.1}s">
+                    <div class="copy-text">${p.text}</div>
+                    <div class="card-meta">
+                        <span># ${p.angle}</span>
+                        <i class="fa-regular fa-clone" style="cursor:pointer; font-size:1rem;" onclick="copyMe('${p.text.replace(/\n/g, '\\n')}')"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderManager() {
+            document.getElementById('module-manager').innerHTML = db.modules.map(m => `
+                <div class="tag-item">${m} <i class="fa-solid fa-circle-xmark" onclick="removeTag('modules', '${m}')"></i></div>
+            `).join('');
+            document.getElementById('angle-manager').innerHTML = db.angles.map(a => `
+                <div class="tag-item">${a} <i class="fa-solid fa-circle-xmark" onclick="removeTag('angles', '${a}')"></i></div>
+            `).join('');
+        }
+
+        // --- 逻辑控制 ---
+        function setModule(m) { currentModule = m; currentAngle = "全部"; renderAll(); }
+        function setAngle(a) { currentAngle = a; renderAll(); }
+
+        function toggleDrawer() { document.getElementById('admin-drawer').classList.toggle('open'); }
+
+        function verifyAdmin() {
+            if(document.getElementById('admin-pwd').value === ACCESS_PWD) {
+                document.getElementById('admin-auth').style.display = 'none';
+                document.getElementById('admin-content').style.display = 'block';
+            } else { alert("密码错误"); }
+        }
+
+        function publishCopy() {
+            const text = document.getElementById('new-text').value;
+            const module = document.getElementById('new-module').value;
+            const angle = document.getElementById('new-angle').value;
+            if(!text) return;
+            db.posts.unshift({ text, module, angle, time: new Date().getTime() });
+            syncToCloud();
+            document.getElementById('new-text').value = "";
+            alert("发布成功并已同步云端");
+        }
+
+        function addTag(type) {
+            const input = document.getElementById(`add-${type.slice(0,-1)}-input`);
+            if(!input.value) return;
+            db[type].push(input.value);
+            input.value = "";
+            syncToCloud();
+        }
+
+        function removeTag(type, val) {
+            if(!confirm(`确定删除“${val}”吗？这可能影响已有文案的显示`)) return;
+            db[type] = db[type].filter(item => item !== val);
+            syncToCloud();
+        }
+
+        function copyMe(text) {
+            navigator.clipboard.writeText(text.replace(/\\n/g, '\n')).then(() => alert("已复制到剪贴板"));
+        }
+
+        window.onload = loadData;
+    </script>
 </body>
 </html>
