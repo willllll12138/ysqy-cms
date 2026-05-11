@@ -17,8 +17,8 @@
 body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink);}
 
 .hero {
-  height: 85vh;
-  min-height: 680px;
+  height: 75vh;
+  min-height: 620px;
   background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), 
               url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=2000') center/cover no-repeat;
   display: flex;
@@ -26,6 +26,7 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
   justify-content: center;
   text-align: center;
   color: white;
+  position: relative;
 }
 .hero-content h1 {
   font-family: 'Noto Serif SC', serif;
@@ -35,11 +36,11 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
 }
 .hero-content p { font-size: 1.35rem; opacity: 0.95; }
 
-/* 模块卡片 - 完整展示 */
+/* 模块卡片 - 完全不遮挡 */
 .modules {
   max-width: 1280px;
-  margin: -100px auto 120px;
-  padding: 0 40px;
+  margin: 0 auto;
+  padding: 40px 40px 120px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
   gap: 32px;
@@ -88,9 +89,4 @@ body {font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink
     <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800" alt="朋友圈">
     <div class="module-info">
       <h3>朋友圈</h3>
-      <p>高转化发圈文案库</p>
-    </div>
-  </div>
-
-  <div class="module-card" onclick="location.href='testimonials.html'">
-    <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800"
+      <p>高转化发圈文案库
