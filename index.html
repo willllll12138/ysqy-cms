@@ -21,56 +21,55 @@
             font-family: 'Noto Sans SC', sans-serif;
             color: var(--ink);
             line-height: 1.8;
-            overflow-x: hidden;
         }
         .header {
-            padding: 120px 40px 60px;
+            padding: 100px 40px 60px;
             text-align: center;
-            background: linear-gradient(to bottom, #F7F5F0, rgba(247,245,240,0.95));
+            background: linear-gradient(to bottom, #F7F5F0, rgba(247,245,240,0.98));
         }
         .title {
             font-family: 'Noto Serif SC', serif;
-            font-size: clamp(2.8rem, 8vw, 4.5rem);
-            letter-spacing: 0.12em;
+            font-size: clamp(3rem, 8vw, 5rem);
+            letter-spacing: 0.08em;
             margin-bottom: 12px;
         }
-        .subtitle { opacity: 0.65; font-weight: 300; font-size: 1.1rem; }
+        .subtitle { font-size: 1.15rem; opacity: 0.7; }
 
         .tabs {
-            display: flex; justify-content: center; gap: 40px; margin: 50px 0 30px;
-            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: center; gap: 40px; margin: 50px 0 20px;
+            border-bottom: 1px solid var(--border); flex-wrap: wrap;
         }
         .tab {
-            padding: 12px 0;
-            font-size: 1.15rem;
-            cursor: pointer;
-            position: relative;
-            opacity: 0.5;
-            transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+            padding: 15px 0; font-size: 1.2rem; cursor: pointer;
+            position: relative; transition: all 0.4s ease;
         }
-        .tab.active { opacity: 1; font-weight: 500; }
+        .tab.active {
+            color: var(--terracotta);
+            font-weight: 500;
+        }
         .tab.active::after {
-            content:''; position:absolute; bottom:-1px; left:0; width:100%; height:3px;
-            background: var(--ink);
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px;
+            background: var(--terracotta);
         }
 
         .angle-bar {
             display: flex; gap: 12px; padding: 20px 40px; overflow-x: auto;
             background: rgba(247,245,240,0.95); backdrop-filter: blur(12px);
-            position: sticky; top:0; z-index: 100;
+            position: sticky; top: 0; z-index: 100; scrollbar-width: none;
         }
         .pill {
             padding: 10px 28px; border-radius: 50px; background: white;
             border: 1px solid var(--border); white-space: nowrap; cursor: pointer;
             transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
         }
+        .pill:hover { transform: translateY(-2px); }
         .pill.active {
             background: var(--ink); color: white; border-color: var(--ink);
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 32px;
             padding: 40px;
         }
@@ -79,46 +78,38 @@
             border-radius: 28px;
             padding: 42px 36px;
             transition: all 0.6s cubic-bezier(0.23,1,0.32,1);
-            border: 1px solid transparent;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
         .card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.1);
-            border-color: var(--border);
+            transform: translateY(-16px);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.12);
         }
         .copy-text {
-            font-size: 1.15rem;
-            line-height: 1.85;
-            margin-bottom: 28px;
+            font-size: 1.18rem;
+            line-height: 1.9;
+            margin-bottom: 30px;
             white-space: pre-wrap;
         }
         .meta {
             display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.85rem; color: #888;
+            font-size: 0.9rem; color: #666;
         }
-
         .admin-btn {
             position: fixed; bottom: 40px; right: 40px;
-            width: 68px; height: 68px; background: var(--ink); color: white;
+            width: 70px; height: 70px; background: var(--ink); color: white;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; cursor: pointer; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            z-index: 999;
+            font-size: 1.8rem; cursor: pointer; box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            z-index: 999; transition: all 0.3s;
         }
-
-        @media (max-width: 768px) {
-            .grid { padding: 20px; gap: 24px; }
-            .card { padding: 32px 24px; }
-        }
+        .admin-btn:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div style="letter-spacing:0.4em; font-size:0.85rem; opacity:0.6; margin-bottom:8px;">YISHI QIANYUAN</div>
+    <div style="letter-spacing:0.5em; font-size:0.9rem; opacity:0.6;">YISHI QIANYUAN</div>
     <h1 class="title">易饰乾园</h1>
     <p class="subtitle">极简文案资产库 · 驱动品牌自然生长</p>
-
     <div class="tabs" id="module-tabs"></div>
 </div>
 
@@ -127,25 +118,29 @@
 <main class="grid" id="card-grid"></main>
 
 <div class="admin-btn" onclick="window.open('admin.html','_blank')">
-    <i class="fa-solid fa-sliders"></i>
+    <i class="fa-solid fa-gear"></i>
 </div>
 
 <script>
-// === 配置区 ===
-const BIN_ID = 'YOUR_BIN_ID';           // ← 改成你的 JSONBin ID
+// 配置
+const BIN_ID = 'YOUR_BIN_ID';
 const MASTER_KEY = 'YOUR_MASTER_KEY';
 
-let db = {
-    modules: ["朋友圈", "课程手册", "品牌故事"],
-    angles: ["数字冲击", "对话还原", "情绪唤醒", "场景反差"],
-    posts: []
-};
-
+let db = { modules: ["朋友圈", "课程手册", "品牌故事"], angles: ["数字冲击", "对话还原", "情绪唤醒", "场景反差"], posts: [] };
 let currentModule = "朋友圈";
 let currentAngle = "全部";
 
-// 加载 & 渲染（同之前逻辑，略微精简）
-async function loadData() { /* ... 同你原来的 loadData ... */ renderAll(); }
+async function loadData() {
+    if (BIN_ID === 'YOUR_BIN_ID') {
+        renderAll();
+        return;
+    }
+    try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': MASTER_KEY } });
+        db = (await res.json()).record || db;
+    } catch(e) {}
+    renderAll();
+}
 
 function renderAll() {
     renderModules();
@@ -153,33 +148,48 @@ function renderAll() {
     renderCards();
 }
 
-function renderModules() { /* ... */ }
-function renderAngles() { /* ... */ }
+function renderModules() {
+    const container = document.getElementById('module-tabs');
+    container.innerHTML = db.modules.map(m => `
+        <div class="tab ${currentModule === m ? 'active' : ''}" onclick="setModule('${m}')">${m}</div>
+    `).join('');
+}
+
+function renderAngles() {
+    const container = document.getElementById('angle-bar');
+    const list = ["全部", ...db.angles];
+    container.innerHTML = list.map(a => `
+        <div class="pill ${currentAngle === a ? 'active' : ''}" onclick="setAngle('${a}')">${a}</div>
+    `).join('');
+}
 
 function renderCards() {
     const container = document.getElementById('card-grid');
     let filtered = db.posts.filter(p => p.module === currentModule);
     if (currentAngle !== "全部") filtered = filtered.filter(p => p.angle === currentAngle);
 
-    container.innerHTML = filtered.length ? filtered.map((p,i) => `
+    if (filtered.length === 0) {
+        container.innerHTML = `<p style="grid-column:1/-1;text-align:center;padding:120px;opacity:0.5;font-size:1.2rem;">暂无文案，点击右下角齿轮进入后台发布</p>`;
+        return;
+    }
+
+    container.innerHTML = filtered.map((p, i) => `
         <div class="card">
             <div class="copy-text">${p.text}</div>
             <div class="meta">
-                <span>#${p.angle}</span>
-                <i class="fa-regular fa-clone" onclick="copyText('${p.text.replace(/\n/g,'\\n')}')"></i>
+                <span># ${p.angle}</span>
+                <i class="fa-regular fa-copy" style="cursor:pointer;font-size:1.3rem;" onclick="copyText('${p.text.replace(/\n/g, '\\n')}')"></i>
             </div>
         </div>
-    `).join('') : `<p style="grid-column:1/-1;text-align:center;padding:120px 20px;opacity:0.4;font-size:1.1rem;">暂无文案，前往后台发布</p>`;
+    `).join('');
 }
 
-function copyText(t) {
-    navigator.clipboard.writeText(t.replace(/\\n/g,'\n'));
-    alert('已复制到剪贴板');
+function copyText(text) {
+    navigator.clipboard.writeText(text.replace(/\\n/g, '\n')).then(() => alert('✅ 已复制到剪贴板'));
 }
 
-// 切换
-function setModule(m){ currentModule=m; currentAngle="全部"; renderAll(); }
-function setAngle(a){ currentAngle=a; renderAll(); }
+function setModule(m) { currentModule = m; currentAngle = "全部"; renderAll(); }
+function setAngle(a) { currentAngle = a; renderAll(); }
 
 window.onload = loadData;
 </script>
