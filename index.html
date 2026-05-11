@@ -8,137 +8,245 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap');
 
 :root {
-  --bg: #0f0f0f;
-  --card: #1a1a1a;
-  --text: #e8d9c0;
+  --bg: #F7F5F0;
+  --card: #FFFFFF;
+  --ink: #1D1D1F;
   --gold: #C66A4E;
-  --gold2: #d4a84b;
+  --mist: #E5E0D8;
 }
 
 * {margin:0;padding:0;box-sizing:border-box;}
 body {
   background: var(--bg);
   font-family: 'Noto Sans SC', sans-serif;
-  color: var(--text);
+  color: var(--ink);
   min-height: 100vh;
 }
 
 /* HERO */
-.hero{
-  background: #111;
-  padding: 90px 32px 60px;
-  text-align:center;
-  position:relative;
+.hero {
+  padding: 100px 40px 60px;
+  text-align: center;
 }
-.hero h1{
-  font-family:'Noto Serif SC',serif;
-  font-size:clamp(2.6rem,8vw,4.2rem);
-  font-weight:900;
-  letter-spacing:.1em;
-  color:#fff;
+.hero h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(2.8rem, 8vw, 4.5rem);
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
 }
-.hero h1 em{color:var(--gold2);}
-.hero-desc{
-  margin-top:16px;font-size:1.05rem;color:#aaa;letter-spacing:.25em;
+.hero h1 em { color: var(--gold); }
+.hero-desc {
+  font-size: 1.1rem;
+  color: #666;
+  letter-spacing: 0.15em;
 }
 
-/* TABS */
-.legend-wrap{
-  background:#151515;
-  position:sticky;top:0;z-index:100;
-  overflow-x:auto;
-  border-bottom:1px solid #222;
+/* 角度 Tab - 居中 */
+.legend-wrap {
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--mist);
+  text-align: center;
 }
-.legend{
-  display:flex;padding:0 20px;
+.legend {
+  display: inline-flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
 }
-.leg-btn{
-  padding:18px 24px;
-  font-size:1rem;
-  color:#888;
-  cursor:pointer;
-  border:none;
-  background:none;
-  white-space:nowrap;
-  transition:all .3s;
+.leg-btn {
+  padding: 10px 24px;
+  border-radius: 50px;
+  background: white;
+  border: 1px solid var(--mist);
+  color: #555;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.4s;
 }
-.leg-btn.on{
-  color:var(--gold);
-  border-bottom:3px solid var(--gold);
+.leg-btn.on {
+  background: var(--ink);
+  color: white;
+  border-color: var(--ink);
 }
 
 /* GRID */
-.grid{
-  max-width:1280px;
-  margin:40px auto;
-  padding:0 22px 100px;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(360px,1fr));
-  gap:28px;
+.grid {
+  max-width: 1280px;
+  margin: 40px auto;
+  padding: 0 30px 80px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 28px;
 }
 
-.card{
-  background:var(--card);
-  border:1px solid #333;
-  border-radius:12px;
-  overflow:hidden;
-  transition:all .5s cubic-bezier(0.23,1,0.32,1);
+.card {
+  background: var(--card);
+  border: 1px solid var(--mist);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.5s;
 }
-.card:hover{
-  transform:translateY(-16px);
-  border-color:var(--gold);
-  box-shadow:0 40px 80px rgba(198,106,78,0.18);
-}
-
-.card-stripe{height:4px;}
-.s-gold .card-stripe{background:linear-gradient(90deg,var(--gold),var(--gold2));}
-.s-rust .card-stripe{background:linear-gradient(90deg,#c55,#e88);}
-.s-sage .card-stripe{background:linear-gradient(90deg,#6a8,#8b9);}
-.s-steel .card-stripe{background:linear-gradient(90deg,#557,#88a);}
-.s-rose .card-stripe{background:linear-gradient(90deg,#a57,#d79);}
-.s-char .card-stripe{background:linear-gradient(90deg,#555,#888);}
-
-.card-head{
-  padding:18px 24px 10px;
-  display:flex;justify-content:space-between;
-}
-.card-angle{font-size:0.85rem;letter-spacing:0.1em;padding:4px 12px;border-radius:6px;}
-.s-gold .card-angle{background:rgba(198,106,78,0.2);color:var(--gold);}
-.card-no{font-family:'Noto Serif SC',serif;color:#666;}
-
-.card-body{
-  padding:8px 24px 20px;
-  font-size:1.05rem;
-  line-height:1.95;
-  color:#ddd;
-}
-.card-foot{
-  padding:14px 24px;
-  border-top:1px solid #222;
-  display:flex;justify-content:space-between;align-items:center;
-  color:#888;
-}
-.btn-copy{
-  padding:8px 20px;
-  border:1px solid #555;
-  background:transparent;
-  color:#bbb;
-  cursor:pointer;
-  border-radius:6px;
-}
-.btn-copy:hover{
-  border-color:var(--gold);
-  color:var(--gold);
+.card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.08);
 }
 
-.toast{
-  position:fixed;bottom:40px;left:50%;transform:translateX(-50%);
-  background:#1f1f1f;border:1px solid var(--gold);color:var(--gold2);
-  padding:14px 32px;border-radius:8px;opacity:0;transition:.3s;z-index:999;
+.card-stripe { height: 4px; }
+.s-gold .card-stripe { background: linear-gradient(90deg, #C66A4E, #d4a84b); }
+.s-rust .card-stripe { background: linear-gradient(90deg, #7a3520, #c06040); }
+.s-sage .card-stripe { background: linear-gradient(90deg, #4a6040, #7a9a70); }
+.s-steel .card-stripe { background: linear-gradient(90deg, #3a4a5a, #6a8aaa); }
+.s-rose .card-stripe { background: linear-gradient(90deg, #7a3040, #b06080); }
+.s-char .card-stripe { background: linear-gradient(90deg, #2a2318, #6a6050); }
+
+.card-head {
+  padding: 18px 24px 10px;
+  display: flex;
+  justify-content: space-between;
 }
-.toast.on{opacity:1;}
+.card-angle { font-size: 0.85rem; padding: 4px 12px; border-radius: 20px; }
+.s-gold .card-angle { background: #fdf0e8; color: var(--gold); }
+
+.card-body {
+  padding: 10px 24px 20px;
+  line-height: 1.95;
+  font-size: 1.05rem;
+}
+.card-foot {
+  padding: 14px 24px;
+  border-top: 1px solid var(--mist);
+  display: flex;
+  justify-content: space-between;
+  color: #777;
+}
+.btn-copy {
+  padding: 6px 20px;
+  border: 1px solid var(--mist);
+  border-radius: 30px;
+  background: transparent;
+  cursor: pointer;
+}
+.btn-copy:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
 </style>
 </head>
 <body>
 
-<div class="hero
+<div class="hero">
+  <h1>易饰乾园 · <em>发圈文案库</em></h1>
+  <p class="hero-desc">极简文案资产 · 驱动品牌自然生长</p>
+</div>
+
+<div class="legend-wrap">
+  <div class="legend" id="legend"></div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div style="text-align:center;padding:60px;color:#888;font-size:0.9rem;">
+  <a href="admin.html" style="color:var(--gold);">后台管理</a>
+</div>
+
+<script>
+// 完整30条文案数据
+const DEFAULT_DATA = [
+  {no:'01',angle:'数字冲击',scheme:'s-gold',struct:'数据开场→场景反差→结论落地',text:`同样做室内设计，收入差距能有10倍 📊\n靠颜感做方案的，改稿改到怀疑人生\n靠五行色彩做方案的，签单当天就定\n区别不在于谁更努力、谁更有品味\n而在于那套判断客户的底层工具 🎯\n有这个工具的人，和没有的人，不同命`},
+  {no:'02',angle:'数字冲击',scheme:'s-gold',struct:'数字开篇→递进放大→情绪钉子',text:`10个客户说"再想想"，9个再也没回来 😮\n这个比例，很多设计师心里清楚\n但从来没有去想过为什么\n他在说"再想想"的那一刻\n其实已经替你做了一个决定了 🔑\n五行色彩秒懂客户，这才是真正的破局 🔥`},
+  {no:'03',angle:'数字冲击',scheme:'s-gold',struct:'时间数字→对比落差→钩子收尾',text:`学了三年设计，卖了两年方案 📐\n换来的是："能不能再便宜一点"\n有人入行一年，客户主动加价签单\n同一个市场，同样的产品线\n差距怎么来的，值得停下来想一想 🤔\n文化时代赋能百业，说的就是这件事 💎`},
+  {no:'04',angle:'旁观者视角',scheme:'s-rust',struct:'第三人称引入→行为观察→留白钩子',text:`我见过一个设计师，报价是同行两倍 👀\n客户坐下来，她没急着翻方案\n先聊了十分钟，聊这个客户是什么人\n聊完了，客户自己问："什么时候开始？"\n旁边同事问她怎么做到的 🤔\n她说：我只是先把人看明白了而已 🧠`},
+  {no:'05',angle:'旁观者视角',scheme:'s-rust',struct:'观察场景→对比反差→身份感植入',text:`参加过一次易学圈的分享，旁听 👁\n台上一个学员说她开单的故事\n她说她现在看房子的眼光变了\n一进门，格局、气口、住的人的性格\n三件事叠在一起，一眼就能给出判断\n我当时坐在台下，说不出话来 🔥`},
+  {no:'06',angle:'预言式',scheme:'s-steel',struct:'趋势断言→时间锚点→稀缺制造',text:`文化营销这件事，三年后会是标配 🔮\n现在学的人，到时候已经跑在前面了\n现在觉得"再看看"的人\n到时候再入场，成本会高很多\n九运离火这扇窗，不会一直开着 🔥\n先进去的人，已经在布局了 💎`},
+  {no:'07',angle:'预言式',scheme:'s-steel',struct:'未来画面→当下对比→行动召唤',text:`两年后，你再看今天做的这个决定 ⏳\n要么会说：还好那时候去学了\n要么会说：早知道当初就去学了\n这两句话的差距，就是现在这一步\n易学全案精华班，学的是整体观 🧭\n从判断到布局到落地，每步有据 🔥`},
+  {no:'08',angle:'预言式',scheme:'s-steel',struct:'行业趋势预言→提前卡位逻辑',text:`有一类设计师，五年后会消失 😮\n靠审美做方案、靠降价留客户的那种\n因为客户越来越精，AI越来越强\n剩下来的，是真正懂人的那部分人 🧠\n懂客户的性格，懂空间的走向\n五行色彩和读像思维，正在做这件事 🔥`},
+  {no:'09',angle:'对话还原',scheme:'s-rose',struct:'真实对话场景→情绪共鸣→翻转落地',text:`客户上周说了一句话，我一直在想 💬\n她说："我看了很多设计师，感觉你懂我"\n我问她为什么这么说\n她说："别人都在说方案，你在说我的生活"\n那一刻我突然明白了 🔑\n五行色彩秒懂客户，教的就是这种眼光 👀`},
+  {no:'10',angle:'对话还原',scheme:'s-rose',struct:'内心对白还原→共情→拉出解法',text:`你有没有在见完客户之后，一个人坐在车里 😣\n反复想：哪里没说对、哪里可以更好\n改了五版方案，对方还是说"再考虑一下"\n那种感觉，不是累，是茫然 😔\n不知道问题出在哪，才是最难熬的\n精华班第三模块，就是帮你找到那个点 🎯`},
+  {no:'11',angle:'对话还原',scheme:'s-rose',struct:'客户原话引用→共鸣→产品植入',text:`一个学员跟我说，她有个习惯 💬\n每次见客户之前，先在脑子里过一遍\n这个人是什么五行，喜欢什么颜色\n他现在生活里卡在哪里\n然后见面了，她只需要把这些说出来\n客户眼睛会亮，然后主动问多少钱 💰`},
+  {no:'12',angle:'时间轴',scheme:'s-sage',struct:'过去→现在→未来三段递进',text:`以前接单，靠的是价格和熟人介绍 ⏳\n现在接单，靠的是口碑和内容流量\n未来接单，靠的是——你懂人、懂势、懂空间\n这三个字，是易学全案教的底层逻辑 🧭\n先懂人，才能谈方案\n先懂势，才知道往哪里走 🔥`},
+  {no:'13',angle:'时间轴',scheme:'s-sage',struct:'时间倒序→重新审视→认知翻转',text:`回头看三年前自己做的方案 📐\n那时候觉得审美好就够了\n后来发现，审美好只是入场券 🎨\n再后来才明白，留住客户靠的是读懂他\n再再后来学了五行色彩，才真正理解\n为什么有些人卖得好，有些人一直改稿 🔥`},
+  {no:'14',angle:'选择题',scheme:'s-char',struct:'选项呈现→结果分叉→身份引导',text:`做生意，其实只有两种走法 🎯\n第一种：一直找流量，一直在引客户\n第二种：把根扎下去，让客户主动来找\n前者越做越累，后者越做越稳 🌱\n文化营销+易学全案，走的是第二条路\n你现在走的是哪一条？ 🤔`},
+  {no:'15',angle:'选择题',scheme:'s-char',struct:'二选一框架→价值锚定→促行动',text:`学设计有两件事可以花时间 ⏳\n一件是打磨审美，一件是读懂人性\n审美好，你会有作品集\n读懂人性，你会有签单率 💰\n两件事都重要，但99%的人只做了一件\n精华班五行色彩那一块，是补那另一半 🔥`},
+  {no:'16',angle:'选择题',scheme:'s-char',struct:'三路分叉→最优解揭晓→卖压收尾',text:`做了生意没起色，一般有三条解法 🤔\n换赛道、降价格、或者搞清楚根在哪里\n前两条很多人都试过，代价也都清楚 😮\n第三条才是真正的解题方向 🌱\n用中国文化植入商业，解决经营根源\n这是精华班第四模块教的核心 💎`},
+  {no:'17',angle:'内幕揭秘',scheme:'s-gold',struct:'秘密感开场→信息差制造→价值落地',text:`那些签单顺的设计师，有件事没说 🔓\n见客户之前，他们已经知道对方要什么了\n不是靠经验，也不是靠运气猜的\n而是靠一套判断人的系统在看 👀\n五行一对，性格、需求、顾虑全出来\n这套东西，精华班第三模块有完整的讲 🧠`},
+  {no:'18',angle:'内幕揭秘',scheme:'s-gold',struct:'行业内幕→揭底→制造落差感',text:`跑赢文化营销这波的人，有个共性 🔓\n他们比别人早了一步知道九运的方向\n不是靠预测，靠的是时势的读懂能力\n文化时代来临，流量向有根有脉的人流 🌱\n那些突然爆单的同行，这是他们的秘密\n乘离火之势，就是精华班的第一课 🔥`},
+  {no:'19',angle:'反常识',scheme:'s-rust',struct:'打破常识→停顿留白→新认知植入',text:`做设计，拼命提升审美可能是弯路 ⚡\n客户从来没有用"审美"来选设计师\n他用的是"感觉对不对"、"懂不懂我" 🤔\n而这两件事，审美解决不了\n五行色彩才是那把真正的钥匙 🔑\n学完你就会明白，签单和美学没多大关系 💡`},
+  {no:'20',angle:'反常识',scheme:'s-rust',struct:'反直觉结论→论据支撑→延伸卖压',text:`生意做不起来，多数人觉得要多发内容 ⚡\n发了三个月，数据有了，钱还是没来\n真正让生意转顺的，很少靠发圈频次 🤔\n靠的是那个根有没有扎稳\n商业的根，比内容更底层\n为何而来，才是精华班要解决的第一个问题 🌱`},
+  {no:'21',angle:'反常识',scheme:'s-rust',struct:'悖论句式→认知冲突→解法给出',text:`有些人越学越多，越学越迷 😮\n越多方法，越不知道用哪个\n有些人只学了一套底层逻辑\n结果反而越做越清晰、越做越顺 ✨\n知识本身不是答案，框架才是\n易学全案精华班，给你的就是那个框架 🧠`},
+  {no:'22',angle:'学员故事',scheme:'s-sage',struct:'小人物切入→具体细节→结果反差',text:`学员里有个做了八年软装的姐姐 📖\n她说，以前见客户全靠状态好不好\n状态好就签，状态差就僵在那里\n学完五行色彩那一块之后，她说变了 🎨\n变的不是话术，是见人的眼光变了\n现在见客户，她说心里有底了 🔥`},
+  {no:'23',angle:'学员故事',scheme:'s-sage',struct:'时间跨度→转折点聚焦→普适性延伸',text:`有个学员，做了五年实体生意 📖\n前四年半，靠熟人维持，勉强不亏\n有半年学了易学的经营根源那一块\n她说那半年，她才第一次弄明白 🌱\n自己的生意为什么一直卡在那里\n不是环境的问题，是根的问题 💎`},
+  {no:'24',angle:'学员故事',scheme:'s-sage',struct:'对话金句→画面感→情感共鸣',text:`课上有人问老师一个问题 📖\n说为什么家里有钱了，但总是不安心\n老师没有直接回答，先问了他三个问题 🤔\n问完了，那个学员沉默了大概一分钟\n然后说："我现在知道哪里不对了"\n五行智慧助力五福，讲的就是这件事 🪷`},
+  {no:'25',angle:'身体感知',scheme:'s-rose',struct:'身体状态描写→情绪植入→共鸣引爆',text:`你有没有那种感觉 🫀\n走进一个客户的家，身体会有点紧\n说不出哪里不对，就是不舒服\n这种感觉不是气场这么玄\n是空间里的布局在说话，动线在说话\n学会读像，才知道那种感觉来自哪里 👀`},
+  {no:'26',angle:'身体感知',scheme:'s-rose',struct:'感官细节→情绪唤起→认知转化',text:`住进一个颜色不对的房间，会累 🎨\n睡醒了感觉没睡够，情绪一直压着\n很多人换了床垫、换了窗帘、换了灯\n就是找不到那个让人放松的感觉\n五行色彩告诉你，问题在颜色属性上 🧠\n适合你的色，才是真正的疗愈空间 ✨`},
+  {no:'27',angle:'追问式',scheme:'s-steel',struct:'连环追问→层层剥皮→核心落地',text:`你上一次接到主动找来的客户，是什么时候 ❓\n那次成交的核心原因，你说得出来吗\n如果那个原因可以被复制，你复制了吗 🤔\n大多数人的生意，好的时候说不清为什么好\n差的时候也说不清为什么差\n易学全案，帮你把这件事说清楚 🧠`},
+  {no:'28',angle:'追问式',scheme:'s-steel',struct:'问题叠加→情绪积压→解法出口',text:`做生意做到一半，突然停下来问自己 ❓\n我这条路，对吗\n我现在做的事，有根吗\n赚到的钱，留得住吗\n家里稳，业里也稳，这两件事可以同时吗 🪷\n为何而来，是精华班帮你回答的第一件事 🌱`},
+  {no:'29',angle:'画面描写',scheme:'s-char',struct:'电影镜头式开场→代入感→产品连接',text:`想象一个画面 🎬\n你走进一个新客户的家，环顾一圈\n心里已经有了方向：这家人需要什么\n不是猜的，是看出来的\n格局说话，色彩说话，动线说话\n读像思维，让你成为那个能读懂的人 👀`},
+  {no:'30',angle:'画面描写',scheme:'s-char',struct:'结果画面先行→倒推过程→行动钩子',text:`想象两年后的自己 🎬\n见客户不慌，开口就到点上\n方案不改三版，客户当场拍板\n家里和事业，同时都在往前走\n这个画面，不是想象出来的\n是一套东西学到位之后，自然发生的 💎`}
+];
+
+let allData = [];
+let curAngle = 'ALL';
+
+function loadData() {
+  allData = DEFAULT_DATA;
+  renderLegend();
+  render();
+}
+
+function renderLegend() {
+  const angles = ['ALL', ...new Set(allData.map(d => d.angle))];
+  let html = '';
+  angles.forEach(a => {
+    const name = a === 'ALL' ? '全部' : a;
+    html += `<button class="leg-btn ${a==='ALL'?'on':''}" onclick="flt('${a}',this)">${name}</button>`;
+  });
+  document.getElementById('legend').innerHTML = html;
+}
+
+function render() {
+  const grid = document.getElementById('grid');
+  let list = curAngle === 'ALL' ? allData : allData.filter(d => d.angle === curAngle);
+
+  grid.innerHTML = list.map(d => {
+    const lines = d.text.split('\n').join('<br>');
+    return `
+    <div class="card ${d.scheme}">
+      <div class="card-stripe"></div>
+      <div class="card-head">
+        <span class="card-angle">${d.angle}</span>
+        <span>${d.no}</span>
+      </div>
+      <div class="card-body">${lines}</div>
+      <div class="card-foot">
+        <span>${d.struct||''}</span>
+        <button class="btn-copy" onclick="copyOne(this,'${d.text.replace(/\n/g,'\\n')}')">复制</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function flt(angle, btn) {
+  curAngle = angle;
+  document.querySelectorAll('.leg-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  render();
+}
+
+function copyOne(btn, text) {
+  navigator.clipboard.writeText(text.replace(/\\n/g,'\n')).then(() => {
+    const old = btn.textContent;
+    btn.textContent = '✓ 已复制';
+    setTimeout(() => btn.textContent = old, 1600);
+  });
+}
+
+window.onload = loadData;
+</script>
+</body>
+</html>
