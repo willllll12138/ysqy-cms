@@ -44,6 +44,8 @@
             z-index:1000;
         }
         .container { max-width:960px; margin:0 auto; padding:0 24px; }
+
+        /* 首页 */
         .hero { text-align:center; padding:72px 0 48px; }
         .hero-tag { display:inline-block; font-size:0.7rem; letter-spacing:0.35em; color:var(--gold); background:var(--gold-pale); padding:6px 18px; border-radius:var(--radius-full); margin-bottom:16px; font-weight:500; }
         .hero-title { font-family:var(--font-serif); font-size:2.8rem; font-weight:900; letter-spacing:0.06em; color:var(--ink); margin-bottom:8px; line-height:1.2; }
@@ -56,6 +58,8 @@
         .module-card-title { font-family:var(--font-serif); font-size:1.3rem; font-weight:700; letter-spacing:0.04em; }
         .module-card-desc { font-size:0.8rem; color:var(--ink-light); }
         .module-card-arrow { align-self:flex-end; color:#ccc; }
+
+        /* 二级页头 */
         .sub-header { display:flex; align-items:center; justify-content:space-between; padding:24px 0 16px; gap:12px; flex-wrap:wrap; position:sticky; top:3px; background:var(--bg); z-index:90; border-bottom:1px solid var(--border); }
         .sub-title-area { display:flex; align-items:center; gap:12px; }
         .sub-title { font-family:var(--font-serif); font-size:1.6rem; font-weight:700; }
@@ -68,23 +72,25 @@
         .search-input-wrap.open { width:240px; border:1px solid var(--border-strong); box-shadow:var(--shadow-md); }
         .search-input-wrap input { width:100%; padding:9px 38px 9px 16px; border:none; background:transparent; font-size:0.82rem; font-family:inherit; outline:none; }
         .search-input-wrap .search-close { position:absolute; right:6px; cursor:pointer; color:#aaa; padding:6px; }
-        .angle-bar { display:flex; gap:8px; padding:16px 0; flex-wrap:wrap; }
-        .angle-pill { padding:7px 18px; border-radius:var(--radius-full); background:var(--card-bg); border:1.5px solid var(--border); cursor:pointer; font-size:0.8rem; transition:var(--transition); color:var(--ink-light); }
-        .angle-pill.active { background:var(--ink); color:#fff; border-color:var(--ink); font-weight:500; }
-        .cat-tabs { display:flex; gap:8px; flex-wrap:wrap; padding:14px 0; border-bottom:1px solid var(--border); margin-bottom:4px; }
-        .cat-tab { padding:7px 16px; border-radius:var(--radius-full); cursor:pointer; font-size:0.76rem; letter-spacing:0.05em; background:transparent; color:var(--ink-light); border:1.5px solid transparent; transition:var(--transition); }
-        .cat-tab.active { background:var(--ink); color:#fff; font-weight:500; }
+
+        /* 角度/分类Pills */
+        .angle-bar, .cat-tabs { display:flex; gap:8px; padding:16px 0; flex-wrap:wrap; }
+        .angle-pill, .cat-tab { padding:7px 18px; border-radius:var(--radius-full); background:var(--card-bg); border:1.5px solid var(--border); cursor:pointer; font-size:0.8rem; transition:var(--transition); color:var(--ink-light); }
+        .angle-pill.active, .cat-tab.active { background:var(--ink); color:#fff; border-color:var(--ink); font-weight:500; }
+
+        /* 朋友圈卡片网格 */
         .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; padding:10px 0 50px; }
         .copy-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:28px 24px; transition:var(--transition); border:1px solid var(--border); display:flex; flex-direction:column; gap:16px; box-shadow:var(--shadow-sm); }
         .copy-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.08); }
-        .copy-text { font-size:0.92rem; font-weight:300; line-height:1.9; white-space:pre-wrap; max-height: 10.8em; overflow: hidden; position: relative; }
+        .copy-text { font-size:0.92rem; font-weight:300; line-height:1.9; white-space:pre-wrap; max-height: 11.4em; overflow: hidden; position: relative; }
         .copy-text.expanded { max-height: none; }
         .copy-text .expand-btn { color:var(--gold); cursor:pointer; font-size:0.8rem; margin-top:4px; display:inline-block; }
         .card-meta { display:flex; justify-content:space-between; align-items:center; font-size:0.7rem; color:#aaa; }
         .copy-btn { cursor:pointer; color:#888; transition:var(--transition); padding:4px 8px; border-radius:6px; }
         .copy-btn:hover { color:var(--gold); background:var(--gold-pale); }
 
-        /* 竖版媒体卡片 */
+        /* 客户见证/课程 竖版卡片 */
+        .media-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; padding:10px 0 50px; }
         .media-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -99,7 +105,7 @@
         .media-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
         .media-card-image {
             width: 100%;
-            height: 280px;
+            height: 240px;
             background: #f0ede5;
             display: flex;
             align-items: center;
@@ -151,6 +157,7 @@
             font-size: 0.65rem;
         }
 
+        /* 浮动按钮、弹窗等 */
         .admin-float { position:fixed; bottom:28px; right:28px; width:56px; height:56px; background:var(--ink); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:998; box-shadow:0 8px 28px rgba(0,0,0,0.25); font-size:1.3rem; transition:0.2s; text-decoration:none; }
         .admin-float:hover { background:#2b2b2b; }
         .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(14px); background:var(--ink); color:#fff; padding:10px 24px; border-radius:var(--radius-full); font-size:0.8rem; letter-spacing:0.06em; opacity:0; transition:0.3s; pointer-events:none; z-index:999; }
@@ -166,124 +173,516 @@
         .empty-state { text-align:center; padding:60px 20px; color:#ccc; }
         @media (max-width:680px) {
             .hero-title { font-size:2rem; }
-            .media-card-image { height: 200px; }
         }
     </style>
 </head>
 <body>
+    <!-- 首页视图 -->
     <div id="homeView">
         <div class="container">
-            <header class="hero"><div class="hero-tag">YISHI QIANYUAN</div><h1 class="hero-title">易饰乾园素材库</h1><p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p><div class="hero-line"></div></header>
+            <header class="hero">
+                <div class="hero-tag">YISHI QIANYUAN</div>
+                <h1 class="hero-title">易饰乾园素材库</h1>
+                <p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p>
+                <div class="hero-line"></div>
+            </header>
             <nav class="module-grid" id="moduleGrid"></nav>
         </div>
     </div>
+
+    <!-- 二级页面视图 -->
     <div id="subView" style="display:none;">
         <div class="container">
             <div class="sub-header">
-                <div class="sub-title-area"><button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> 返回首页</button><h2 class="sub-title" id="subTitle">朋友圈</h2></div>
-                <div class="search-wrap" id="searchWrap"><button class="search-toggle" onclick="toggleSearch()"><i class="fa-solid fa-magnifying-glass"></i></button><div class="search-input-wrap" id="searchInputWrap"><input type="text" id="searchInput" placeholder="搜索内容…" oninput="doSearch()"><span class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></span></div></div>
+                <div class="sub-title-area">
+                    <button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> 返回首页</button>
+                    <h2 class="sub-title" id="subTitle">朋友圈</h2>
+                </div>
+                <div class="search-wrap" id="searchWrap">
+                    <button class="search-toggle" onclick="toggleSearch()"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <div class="search-input-wrap" id="searchInputWrap">
+                        <input type="text" id="searchInput" placeholder="搜索内容…" oninput="doSearch()">
+                        <span class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></span>
+                    </div>
+                </div>
             </div>
             <div class="angle-bar" id="angleBar"></div>
             <div class="cat-tabs" id="catTabs"></div>
             <div class="card-grid" id="cardGrid"></div>
-            <div class="card-grid" id="mediaCardGrid" style="display:none;"></div>
+            <div class="media-card-grid" id="mediaCardGrid"></div>
             <div class="empty-state" id="emptyState">暂无内容</div>
         </div>
     </div>
+
     <a href="admin.html" class="admin-float" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
-    <div class="lightbox" id="lightbox" onclick="closeLightbox()"><span class="close-lightbox" onclick="closeLightbox()">&times;</span><div id="lightboxContent"></div></div>
-    <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)"><div class="detail-modal" id="detailModal" onclick="event.stopPropagation()"><span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span><div id="detailContent"></div></div></div>
+
+    <!-- 灯箱 -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="close-lightbox" onclick="closeLightbox()">&times;</span>
+        <div id="lightboxContent"></div>
+    </div>
+    <!-- 详情弹窗 -->
+    <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)">
+        <div class="detail-modal" id="detailModal" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span>
+            <div id="detailContent"></div>
+        </div>
+    </div>
     <div class="toast" id="toast"></div>
 
     <script>
         (function() {
+            // ── 数据定义与兼容层 ──
             const DATA_KEY = 'ysqy_data_v3';
-            const DEFAULT_DATA = { /* 默认数据保持不变 */ };
-            // 数据兼容层代码（与前几版相同，略）
-            // …… (为节省篇幅，请保留您最新的兼容层代码)
-            let db = /* 初始化逻辑 */;
-            let currentModule=null, currentAngle='全部', currentCategory='全部', searchQuery='';
+            const DEFAULT_DATA = {
+                modules: ['朋友圈','客户见证','课程卖点'],
+                angles: ['数字冲击','对话还原','情绪唤醒','场景反差','旁观者视角','预言式','时间轴','选择题','内幕揭秘','反常识','学员故事','身体感知','追问式','画面描写'],
+                testimonialCategories: ['文昌','沙龙','成交','夫妻关系','身体健康','知识成长','见识提升'],
+                courseCategories: ['核心价值','课程亮点','学员反馈'],
+                posts: [
+                    { id:1, module:'朋友圈', angle:'数字冲击', text:'同样做室内设计，收入差距能有10倍\n靠颜感做方案的，改稿改到怀疑人生\n靠五行色彩做方案的，签单当天就定\n区别不在于谁更努力\n而在于那套判断客户的底层工具 🎯', time:1715000000000 },
+                    { id:2, module:'朋友圈', angle:'对话还原', text:'客户上周说了一句话，我一直在想 💬\n她说："你懂我"\n别人都在说方案，你在说我的生活\n五行色彩秒懂客户，教的就是这种眼光 👀', time:1714900000000 }
+                ],
+                testimonials: [
+                    { id:101, module:'客户见证', category:'成交', imageUrl:'', videoUrl:'', title:'林女士 · 软装设计师', description:'学了五行色彩后，第一个月签单率提升40%。客户说“你懂我”，这种感觉太好了。以前总是猜测客户想要什么，现在一眼就能判断对方的五行属性，方案直接命中需求。', clientName:'林女士', date:'2024-05-15' },
+                    { id:102, module:'客户见证', category:'文昌', imageUrl:'', videoUrl:'', title:'张先生 · 企业主', description:'调整办公室文昌位后，团队效率明显提升，业绩稳步增长。以前总觉得办公室布局哪里不对，员工也抱怨压抑，现在整个气场都顺了。', clientName:'张先生', date:'2024-05-10' }
+                ],
+                courses: [
+                    { id:201, module:'课程卖点', category:'核心价值', imageUrl:'', videoUrl:'', title:'五行色彩诊断系统', description:'一套让设计师秒懂客户的底层工具，让签单变成自然结果。课程包含五行基础、色彩心理学、客户性格分析三大模块，学完即可用于实战。', date:'2024-05-01' },
+                    { id:202, module:'课程卖点', category:'课程亮点', imageUrl:'', videoUrl:'', title:'四天精华班 · 易学全案', description:'涵盖五行色彩、读像思维、经营根源、九运趋势四大模块，从判断到布局到落地，每步有据。', date:'2024-05-01' }
+                ]
+            };
 
-            function toast(msg){ /* toast函数 */ }
-            window.handleCopy = function(btn) { /* 复制函数 */ };
+            // 解析存储数据
+            let raw = localStorage.getItem(DATA_KEY);
+            let storedData = null;
+            if (raw) { try { storedData = JSON.parse(raw); } catch(e) {} }
 
-            function renderHome(){ /* 首页模块 */ }
-            window.openModule=function(m){ /* 打开二级页面 */ };
-            window.goHome=function(silent){ /* 返回首页 */ };
+            // 最终前端使用的旧格式数据对象
+            let db;
 
-            // 朋友圈卡片渲染（默认显示6行，可展开）
-            function renderMoments(){
-                // 角度栏
-                let filtered = db.posts.filter(p=>p.module==='朋友圈');
-                if(currentAngle!=='全部') filtered = filtered.filter(p=>p.angle===currentAngle);
-                if(searchQuery) filtered = filtered.filter(p=>p.text.includes(searchQuery));
+            // 判断数据格式并转换为旧格式
+            if (storedData && storedData.modules && Array.isArray(storedData.modules) && storedData.modules.length > 0 && typeof storedData.modules[0] === 'object') {
+                // 新格式 (modules 是对象数组, contents 是内容数组)
+                const newFormat = storedData;
+                const moduleNames = newFormat.modules.map(m => m.name);
+                const angles = [];
+                const testimonialCategories = [];
+                const courseCategories = [];
+                const posts = [];
+                const testimonials = [];
+                const courses = [];
+
+                (newFormat.contents || []).forEach(c => {
+                    const mod = newFormat.modules.find(m => m.id === c.moduleId);
+                    if (!mod) return;
+                    if (mod.type === 'moments') {
+                        posts.push({
+                            id: c.id, module: mod.name, angle: c.angle || '', text: c.text || '', time: c.time || Date.now()
+                        });
+                        if (c.angle && !angles.includes(c.angle)) angles.push(c.angle);
+                    } else if (mod.type === 'testimonial') {
+                        testimonials.push({
+                            id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '',
+                            videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '',
+                            clientName: c.clientName || '', date: c.date || ''
+                        });
+                        if (c.category && !testimonialCategories.includes(c.category)) testimonialCategories.push(c.category);
+                    } else if (mod.type === 'course') {
+                        courses.push({
+                            id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '',
+                            videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '',
+                            date: c.date || ''
+                        });
+                        if (c.category && !courseCategories.includes(c.category)) courseCategories.push(c.category);
+                    }
+                });
+
+                // 补充模块中定义分类
+                newFormat.modules.forEach(m => {
+                    if (m.type === 'moments') (m.categories || []).forEach(c => { if (!angles.includes(c)) angles.push(c); });
+                    if (m.type === 'testimonial') (m.categories || []).forEach(c => { if (!testimonialCategories.includes(c)) testimonialCategories.push(c); });
+                    if (m.type === 'course') (m.categories || []).forEach(c => { if (!courseCategories.includes(c)) courseCategories.push(c); });
+                });
+
+                db = {
+                    modules: moduleNames,
+                    angles: angles.length ? angles : DEFAULT_DATA.angles,
+                    testimonialCategories: testimonialCategories.length ? testimonialCategories : DEFAULT_DATA.testimonialCategories,
+                    courseCategories: courseCategories.length ? courseCategories : DEFAULT_DATA.courseCategories,
+                    posts: posts,
+                    testimonials: testimonials,
+                    courses: courses
+                };
+            } else if (storedData && storedData.modules && Array.isArray(storedData.modules) && storedData.modules.length > 0 && typeof storedData.modules[0] === 'string') {
+                // 旧格式 (modules 是字符串数组)
+                db = storedData;
+                // 补充可能缺失的字段
+                if (!db.angles) db.angles = DEFAULT_DATA.angles;
+                if (!db.testimonialCategories) db.testimonialCategories = DEFAULT_DATA.testimonialCategories;
+                if (!db.courseCategories) db.courseCategories = DEFAULT_DATA.courseCategories;
+                if (!db.posts) db.posts = [];
+                if (!db.testimonials) db.testimonials = [];
+                if (!db.courses) db.courses = [];
+            } else {
+                // 无有效数据，使用默认数据并保存
+                db = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                localStorage.setItem(DATA_KEY, JSON.stringify(db));
+            }
+
+            // 确保关键数组存在
+            db.modules = db.modules || DEFAULT_DATA.modules;
+            db.angles = db.angles || DEFAULT_DATA.angles;
+            db.testimonialCategories = db.testimonialCategories || DEFAULT_DATA.testimonialCategories;
+            db.courseCategories = db.courseCategories || DEFAULT_DATA.courseCategories;
+            db.posts = db.posts || [];
+            db.testimonials = db.testimonials || [];
+            db.courses = db.courses || [];
+
+            // ── 全局状态 ──
+            let currentModule = null;
+            let currentAngle = '全部';
+            let currentCategory = '全部';
+            let searchQuery = '';
+
+            // ── 工具函数 ──
+            function toast(msg) {
+                const t = document.getElementById('toast');
+                t.textContent = msg; t.classList.add('show');
+                clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 1500);
+            }
+
+            window.handleCopy = function(btn) {
+                const text = btn.getAttribute('data-copy');
+                if (!text) return;
+                navigator.clipboard.writeText(text).then(() => toast('已复制 ✓')).catch(() => {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    toast('已复制 ✓');
+                });
+            };
+
+            // ── 首页渲染 ──
+            function renderHome() {
+                const grid = document.getElementById('moduleGrid');
+                const icons = { '朋友圈':'fa-pen-to-square', '客户见证':'fa-comments', '课程卖点':'fa-graduation-cap' };
+                grid.innerHTML = db.modules.map(m => `
+                    <div class="module-card" onclick="openModule('${m}')">
+                        <div class="module-card-icon"><i class="fa-solid ${icons[m] || 'fa-folder'}"></i></div>
+                        <div class="module-card-title">${m}</div>
+                        <div class="module-card-desc">点击查看内容</div>
+                        <div class="module-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    </div>
+                `).join('');
+            }
+
+            window.openModule = function(m) {
+                currentModule = m;
+                currentAngle = '全部';
+                currentCategory = '全部';
+                searchQuery = '';
+                document.getElementById('searchInput').value = '';
+                document.getElementById('searchInputWrap').classList.remove('open');
+                document.getElementById('homeView').style.display = 'none';
+                document.getElementById('subView').style.display = 'block';
+                document.getElementById('subTitle').textContent = m;
+                renderSubPage();
+                window.scrollTo(0, 0);
+                updateHash();
+            };
+
+            window.goHome = function(silent) {
+                currentModule = null;
+                document.getElementById('subView').style.display = 'none';
+                document.getElementById('homeView').style.display = 'block';
+                renderHome();
+                if (!silent) updateHash();
+                window.scrollTo(0, 0);
+            };
+
+            // ── Hash 路由，保存浏览状态 ──
+            function updateHash() {
+                if (!currentModule) { history.replaceState(null, '', ' '); return; }
+                const parts = [encodeURIComponent(currentModule)];
+                if (currentAngle !== '全部') parts.push('angle=' + encodeURIComponent(currentAngle));
+                if (currentCategory !== '全部') parts.push('cat=' + encodeURIComponent(currentCategory));
+                if (searchQuery) parts.push('q=' + encodeURIComponent(searchQuery));
+                history.replaceState(null, '', '#' + parts.join('&'));
+            }
+
+            function restoreFromHash() {
+                const hash = location.hash.substring(1);
+                if (!hash) return false;
+                const parts = hash.split('&');
+                let module = null, angle = '全部', cat = '全部', q = '';
+                for (const part of parts) {
+                    if (part.includes('=')) {
+                        const [key, val] = part.split('=');
+                        if (key === 'angle') angle = decodeURIComponent(val);
+                        else if (key === 'cat') cat = decodeURIComponent(val);
+                        else if (key === 'q') q = decodeURIComponent(val);
+                    } else {
+                        module = decodeURIComponent(part);
+                    }
+                }
+                if (module && db.modules.includes(module)) {
+                    currentModule = module;
+                    currentAngle = angle;
+                    currentCategory = cat;
+                    searchQuery = q;
+                    document.getElementById('searchInput').value = q;
+                    if (q) document.getElementById('searchInputWrap').classList.add('open');
+                    document.getElementById('homeView').style.display = 'none';
+                    document.getElementById('subView').style.display = 'block';
+                    document.getElementById('subTitle').textContent = module;
+                    renderSubPage();
+                    return true;
+                }
+                return false;
+            }
+
+            window.addEventListener('popstate', () => {
+                if (!restoreFromHash()) goHome(true);
+            });
+
+            // ── 二级页面渲染 ──
+            function renderSubPage() {
+                if (!currentModule) return;
+                // 隐藏所有内容区域
+                document.getElementById('angleBar').style.display = 'none';
+                document.getElementById('catTabs').style.display = 'none';
+                document.getElementById('cardGrid').style.display = 'none';
+                document.getElementById('mediaCardGrid').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
+
+                if (currentModule === '朋友圈') {
+                    document.getElementById('angleBar').style.display = 'flex';
+                    document.getElementById('cardGrid').style.display = 'grid';
+                    renderMoments();
+                } else if (currentModule === '客户见证') {
+                    document.getElementById('catTabs').style.display = 'flex';
+                    document.getElementById('mediaCardGrid').style.display = 'grid';
+                    renderTestimonials();
+                } else if (currentModule === '课程卖点') {
+                    document.getElementById('catTabs').style.display = 'flex';
+                    document.getElementById('mediaCardGrid').style.display = 'grid';
+                    renderCourses();
+                } else {
+                    document.getElementById('mediaCardGrid').style.display = 'grid';
+                    renderGeneric();
+                }
+                updateHash();
+            }
+
+            // ── 朋友圈 ──
+            function renderMoments() {
+                document.getElementById('angleBar').innerHTML = ['全部', ...db.angles].map(a =>
+                    `<span class="angle-pill ${currentAngle === a ? 'active' : ''}" onclick="setAngle('${a}')">${a}</span>`
+                ).join('');
+
+                let filtered = db.posts.filter(p => p.module === '朋友圈');
+                if (currentAngle !== '全部') filtered = filtered.filter(p => p.angle === currentAngle);
+                if (searchQuery) filtered = filtered.filter(p => p.text.includes(searchQuery));
+
                 const grid = document.getElementById('cardGrid');
+                if (filtered.length === 0) {
+                    grid.innerHTML = '<div class="empty-state">暂无文案</div>';
+                    return;
+                }
                 grid.innerHTML = filtered.map(p => {
                     const lines = p.text.split('\n');
                     const truncated = lines.length > 6;
-                    const displayText = truncated ? lines.slice(0,6).join('\n') : p.text;
-                    const fullTextEscaped = p.text.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    const displayText = truncated ? lines.slice(0, 6).join('\n') : p.text;
+                    const copyText = p.text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                     return `<div class="copy-card">
-                        <div class="copy-text${truncated?' trunc':''}" id="t-${p.id}">
-                            ${displayText.replace(/\n/g,'<br>')}
-                            ${truncated ? `<span class="expand-btn" onclick="toggleText('${p.id}')">展开全文</span>` : ''}
+                        <div class="copy-text ${truncated ? '' : 'expanded'}" id="txt-${p.id}">
+                            ${displayText.replace(/\n/g, '<br>')}
+                            ${truncated ? `<span class="expand-btn" onclick="event.stopPropagation(); toggleExpand('${p.id}')">展开全文</span>` : ''}
                         </div>
-                        <div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" data-copy="${fullTextEscaped}" onclick="handleCopy(this);event.stopPropagation();"><i class="fa-regular fa-clone"></i> 复制</span></div>
+                        <div class="card-meta">
+                            <span># ${p.angle}</span>
+                            <span class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this); event.stopPropagation();"><i class="fa-regular fa-clone"></i> 复制</span>
+                        </div>
                     </div>`;
                 }).join('');
-                window.toggleText = function(id) {
-                    const el = document.getElementById('t-'+id);
+
+                window.toggleExpand = function(id) {
+                    const el = document.getElementById('txt-' + id);
                     el.classList.toggle('expanded');
                     const btn = el.querySelector('.expand-btn');
                     if (btn) btn.textContent = el.classList.contains('expanded') ? '收起' : '展开全文';
                 };
             }
 
-            // 客户见证/课程卡片（竖版图片，点击打开灯箱）
-            function renderMediaCards(type) {
-                const isTest = type === 'testimonial';
-                const items = isTest ? db.testimonials.filter(t=>t.module==='客户见证') : db.courses.filter(c=>c.module==='课程卖点');
-                const catField = isTest ? 'category' : 'category';
-                const cats = isTest ? db.testimonialCategories : db.courseCategories;
-                let filtered = items;
-                if(currentCategory!=='全部') filtered = filtered.filter(i => i[catField] === currentCategory);
-                if(searchQuery) filtered = filtered.filter(i => (i.title||'').includes(searchQuery) || (i.description||'').includes(searchQuery));
+            window.setAngle = function(a) {
+                currentAngle = a;
+                renderMoments();
+                updateHash();
+            };
+
+            // ── 客户见证 ──
+            function renderTestimonials() {
+                document.getElementById('catTabs').innerHTML = ['全部', ...db.testimonialCategories].map(c =>
+                    `<span class="cat-tab ${currentCategory === c ? 'active' : ''}" onclick="setCategory('${c}')">${c}</span>`
+                ).join('');
+
+                let filtered = db.testimonials.filter(t => t.module === '客户见证');
+                if (currentCategory !== '全部') filtered = filtered.filter(t => t.category === currentCategory);
+                if (searchQuery) filtered = filtered.filter(t => t.title.includes(searchQuery) || t.description.includes(searchQuery));
+
                 const grid = document.getElementById('mediaCardGrid');
-                grid.innerHTML = filtered.map(item => {
-                    const copyText = (item.title + '\n' + item.description).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                    return `<div class="media-card" onclick="openDetail('${isTest?'testimonial':'course'}',${item.id})">
-                        <div class="media-card-image" onclick="event.stopPropagation();openLightbox('${item.imageUrl||''}','${item.videoUrl||''}')">
-                            ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen></iframe>` : (item.imageUrl ? `<img src="${item.imageUrl}" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc\\'></i>'">` : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>')}
+                if (filtered.length === 0) {
+                    grid.innerHTML = '<div class="empty-state">暂无见证</div>';
+                    return;
+                }
+                grid.innerHTML = filtered.map(t => {
+                    const copyText = (t.title + '\n' + t.description).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+                    return `<div class="media-card" onclick="openDetail('testimonial', ${t.id})">
+                        <div class="media-card-image" onclick="event.stopPropagation(); openLightbox('${t.imageUrl || ''}', '${t.videoUrl || ''}')">
+                            ${t.videoUrl ? `<iframe src="${t.videoUrl}" allowfullscreen></iframe>` : (t.imageUrl ? `<img src="${t.imageUrl}" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc\\'></i>'">` : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>')}
                         </div>
                         <div class="media-card-body">
-                            <h3>${item.title}</h3>
-                            <p>${item.description}</p>
-                            <div class="media-card-footer"><span class="category-badge">${item[catField]}</span><span>${item.date||''} ${item.clientName||''}</span></div>
-                            <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
+                            <h3>${t.title}</h3>
+                            <p>${t.description}</p>
+                            <div class="media-card-footer">
+                                <span class="category-badge">${t.category}</span>
+                                <span>${t.date || ''} ${t.clientName || ''}</span>
+                            </div>
+                            <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation(); handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
                         </div>
                     </div>`;
                 }).join('');
             }
 
-            window.openDetail = function(type, id) {
-                let item;
-                if(type==='testimonial') item = db.testimonials.find(t=>t.id===id);
-                else item = db.courses.find(c=>c.id===id);
-                if(!item) return;
-                const content = document.getElementById('detailContent');
-                content.innerHTML = `
-                    ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen style="width:100%;height:300px;"></iframe>` : (item.imageUrl ? `<img src="${item.imageUrl}" style="width:100%;max-height:300px;object-fit:cover;border-radius:12px;cursor:zoom-in;" onclick="openLightbox('${item.imageUrl}','')">` : '')}
-                    <h3 style="margin:16px 0 8px;">${item.title}</h3>
-                    <p style="color:#888;">${item.category||''} · ${item.date||''} · ${item.clientName||''}</p>
-                    <p style="white-space:pre-wrap;line-height:1.8;">${item.description}</p>
-                    <button class="copy-btn" data-copy="${(item.title+'\\n'+item.description).replace(/&/g,'&amp;')}" onclick="handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制文案</button>
-                `;
-                document.getElementById('detailOverlay').classList.add('open');
-                document.body.style.overflow='hidden';
+            // ── 课程卖点 ──
+            function renderCourses() {
+                document.getElementById('catTabs').innerHTML = ['全部', ...db.courseCategories].map(c =>
+                    `<span class="cat-tab ${currentCategory === c ? 'active' : ''}" onclick="setCategory('${c}')">${c}</span>`
+                ).join('');
+
+                let filtered = db.courses.filter(c => c.module === '课程卖点');
+                if (currentCategory !== '全部') filtered = filtered.filter(c => c.category === currentCategory);
+                if (searchQuery) filtered = filtered.filter(c => c.title.includes(searchQuery) || c.description.includes(searchQuery));
+
+                const grid = document.getElementById('mediaCardGrid');
+                if (filtered.length === 0) {
+                    grid.innerHTML = '<div class="empty-state">暂无内容</div>';
+                    return;
+                }
+                grid.innerHTML = filtered.map(c => {
+                    const copyText = (c.title + '\n' + c.description).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+                    return `<div class="media-card" onclick="openDetail('course', ${c.id})">
+                        <div class="media-card-image" onclick="event.stopPropagation(); openLightbox('${c.imageUrl || ''}', '${c.videoUrl || ''}')">
+                            ${c.videoUrl ? `<iframe src="${c.videoUrl}" allowfullscreen></iframe>` : (c.imageUrl ? `<img src="${c.imageUrl}" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc\\'></i>'">` : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>')}
+                        </div>
+                        <div class="media-card-body">
+                            <h3>${c.title}</h3>
+                            <p>${c.description}</p>
+                            <div class="media-card-footer">
+                                <span class="category-badge">${c.category}</span>
+                                <span>${c.date || ''}</span>
+                            </div>
+                            <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation(); handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            // 通用模块渲染（如果以后添加了非预定义模块）
+            function renderGeneric() {
+                const grid = document.getElementById('mediaCardGrid');
+                const contents = [...db.posts.filter(p => p.module === currentModule), ...db.testimonials.filter(t => t.module === currentModule), ...db.courses.filter(c => c.module === currentModule)];
+                if (contents.length === 0) {
+                    grid.innerHTML = '<div class="empty-state">暂无内容</div>';
+                    return;
+                }
+                grid.innerHTML = contents.map(item => {
+                    const title = item.title || item.text?.substring(0, 30) || '';
+                    const desc = item.description || item.text || '';
+                    return `<div class="media-card">
+                        <div class="media-card-image"><i class="fa-solid fa-file" style="font-size:3rem;color:#ccc;"></i></div>
+                        <div class="media-card-body">
+                            <h3>${title}</h3>
+                            <p>${desc}</p>
+                            <span class="copy-btn" data-copy="${title + '\n' + desc}" onclick="event.stopPropagation(); handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            window.setCategory = function(c) {
+                currentCategory = c;
+                if (currentModule === '客户见证') renderTestimonials();
+                else if (currentModule === '课程卖点') renderCourses();
+                updateHash();
             };
 
-            // 其他辅助函数（openLightbox, closeLightbox, setAngle, setCategory 等）保持原样
-            // ……
+            // ── 搜索 ──
+            window.toggleSearch = function() {
+                const wrap = document.getElementById('searchInputWrap');
+                if (wrap.classList.contains('open')) { closeSearch(); } else { wrap.classList.add('open'); setTimeout(() => document.getElementById('searchInput').focus(), 200); }
+            };
+            window.closeSearch = function() {
+                document.getElementById('searchInputWrap').classList.remove('open');
+                document.getElementById('searchInput').value = '';
+                searchQuery = '';
+                renderSubPage();
+            };
+            window.doSearch = function() { searchQuery = document.getElementById('searchInput').value.trim(); renderSubPage(); };
+
+            // ── 灯箱 ──
+            window.openLightbox = function(img, video) {
+                const lb = document.getElementById('lightbox');
+                const content = document.getElementById('lightboxContent');
+                if (video) { content.innerHTML = `<iframe src="${video}" allowfullscreen style="width:80vw;height:60vh;"></iframe>`; }
+                else if (img) { content.innerHTML = `<img src="${img}" onerror="this.parentElement.innerHTML='<p style=color:#fff>图片加载失败</p>'">`; }
+                else return;
+                lb.classList.add('open');
+            };
+            window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
+
+            // ── 详情弹窗 ──
+            window.openDetail = function(type, id) {
+                let item;
+                if (type === 'testimonial') item = db.testimonials.find(t => t.id === id);
+                else if (type === 'course') item = db.courses.find(c => c.id === id);
+                if (!item) return;
+                const content = document.getElementById('detailContent');
+                const copyText = (item.title + '\n' + item.description).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+                content.innerHTML = `
+                    ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen style="width:100%;height:300px;"></iframe>` :
+                    (item.imageUrl ? `<img src="${item.imageUrl}" style="width:100%;max-height:300px;object-fit:cover;border-radius:12px;cursor:zoom-in;" onclick="openLightbox('${item.imageUrl}','')">` : '')}
+                    <h3 style="margin:16px 0 8px;">${item.title}</h3>
+                    <p style="color:#888;">${item.category || ''} · ${item.date || ''} · ${item.clientName || ''}</p>
+                    <p style="white-space:pre-wrap;line-height:1.8;">${item.description}</p>
+                    <button class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制文案</button>
+                `;
+                document.getElementById('detailOverlay').classList.add('open');
+                document.body.style.overflow = 'hidden';
+            };
+            window.closeDetail = function(e) {
+                if (e && e.target !== document.getElementById('detailOverlay')) return;
+                document.getElementById('detailOverlay').classList.remove('open');
+                document.body.style.overflow = '';
+            };
+
+            // 监听其他标签页数据更改
+            window.addEventListener('storage', (e) => {
+                if (e.key === DATA_KEY && e.newValue) location.reload();
+            });
+
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') { closeDetail(); closeLightbox(); }
+            });
+
+            // 启动：先从hash恢复，否则显示首页
+            if (!restoreFromHash()) {
+                renderHome();
+            }
         })();
     </script>
 </body>
