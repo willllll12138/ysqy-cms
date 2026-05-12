@@ -74,7 +74,12 @@
         .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; padding:10px 0 50px; }
         .copy-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:28px 24px; transition:var(--transition); border:1px solid var(--border); display:flex; flex-direction:column; gap:16px; box-shadow:var(--shadow-sm); }
         .copy-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.08); }
-        .copy-text { font-size:0.92rem; font-weight:300; line-height:1.9; white-space:pre-wrap; max-height: 11.4em; overflow: hidden; position: relative; }
+        .copy-text { 
+            font-size:0.92rem; font-weight:300; line-height:1.9; white-space:pre-wrap; 
+            max-height: 11.4em; overflow: hidden; position: relative;
+            text-indent: 0;   /* 完全禁止缩进 */
+            padding-left: 0;  /* 确保左侧无额外间距 */
+        }
         .copy-text.expanded { max-height: none; }
         .copy-text .expand-btn { color:var(--gold); cursor:pointer; font-size:0.8rem; margin-top:4px; display:inline-block; }
         .card-meta { display:flex; justify-content:space-between; align-items:center; font-size:0.7rem; color:#aaa; }
@@ -220,13 +225,15 @@
                     const mod = newFormat.modules.find(m => m.id === c.moduleId);
                     if (!mod) return;
                     if (mod.type === 'moments') {
-                        posts.push({ id: c.id, module: mod.name, angle: c.angle || '', text: c.text || '', time: c.time || Date.now() });
+                        // 关键修复：文本存储时 trim 每一行
+                        const cleanText = (c.text || '').split('\n').map(line => line.trim()).join('\n');
+                        posts.push({ id: c.id, module: mod.name, angle: c.angle || '', text: cleanText, time: c.time || Date.now() });
                         if (c.angle && !angles.includes(c.angle)) angles.push(c.angle);
                     } else if (mod.type === 'testimonial') {
-                        testimonials.push({ id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '', clientName: c.clientName || '', date: c.date || '' });
+                        testimonials.push({ id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: (c.description||'').trim(), clientName: c.clientName || '', date: c.date || '' });
                         if (c.category && !testimonialCategories.includes(c.category)) testimonialCategories.push(c.category);
                     } else if (mod.type === 'course') {
-                        courses.push({ id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '', date: c.date || '' });
+                        courses.push({ id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: (c.description||'').trim(), date: c.date || '' });
                         if (c.category && !courseCategories.includes(c.category)) courseCategories.push(c.category);
                     }
                 });
@@ -256,6 +263,10 @@
                 if (!db.posts) db.posts = [];
                 if (!db.testimonials) db.testimonials = [];
                 if (!db.courses) db.courses = [];
+                // 同样清理旧格式数据
+                db.posts.forEach(p => { p.text = (p.text||'').split('\n').map(l=>l.trim()).join('\n'); });
+                db.testimonials.forEach(t => { t.description = (t.description||'').trim(); });
+                db.courses.forEach(c => { c.description = (c.description||'').trim(); });
             } else {
                 db = JSON.parse(JSON.stringify(DEFAULT_DATA));
                 localStorage.setItem(DATA_KEY, JSON.stringify(db));
