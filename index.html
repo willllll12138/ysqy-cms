@@ -182,18 +182,121 @@
                     {id:202,module:'课程卖点',category:'课程亮点',imageUrl:'',videoUrl:'',title:'四天精华班 · 易学全案',description:'涵盖五行色彩、读像思维、经营根源、九运趋势四大模块。',date:'2024-05-01'}
                 ]
             };
-            let db = JSON.parse(localStorage.getItem(DATA_KEY) || 'null');
-            if(!db||!db.modules){ db=JSON.parse(JSON.stringify(DEFAULT_DATA)); localStorage.setItem(DATA_KEY,JSON.stringify(db)); }
+
+            // 获取原始存储数据
+            let raw = localStorage.getItem(DATA_KEY);
+            let storedData = null;
+            if (raw) {
+                try { storedData = JSON.parse(raw); } catch(e) {}
+            }
+
+            // ---- 数据兼容层：将新格式转换为旧格式 ----
+            let db;
+            if (storedData && storedData.modules && Array.isArray(storedData.modules) && storedData.modules.length > 0 && typeof storedData.modules[0] === 'object') {
+                // 新格式: modules是对象数组, contents是内容数组
+                const newFormat = storedData;
+                const moduleNames = newFormat.modules.map(m => m.name);
+                const moduleMap = {};
+                newFormat.modules.forEach(m => { moduleMap[m.name] = m; });
+
+                const angles = [];
+                const testimonialCategories = [];
+                const courseCategories = [];
+                const posts = [];
+                const testimonials = [];
+                const courses = [];
+
+                (newFormat.contents || []).forEach(c => {
+                    const mod = newFormat.modules.find(m => m.id === c.moduleId);
+                    if (!mod) return;
+                    if (mod.type === 'moments') {
+                        posts.push({
+                            id: c.id,
+                            module: mod.name,
+                            angle: c.angle || '',
+                            text: c.text || '',
+                            time: c.time || Date.now()
+                        });
+                        if (c.angle && !angles.includes(c.angle)) angles.push(c.angle);
+                    } else if (mod.type === 'testimonial') {
+                        testimonials.push({
+                            id: c.id,
+                            module: mod.name,
+                            category: c.category || '',
+                            imageUrl: c.imageUrl || '',
+                            videoUrl: c.videoUrl || '',
+                            title: c.title || '',
+                            description: c.description || '',
+                            clientName: c.clientName || '',
+                            date: c.date || ''
+                        });
+                        if (c.category && !testimonialCategories.includes(c.category)) testimonialCategories.push(c.category);
+                    } else if (mod.type === 'course') {
+                        courses.push({
+                            id: c.id,
+                            module: mod.name,
+                            category: c.category || '',
+                            imageUrl: c.imageUrl || '',
+                            videoUrl: c.videoUrl || '',
+                            title: c.title || '',
+                            description: c.description || '',
+                            date: c.date || ''
+                        });
+                        if (c.category && !courseCategories.includes(c.category)) courseCategories.push(c.category);
+                    }
+                });
+
+                // 补充模块自身预定义的分类（可能有未被使用的）
+                newFormat.modules.forEach(m => {
+                    if (m.type === 'moments') {
+                        (m.categories || []).forEach(c => { if (!angles.includes(c)) angles.push(c); });
+                    } else if (m.type === 'testimonial') {
+                        (m.categories || []).forEach(c => { if (!testimonialCategories.includes(c)) testimonialCategories.push(c); });
+                    } else if (m.type === 'course') {
+                        (m.categories || []).forEach(c => { if (!courseCategories.includes(c)) courseCategories.push(c); });
+                    }
+                });
+
+                db = {
+                    modules: moduleNames,
+                    angles: angles,
+                    testimonialCategories: testimonialCategories,
+                    courseCategories: courseCategories,
+                    posts: posts,
+                    testimonials: testimonials,
+                    courses: courses,
+                    _moduleMap: moduleMap  // 保留原始模块信息，以便后续扩展
+                };
+            } else if (storedData && storedData.modules && Array.isArray(storedData.modules) && storedData.modules.length > 0 && typeof storedData.modules[0] === 'string') {
+                // 旧格式，直接使用
+                db = storedData;
+                if (!db.angles) db.angles = DEFAULT_DATA.angles;
+                if (!db.testimonialCategories) db.testimonialCategories = DEFAULT_DATA.testimonialCategories;
+                if (!db.courseCategories) db.courseCategories = DEFAULT_DATA.courseCategories;
+                if (!db.posts) db.posts = [];
+                if (!db.testimonials) db.testimonials = [];
+                if (!db.courses) db.courses = [];
+            } else {
+                // 无有效数据，使用默认
+                db = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                localStorage.setItem(DATA_KEY, JSON.stringify(db));
+            }
+
+            // 暴露一个保存函数（兼容旧调用）
+            function save() {
+                // 前台只读，不保存；但为了代码中可能调用，留空
+                // 若需要持久化，请使用后台
+            }
+
             let currentModule=null, currentAngle='全部', currentCategory='全部', searchQuery='';
 
-            function save(){ localStorage.setItem(DATA_KEY,JSON.stringify(db)); }
             function toast(msg){ 
                 const t=document.getElementById('toast'); 
                 t.textContent=msg; t.classList.add('show'); 
                 clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1500); 
             }
 
-            // ── 全局复制函数（修复版）──
+            // 复制功能
             window.handleCopy = function(btn) {
                 const text = btn.getAttribute('data-copy');
                 if (!text) return;
@@ -210,7 +313,6 @@
                 });
             };
 
-            // 渲染首页模块
             function renderHome(){
                 const grid=document.getElementById('moduleGrid');
                 const icons={'朋友圈':'fa-pen-to-square','客户见证':'fa-comments','课程卖点':'fa-graduation-cap'};
@@ -293,6 +395,12 @@
 
             function renderSubPage(){
                 if(!currentModule)return;
+                const isKnownModule = ['朋友圈','客户见证','课程卖点'].includes(currentModule);
+                if (!isKnownModule) {
+                    // 自定义模块：简单列表显示
+                    renderGenericModule();
+                    return;
+                }
                 const isMoments=currentModule==='朋友圈';
                 const isTest=currentModule==='客户见证';
                 const isCourse=currentModule==='课程卖点';
@@ -303,6 +411,31 @@
                 if(isMoments) renderMoments();
                 if(isTest) renderTestimonials();
                 if(isCourse) renderCourses();
+                updateHash();
+            }
+
+            function renderGenericModule() {
+                document.getElementById('angleBar').style.display = 'none';
+                document.getElementById('catTabs').style.display = 'none';
+                document.getElementById('cardGrid').style.display = 'none';
+                const list = document.getElementById('testimonialList');
+                list.style.display = 'flex';
+                const contents = (db.posts || []).filter(p => p.module === currentModule)
+                    .concat((db.testimonials || []).filter(t => t.module === currentModule))
+                    .concat((db.courses || []).filter(c => c.module === currentModule));
+                if (!contents.length) {
+                    list.innerHTML = '<div class="empty-state">暂无内容</div>';
+                    return;
+                }
+                list.innerHTML = contents.map(item => {
+                    const copyText = (item.text || item.title || '') + '\n' + (item.description || '');
+                    return `<div class="testimonial-item">
+                        <div class="testimonial-info">
+                            <h4>${item.text ? item.text.substring(0,30) : item.title || ''} <span class="copy-btn" data-copy="${copyText.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}" onclick="handleCopy(this); event.stopPropagation();"><i class="fa-regular fa-clone"></i></span></h4>
+                            <p>${item.description || (item.text ? item.text.substring(0,100) : '')}</p>
+                        </div>
+                    </div>`;
+                }).join('');
                 updateHash();
             }
 
@@ -464,9 +597,10 @@
 
             window.addEventListener('storage',(e)=>{
                 if(e.key===DATA_KEY && e.newValue){
-                    db=JSON.parse(e.newValue);
-                    if(currentModule) renderSubPage();
-                    renderHome();
+                    try { storedData = JSON.parse(e.newValue); } catch(e) {}
+                    // 重新执行兼容层
+                    // 简化处理：刷新页面
+                    location.reload();
                 }
             });
 
