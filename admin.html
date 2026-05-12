@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>易饰乾园 · 后台管理 V6</title>
+    <title>易饰乾园 · 后台管理 V5</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -100,16 +100,26 @@
         { id:'course', name:'课程卖点', type:'course', categories:['核心价值'] }
     ];
 
-    // 数据加载与修复
-    let raw = localStorage.getItem(DATA_KEY);
-    let db;
-    try { db = raw ? JSON.parse(raw) : null; } catch(e) { db = null; }
-    if (!db || !db.modules || !Array.isArray(db.modules)) {
-        db = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
+    // 数据初始化 - 强制确保模块有名字
+    function initDB() {
+        let raw = localStorage.getItem(DATA_KEY);
+        let db;
+        try { db = raw ? JSON.parse(raw) : null; } catch(e) { db = null; }
+        if (!db || !db.modules || !Array.isArray(db.modules)) {
+            db = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
+        }
+        // 修复可能缺失名字的模块
+        db.modules.forEach(m => {
+            if (!m.name || m.name === 'undefined') {
+                const def = DEFAULT_MODULES.find(d => d.id === m.id);
+                m.name = def ? def.name : (m.id || '未命名');
+            }
+        });
+        if (!db.contents) db.contents = [];
+        return db;
     }
-    // 修复缺失的模块名称
-    db.modules.forEach(m => { if (!m.name) m.name = m.id || '未命名'; });
-    if (!db.contents) db.contents = [];
+
+    let db = initDB();
     save();
 
     function save() { localStorage.setItem(DATA_KEY, JSON.stringify(db)); }
@@ -122,13 +132,14 @@
             document.getElementById('adminMain').style.display = 'block';
             renderSidebar();
         } else {
-            const err = document.createElement('p'); err.style.color = '#c33'; err.textContent = '密码错误';
+            const err = document.createElement('p');
+            err.style.color = '#c33'; err.textContent = '密码错误';
             document.querySelector('.login-card').appendChild(err);
             setTimeout(()=>err.remove(), 2500);
         }
     };
 
-    // 修改密码/忘记密码（同上版本，略作保留）
+    // 修改密码
     window.showChangePwdModal = function() {
         const modal = document.createElement('div'); modal.className = 'modal';
         modal.innerHTML = `<div class="modal-box"><h3>修改管理密码</h3>
@@ -153,6 +164,7 @@
         modal.onclick = e => { if (e.target === modal) modal.remove(); };
     };
 
+    // 忘记密码
     window.showForgotPwdModal = function() {
         const modal = document.createElement('div'); modal.className = 'modal';
         modal.innerHTML = `<div class="modal-box"><h3>重置密码</h3>
@@ -172,15 +184,7 @@
     };
 
     let currentModuleId = null;
-
-    // 关键修复：每次渲染侧边栏都修补模块名称
-    function repairModuleNames() {
-        if (!db.modules) return;
-        db.modules.forEach(m => { if (!m.name) m.name = m.id || '未命名'; });
-    }
-
     function renderSidebar() {
-        repairModuleNames();
         const list = document.getElementById('moduleList');
         list.innerHTML = db.modules.map(m => `
             <div class="module-item ${currentModuleId===m.id?'active':''}" onclick="selectModule('${m.id}')">
@@ -199,7 +203,6 @@
     function renderContent() {
         const mod = db.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
-        if (!mod.name) mod.name = '未命名';
         const contents = db.contents.filter(c => c.moduleId === currentModuleId);
         let html = `<h3>${mod.name} (${mod.type})</h3>`;
         html += `<div class="tag-list">${(mod.categories||[]).map(c => `<span class="tag-item">${c} <i class="fa-solid fa-xmark" onclick="deleteCategory('${c}')"></i></span>`).join('')}</div>
@@ -249,6 +252,7 @@
             item.angle = document.getElementById('pubAngle').value;
             item.text = document.getElementById('pubText').value.trim();
             if (!item.text) return toast('内容不能为空');
+            item.time = Date.now();
         } else {
             item.category = document.getElementById('pubCategory').value;
             item.title = document.getElementById('pubTitle').value.trim();
@@ -299,10 +303,53 @@
     window.deleteModule = function(id) { if(confirm('删除模块将清空其所有内容')){db.modules=db.modules.filter(m=>m.id!==id);db.contents=db.contents.filter(c=>c.moduleId!==id); if(currentModuleId===id){currentModuleId=null; document.getElementById('contentPanel').innerHTML='← 选择模块';} save();renderSidebar(); } };
 
     window.exportData = function() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:'application/json'})); a.download='backup.json'; a.click(); };
-    window.importData = function(input) { const file=input.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=e=>{ try{ const data=JSON.parse(e.target.result); if(data.modules&&data.contents){ if(confirm('导入将覆盖当前数据，继续？')){ db=data; repairModuleNames(); if(!db.contents) db.contents=[]; save(); currentModuleId=null; renderSidebar(); document.getElementById('contentPanel').innerHTML='← 选择模块'; toast('导入成功'); } } else toast('格式不正确'); } catch(err){toast('解析失败');} }; reader.readAsText(file); input.value=''; };
-    
-    // 额外修复确保在数据加载后首次渲染时名称正确
-    function repairModuleNames() { if (db.modules) db.modules.forEach(m => { if (!m.name) m.name = m.id || '未命名'; }); }
+    window.importData = function(input) {
+        const file=input.files[0];
+        if(!file) return;
+        const reader=new FileReader();
+        reader.onload=e=>{
+            try{
+                const data=JSON.parse(e.target.result);
+                if(data.modules&&data.contents){
+                    if(confirm('导入将覆盖当前数据，继续？')){
+                        db = data;
+                        // 强制修复模块名字
+                        db.modules.forEach(m => { if (!m.name) m.name = '未命名'; });
+                        if(!db.contents) db.contents = [];
+                        save();
+                        currentModuleId=null;
+                        renderSidebar();
+                        document.getElementById('contentPanel').innerHTML='← 选择模块';
+                        toast('导入成功');
+                    }
+                } else toast('格式不正确');
+            } catch(err){toast('解析失败');}
+        };
+        reader.readAsText(file);
+        input.value = '';
+    };
+
+    // 每次渲染前再次检查模块名称
+    function renderSidebar() {
+        db.modules.forEach(m => { if (!m.name) m.name = '未命名'; });
+        const list = document.getElementById('moduleList');
+        list.innerHTML = db.modules.map(m => `
+            <div class="module-item ${currentModuleId===m.id?'active':''}" onclick="selectModule('${m.id}')">
+                <span>${m.name}</span>
+                <div onclick="event.stopPropagation()">
+                    <i class="fa-solid fa-pen" onclick="renameModule('${m.id}')"></i>
+                    <i class="fa-solid fa-trash" onclick="deleteModule('${m.id}')"></i>
+                </div>
+            </div>
+        `).join('');
+        if (currentModuleId) renderContent();
+    }
+
+    window.selectModule = function(id) { currentModuleId = id; renderSidebar(); };
+
+    // 启动时也做一次修复
+    db.modules.forEach(m => { if (!m.name) m.name = '未命名'; });
+    save();
 })();
 </script>
 </body>
