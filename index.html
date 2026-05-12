@@ -83,16 +83,71 @@
         .card-meta { display:flex; justify-content:space-between; align-items:center; font-size:0.7rem; color:#aaa; }
         .copy-btn { cursor:pointer; color:#888; transition:var(--transition); padding:4px 8px; border-radius:6px; }
         .copy-btn:hover { color:var(--gold); background:var(--gold-pale); }
-        .testimonial-list { display:flex; flex-direction:column; gap:2px; padding-bottom:50px; }
-        .testimonial-item { display:flex; gap:16px; align-items:flex-start; padding:16px 18px; background:var(--card-bg); border-bottom:1px solid var(--border); transition:var(--transition); cursor:pointer; }
-        .testimonial-item:hover { background:#fdfbf5; }
-        .testimonial-thumb { width:64px; height:64px; border-radius:var(--radius-sm); overflow:hidden; flex-shrink:0; background:#f0ede5; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:1.4rem; position:relative; cursor:zoom-in; }
-        .testimonial-thumb img { width:100%; height:100%; object-fit:cover; }
-        .testimonial-info { flex:1; min-width:0; }
-        .testimonial-info h4 { font-size:0.9rem; font-weight:600; margin-bottom:4px; display:flex; align-items:center; gap:8px; }
-        .testimonial-info p { font-size:0.78rem; color:var(--ink-light); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-        .testimonial-meta { font-size:0.68rem; color:#bbb; margin-top:4px; display:flex; gap:8px; align-items:center; }
-        .testimonial-cat { background:var(--gold-pale); color:var(--gold); padding:2px 8px; border-radius:var(--radius-full); font-size:0.65rem; }
+
+        /* 新增：见证/课程大卡片样式 */
+        .media-card {
+            display: flex;
+            flex-direction: column;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .media-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
+        .media-card-image {
+            width: 100%;
+            height: 200px;
+            background: #f0ede5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .media-card-image img { width: 100%; height: 100%; object-fit: cover; }
+        .media-card-image iframe { width: 100%; height: 100%; border: 0; }
+        .media-card-image .placeholder-icon { font-size: 3rem; color: #ccc; }
+        .media-card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+        .media-card-body h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .media-card-body p {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+        .media-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: #aaa;
+        }
+        .media-card-footer .category-badge {
+            background: var(--gold-pale);
+            color: var(--gold);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+        }
+        .media-card .copy-btn { align-self: flex-end; }
+
         .admin-float { position:fixed; bottom:28px; right:28px; width:56px; height:56px; background:var(--ink); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:998; box-shadow:0 8px 28px rgba(0,0,0,0.25); font-size:1.3rem; transition:0.2s; text-decoration:none; }
         .admin-float:hover { background:#2b2b2b; }
         .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(14px); background:var(--ink); color:#fff; padding:10px 24px; border-radius:var(--radius-full); font-size:0.8rem; letter-spacing:0.06em; opacity:0; transition:0.3s; pointer-events:none; z-index:999; }
@@ -108,10 +163,12 @@
         .empty-state { text-align:center; padding:60px 20px; color:#ccc; }
         @media (max-width:680px) {
             .hero-title { font-size:2rem; }
+            .media-card-image { height: 160px; }
         }
     </style>
 </head>
 <body>
+    <!-- 首页视图 -->
     <div id="homeView">
         <div class="container">
             <header class="hero">
@@ -124,6 +181,7 @@
         </div>
     </div>
 
+    <!-- 二级页面视图 -->
     <div id="subView" style="display:none;">
         <div class="container">
             <div class="sub-header">
@@ -142,7 +200,7 @@
             <div class="angle-bar" id="angleBar"></div>
             <div class="cat-tabs" id="catTabs"></div>
             <div class="card-grid" id="cardGrid"></div>
-            <div class="testimonial-list" id="testimonialList"></div>
+            <div class="card-grid" id="mediaCardGrid" style="display:none;"></div>
             <div class="empty-state" id="emptyState">暂无内容</div>
         </div>
     </div>
@@ -174,31 +232,23 @@
                     {id:2,module:'朋友圈',angle:'对话还原',text:'客户上周说了一句话，我一直在想 💬\n她说："你懂我"\n别人都在说方案，你在说我的生活\n五行色彩秒懂客户，教的就是这种眼光 👀',time:1714900000000}
                 ],
                 testimonials: [
-                    {id:101,module:'客户见证',category:'成交',imageUrl:'',videoUrl:'',title:'林女士 · 软装设计师',description:'学了五行色彩后，第一个月签单率提升40%。客户说"你懂我"，这种感觉太好了。',clientName:'林女士',date:'2024-05-15'},
-                    {id:102,module:'客户见证',category:'文昌',imageUrl:'',videoUrl:'',title:'张先生 · 企业主',description:'调整办公室文昌位后，团队效率明显提升，业绩稳步增长。',clientName:'张先生',date:'2024-05-10'}
+                    {id:101,module:'客户见证',category:'成交',imageUrl:'',videoUrl:'',title:'林女士 · 软装设计师',description:'学了五行色彩后，第一个月签单率提升40%。客户说"你懂我"，这种感觉太好了。以前总是猜测客户想要什么，现在一眼就能判断对方的五行属性，方案直接命中需求。',clientName:'林女士',date:'2024-05-15'},
+                    {id:102,module:'客户见证',category:'文昌',imageUrl:'',videoUrl:'',title:'张先生 · 企业主',description:'调整办公室文昌位后，团队效率明显提升，业绩稳步增长。以前总觉得办公室布局哪里不对，员工也抱怨压抑，现在整个气场都顺了。',clientName:'张先生',date:'2024-05-10'}
                 ],
                 courses: [
-                    {id:201,module:'课程卖点',category:'核心价值',imageUrl:'',videoUrl:'',title:'五行色彩诊断系统',description:'一套让设计师秒懂客户的底层工具，让签单变成自然结果。',date:'2024-05-01'},
-                    {id:202,module:'课程卖点',category:'课程亮点',imageUrl:'',videoUrl:'',title:'四天精华班 · 易学全案',description:'涵盖五行色彩、读像思维、经营根源、九运趋势四大模块。',date:'2024-05-01'}
+                    {id:201,module:'课程卖点',category:'核心价值',imageUrl:'',videoUrl:'',title:'五行色彩诊断系统',description:'一套让设计师秒懂客户的底层工具，让签单变成自然结果。课程包含五行基础、色彩心理学、客户性格分析三大模块，学完即可用于实战。',date:'2024-05-01'},
+                    {id:202,module:'课程卖点',category:'课程亮点',imageUrl:'',videoUrl:'',title:'四天精华班 · 易学全案',description:'涵盖五行色彩、读像思维、经营根源、九运趋势四大模块，从判断到布局到落地，每步有据。',date:'2024-05-01'}
                 ]
             };
 
-            // 获取原始存储数据
             let raw = localStorage.getItem(DATA_KEY);
             let storedData = null;
-            if (raw) {
-                try { storedData = JSON.parse(raw); } catch(e) {}
-            }
+            if (raw) { try { storedData = JSON.parse(raw); } catch(e) {} }
 
-            // ---- 数据兼容层：将新格式转换为旧格式 ----
             let db;
             if (storedData && storedData.modules && Array.isArray(storedData.modules) && storedData.modules.length > 0 && typeof storedData.modules[0] === 'object') {
-                // 新格式: modules是对象数组, contents是内容数组
                 const newFormat = storedData;
                 const moduleNames = newFormat.modules.map(m => m.name);
-                const moduleMap = {};
-                newFormat.modules.forEach(m => { moduleMap[m.name] = m; });
-
                 const angles = [];
                 const testimonialCategories = [];
                 const courseCategories = [];
@@ -210,51 +260,21 @@
                     const mod = newFormat.modules.find(m => m.id === c.moduleId);
                     if (!mod) return;
                     if (mod.type === 'moments') {
-                        posts.push({
-                            id: c.id,
-                            module: mod.name,
-                            angle: c.angle || '',
-                            text: c.text || '',
-                            time: c.time || Date.now()
-                        });
+                        posts.push({ id: c.id, module: mod.name, angle: c.angle || '', text: c.text || '', time: c.time || Date.now() });
                         if (c.angle && !angles.includes(c.angle)) angles.push(c.angle);
                     } else if (mod.type === 'testimonial') {
-                        testimonials.push({
-                            id: c.id,
-                            module: mod.name,
-                            category: c.category || '',
-                            imageUrl: c.imageUrl || '',
-                            videoUrl: c.videoUrl || '',
-                            title: c.title || '',
-                            description: c.description || '',
-                            clientName: c.clientName || '',
-                            date: c.date || ''
-                        });
+                        testimonials.push({ id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '', clientName: c.clientName || '', date: c.date || '' });
                         if (c.category && !testimonialCategories.includes(c.category)) testimonialCategories.push(c.category);
                     } else if (mod.type === 'course') {
-                        courses.push({
-                            id: c.id,
-                            module: mod.name,
-                            category: c.category || '',
-                            imageUrl: c.imageUrl || '',
-                            videoUrl: c.videoUrl || '',
-                            title: c.title || '',
-                            description: c.description || '',
-                            date: c.date || ''
-                        });
+                        courses.push({ id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '', date: c.date || '' });
                         if (c.category && !courseCategories.includes(c.category)) courseCategories.push(c.category);
                     }
                 });
 
-                // 补充模块自身预定义的分类（可能有未被使用的）
                 newFormat.modules.forEach(m => {
-                    if (m.type === 'moments') {
-                        (m.categories || []).forEach(c => { if (!angles.includes(c)) angles.push(c); });
-                    } else if (m.type === 'testimonial') {
-                        (m.categories || []).forEach(c => { if (!testimonialCategories.includes(c)) testimonialCategories.push(c); });
-                    } else if (m.type === 'course') {
-                        (m.categories || []).forEach(c => { if (!courseCategories.includes(c)) courseCategories.push(c); });
-                    }
+                    if (m.type === 'moments') (m.categories || []).forEach(c => { if (!angles.includes(c)) angles.push(c); });
+                    else if (m.type === 'testimonial') (m.categories || []).forEach(c => { if (!testimonialCategories.includes(c)) testimonialCategories.push(c); });
+                    else if (m.type === 'course') (m.categories || []).forEach(c => { if (!courseCategories.includes(c)) courseCategories.push(c); });
                 });
 
                 db = {
@@ -264,11 +284,9 @@
                     courseCategories: courseCategories,
                     posts: posts,
                     testimonials: testimonials,
-                    courses: courses,
-                    _moduleMap: moduleMap  // 保留原始模块信息，以便后续扩展
+                    courses: courses
                 };
             } else if (storedData && storedData.modules && Array.isArray(storedData.modules) && storedData.modules.length > 0 && typeof storedData.modules[0] === 'string') {
-                // 旧格式，直接使用
                 db = storedData;
                 if (!db.angles) db.angles = DEFAULT_DATA.angles;
                 if (!db.testimonialCategories) db.testimonialCategories = DEFAULT_DATA.testimonialCategories;
@@ -277,15 +295,8 @@
                 if (!db.testimonials) db.testimonials = [];
                 if (!db.courses) db.courses = [];
             } else {
-                // 无有效数据，使用默认
                 db = JSON.parse(JSON.stringify(DEFAULT_DATA));
                 localStorage.setItem(DATA_KEY, JSON.stringify(db));
-            }
-
-            // 暴露一个保存函数（兼容旧调用）
-            function save() {
-                // 前台只读，不保存；但为了代码中可能调用，留空
-                // 若需要持久化，请使用后台
             }
 
             let currentModule=null, currentAngle='全部', currentCategory='全部', searchQuery='';
@@ -296,7 +307,6 @@
                 clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1500); 
             }
 
-            // 复制功能
             window.handleCopy = function(btn) {
                 const text = btn.getAttribute('data-copy');
                 if (!text) return;
@@ -345,10 +355,7 @@
             };
 
             function updateHash() {
-                if (!currentModule) {
-                    history.replaceState(null, '', ' ');
-                    return;
-                }
+                if (!currentModule) { history.replaceState(null, '', ' '); return; }
                 const parts = [encodeURIComponent(currentModule)];
                 if (currentAngle && currentAngle !== '全部') parts.push('angle=' + encodeURIComponent(currentAngle));
                 if (currentCategory && currentCategory !== '全部') parts.push('cat=' + encodeURIComponent(currentCategory));
@@ -367,15 +374,10 @@
                         if (key === 'angle') angle = decodeURIComponent(val);
                         else if (key === 'cat') cat = decodeURIComponent(val);
                         else if (key === 'q') q = decodeURIComponent(val);
-                    } else {
-                        module = decodeURIComponent(part);
-                    }
+                    } else { module = decodeURIComponent(part); }
                 }
                 if (module && db.modules.includes(module)) {
-                    currentModule = module;
-                    currentAngle = angle;
-                    currentCategory = cat;
-                    searchQuery = q;
+                    currentModule = module; currentAngle = angle; currentCategory = cat; searchQuery = q;
                     document.getElementById('searchInput').value = q;
                     if (q) document.getElementById('searchInputWrap').classList.add('open');
                     document.getElementById('homeView').style.display = 'none';
@@ -388,55 +390,111 @@
             }
 
             window.addEventListener('popstate', function() {
-                if (!restoreFromHash()) {
-                    goHome(true);
-                }
+                if (!restoreFromHash()) { goHome(true); }
             });
 
             function renderSubPage(){
                 if(!currentModule)return;
-                const isKnownModule = ['朋友圈','客户见证','课程卖点'].includes(currentModule);
-                if (!isKnownModule) {
-                    // 自定义模块：简单列表显示
-                    renderGenericModule();
-                    return;
+                document.getElementById('angleBar').style.display='none';
+                document.getElementById('catTabs').style.display='none';
+                document.getElementById('cardGrid').style.display='none';
+                document.getElementById('mediaCardGrid').style.display='none';
+                if(currentModule==='朋友圈') {
+                    document.getElementById('angleBar').style.display='flex';
+                    document.getElementById('cardGrid').style.display='grid';
+                    renderMoments();
+                } else if(currentModule==='客户见证') {
+                    document.getElementById('catTabs').style.display='flex';
+                    document.getElementById('mediaCardGrid').style.display='grid';
+                    renderTestimonialsCards();
+                } else if(currentModule==='课程卖点') {
+                    document.getElementById('catTabs').style.display='flex';
+                    document.getElementById('mediaCardGrid').style.display='grid';
+                    renderCoursesCards();
+                } else {
+                    document.getElementById('mediaCardGrid').style.display='grid';
+                    renderGenericCards();
                 }
-                const isMoments=currentModule==='朋友圈';
-                const isTest=currentModule==='客户见证';
-                const isCourse=currentModule==='课程卖点';
-                document.getElementById('angleBar').style.display=isMoments?'flex':'none';
-                document.getElementById('catTabs').style.display=(isTest||isCourse)?'flex':'none';
-                document.getElementById('cardGrid').style.display=isMoments?'grid':'none';
-                document.getElementById('testimonialList').style.display=(isTest||isCourse)?'flex':'none';
-                if(isMoments) renderMoments();
-                if(isTest) renderTestimonials();
-                if(isCourse) renderCourses();
                 updateHash();
             }
 
-            function renderGenericModule() {
-                document.getElementById('angleBar').style.display = 'none';
-                document.getElementById('catTabs').style.display = 'none';
-                document.getElementById('cardGrid').style.display = 'none';
-                const list = document.getElementById('testimonialList');
-                list.style.display = 'flex';
-                const contents = (db.posts || []).filter(p => p.module === currentModule)
-                    .concat((db.testimonials || []).filter(t => t.module === currentModule))
-                    .concat((db.courses || []).filter(c => c.module === currentModule));
-                if (!contents.length) {
-                    list.innerHTML = '<div class="empty-state">暂无内容</div>';
-                    return;
+            function renderMediaHTML(item){
+                if(item.videoUrl&&item.videoUrl.trim()){
+                    return `<iframe src="${item.videoUrl}" frameborder="0" allowfullscreen></iframe>`;
                 }
-                list.innerHTML = contents.map(item => {
-                    const copyText = (item.text || item.title || '') + '\n' + (item.description || '');
-                    return `<div class="testimonial-item">
-                        <div class="testimonial-info">
-                            <h4>${item.text ? item.text.substring(0,30) : item.title || ''} <span class="copy-btn" data-copy="${copyText.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}" onclick="handleCopy(this); event.stopPropagation();"><i class="fa-regular fa-clone"></i></span></h4>
-                            <p>${item.description || (item.text ? item.text.substring(0,100) : '')}</p>
+                if(item.imageUrl&&item.imageUrl.trim()){
+                    return `<img src="${item.imageUrl}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image placeholder-icon\\'></i>'">`;
+                }
+                return '<i class="fa-solid fa-image placeholder-icon"></i>';
+            }
+
+            function renderTestimonialsCards(){
+                const catTabs=document.getElementById('catTabs');
+                catTabs.innerHTML=['全部',...db.testimonialCategories].map(c=>`<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
+                let filtered=db.testimonials.filter(t=>t.module==='客户见证');
+                if(currentCategory!=='全部') filtered=filtered.filter(t=>t.category===currentCategory);
+                if(searchQuery) filtered=filtered.filter(t=>t.title.includes(searchQuery)||t.description.includes(searchQuery));
+                const grid = document.getElementById('mediaCardGrid');
+                if(!filtered.length){ grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;">暂无见证</div>'; return; }
+                grid.innerHTML = filtered.map(t => {
+                    const copyText = (t.title + '\n' + t.description).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    return `<div class="media-card" onclick="openDetail('testimonial',${t.id})">
+                        <div class="media-card-image" onclick="event.stopPropagation();openLightbox('${t.imageUrl||''}','${t.videoUrl||''}')">${renderMediaHTML(t)}</div>
+                        <div class="media-card-body">
+                            <h3>${t.title}</h3>
+                            <p>${t.description}</p>
+                            <div class="media-card-footer">
+                                <span class="category-badge">${t.category}</span>
+                                <span>${t.date||''} ${t.clientName||''}</span>
+                            </div>
+                            <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
                         </div>
                     </div>`;
                 }).join('');
-                updateHash();
+            }
+
+            function renderCoursesCards(){
+                const catTabs=document.getElementById('catTabs');
+                catTabs.innerHTML=['全部',...db.courseCategories].map(c=>`<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
+                let filtered=db.courses.filter(c=>c.module==='课程卖点');
+                if(currentCategory!=='全部') filtered=filtered.filter(c=>c.category===currentCategory);
+                if(searchQuery) filtered=filtered.filter(c=>c.title.includes(searchQuery)||c.description.includes(searchQuery));
+                const grid = document.getElementById('mediaCardGrid');
+                if(!filtered.length){ grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;">暂无内容</div>'; return; }
+                grid.innerHTML = filtered.map(c => {
+                    const copyText = (c.title + '\n' + c.description).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    return `<div class="media-card" onclick="openDetail('course',${c.id})">
+                        <div class="media-card-image" onclick="event.stopPropagation();openLightbox('${c.imageUrl||''}','${c.videoUrl||''}')">${renderMediaHTML(c)}</div>
+                        <div class="media-card-body">
+                            <h3>${c.title}</h3>
+                            <p>${c.description}</p>
+                            <div class="media-card-footer">
+                                <span class="category-badge">${c.category}</span>
+                                <span>${c.date||''}</span>
+                            </div>
+                            <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            function renderGenericCards(){
+                const grid = document.getElementById('mediaCardGrid');
+                const contents = (db.posts||[]).filter(p=>p.module===currentModule)
+                    .concat((db.testimonials||[]).filter(t=>t.module===currentModule))
+                    .concat((db.courses||[]).filter(c=>c.module===currentModule));
+                if(!contents.length){ grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;">暂无内容</div>'; return; }
+                grid.innerHTML = contents.map(item => {
+                    const copyText = (item.text || item.title || '') + '\n' + (item.description || '');
+                    return `<div class="media-card">
+                        <div class="media-card-image">${renderMediaHTML(item)}</div>
+                        <div class="media-card-body">
+                            <h3>${item.text ? item.text.substring(0,30) : item.title || ''}</h3>
+                            <p>${item.description || (item.text ? item.text.substring(0,200) : '')}</p>
+                            <span class="copy-btn" data-copy="${copyText.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" onclick="handleCopy(this); event.stopPropagation();"><i class="fa-regular fa-clone"></i> 复制</span>
+                        </div>
+                    </div>`;
+                }).join('');
             }
 
             function renderMoments(){
@@ -447,7 +505,6 @@
                 if(searchQuery) filtered=filtered.filter(p=>p.text.includes(searchQuery)||p.angle.includes(searchQuery));
                 const grid=document.getElementById('cardGrid');
                 if(!filtered.length){grid.innerHTML='<div class="empty-state">暂无文案</div>';return;}
-
                 grid.innerHTML=filtered.map(p=>{
                     const lines=p.text.split('\n');
                     const truncated=lines.length>4;
@@ -465,84 +522,8 @@
                 }).join('');
             }
 
-            window.toggleExpand=function(id,fullText){
-                const el=document.getElementById(id);
-                if(el.classList.contains('truncated')){
-                    el.classList.remove('truncated');
-                    el.innerHTML=fullText.replace(/\\n/g,'<br>')+' <span class="expand-btn" onclick="event.stopPropagation();toggleExpand(\''+id+'\',\''+fullText+'\')">收起</span>';
-                }else{
-                    const lines=fullText.split('\\n');
-                    el.classList.add('truncated');
-                    el.innerHTML=lines.slice(0,4).join('<br>')+'... <span class="expand-btn" onclick="event.stopPropagation();toggleExpand(\''+id+'\',\''+fullText+'\')">展开全文</span>';
-                }
-            };
-
-            window.setAngle=function(a){ 
-                currentAngle=a; 
-                renderMoments(); 
-                updateHash();
-            };
-
-            function renderMediaHTML(item){
-                if(item.videoUrl&&item.videoUrl.trim()){
-                    return `<iframe src="${item.videoUrl}" frameborder="0" allowfullscreen style="width:100%;height:100%;"></iframe>`;
-                }
-                if(item.imageUrl&&item.imageUrl.trim()){
-                    return `<img src="${item.imageUrl}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\'></i>'">`;
-                }
-                return '<i class="fa-solid fa-image"></i>';
-            }
-
-            function renderTestimonials(){
-                const catTabs=document.getElementById('catTabs');
-                catTabs.innerHTML=['全部',...db.testimonialCategories].map(c=>`<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
-                let filtered=db.testimonials.filter(t=>t.module==='客户见证');
-                if(currentCategory!=='全部') filtered=filtered.filter(t=>t.category===currentCategory);
-                if(searchQuery) filtered=filtered.filter(t=>t.title.includes(searchQuery)||t.description.includes(searchQuery));
-                const list=document.getElementById('testimonialList');
-                if(!filtered.length){list.innerHTML='<div class="empty-state">暂无见证</div>';return;}
-
-                list.innerHTML=filtered.map(t=>{
-                    const copyText = (t.title + '\n' + t.description).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                    return `<div class="testimonial-item" onclick="openDetail('testimonial',${t.id})">
-                        <div class="testimonial-thumb" onclick="event.stopPropagation();openLightbox('${t.imageUrl||''}','${t.videoUrl||''}')">${renderMediaHTML(t)}</div>
-                        <div class="testimonial-info">
-                            <h4>${t.title} <span class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this); event.stopPropagation();"><i class="fa-regular fa-clone"></i></span></h4>
-                            <p>${t.description}</p>
-                            <div class="testimonial-meta"><span class="testimonial-cat">${t.category}</span> ${t.date||''} ${t.clientName||''}</div>
-                        </div>
-                    </div>`;
-                }).join('');
-            }
-
-            function renderCourses(){
-                const catTabs=document.getElementById('catTabs');
-                catTabs.innerHTML=['全部',...db.courseCategories].map(c=>`<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
-                let filtered=db.courses.filter(c=>c.module==='课程卖点');
-                if(currentCategory!=='全部') filtered=filtered.filter(c=>c.category===currentCategory);
-                if(searchQuery) filtered=filtered.filter(c=>c.title.includes(searchQuery)||c.description.includes(searchQuery));
-                const list=document.getElementById('testimonialList');
-                if(!filtered.length){list.innerHTML='<div class="empty-state">暂无内容</div>';return;}
-
-                list.innerHTML=filtered.map(c=>{
-                    const copyText = (c.title + '\n' + c.description).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                    return `<div class="testimonial-item" onclick="openDetail('course',${c.id})">
-                        <div class="testimonial-thumb" onclick="event.stopPropagation();openLightbox('${c.imageUrl||''}','${c.videoUrl||''}')">${renderMediaHTML(c)}</div>
-                        <div class="testimonial-info">
-                            <h4>${c.title} <span class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this); event.stopPropagation();"><i class="fa-regular fa-clone"></i></span></h4>
-                            <p>${c.description}</p>
-                            <div class="testimonial-meta"><span class="testimonial-cat">${c.category}</span> ${c.date||''}</div>
-                        </div>
-                    </div>`;
-                }).join('');
-            }
-
-            window.setCategory=function(c){ 
-                currentCategory=c; 
-                if(currentModule==='客户见证') renderTestimonials(); 
-                else if(currentModule==='课程卖点') renderCourses(); 
-                updateHash();
-            };
+            window.setAngle=function(a){ currentAngle=a; renderMoments(); updateHash(); };
+            window.setCategory=function(c){ currentCategory=c; renderSubPage(); updateHash(); };
 
             window.toggleSearch=function(){
                 const wrap=document.getElementById('searchInputWrap');
@@ -554,22 +535,30 @@
                 searchQuery=''; 
                 renderSubPage();
             };
-            window.doSearch=function(){ 
-                searchQuery=document.getElementById('searchInput').value.trim(); 
-                renderSubPage(); 
-            };
+            window.doSearch=function(){ searchQuery=document.getElementById('searchInput').value.trim(); renderSubPage(); };
 
             window.openLightbox=function(img,video){
                 const lb=document.getElementById('lightbox');
                 const content=document.getElementById('lightboxContent');
-                if(video){
-                    content.innerHTML=`<iframe src="${video}" frameborder="0" allowfullscreen style="width:80vw;height:60vh;"></iframe>`;
-                }else if(img){
-                    content.innerHTML=`<img src="${img}" onerror="this.style.display='none';this.parentElement.innerHTML='<p style=color:#fff>图片加载失败</p>'">`;
-                }else return;
+                if(video){ content.innerHTML=`<iframe src="${video}" frameborder="0" allowfullscreen style="width:80vw;height:60vh;"></iframe>`; }
+                else if(img){ content.innerHTML=`<img src="${img}" onerror="this.style.display='none';this.parentElement.innerHTML='<p style=color:#fff>图片加载失败</p>'">`; }
+                else return;
                 lb.classList.add('open');
             };
             window.closeLightbox=function(){ document.getElementById('lightbox').classList.remove('open'); };
+
+            // 其他辅助函数保持不变
+            window.toggleExpand=function(id,fullText){
+                const el=document.getElementById(id);
+                if(el.classList.contains('truncated')){
+                    el.classList.remove('truncated');
+                    el.innerHTML=fullText.replace(/\\n/g,'<br>')+' <span class="expand-btn" onclick="event.stopPropagation();toggleExpand(\''+id+'\',\''+fullText+'\')">收起</span>';
+                }else{
+                    const lines=fullText.split('\\n');
+                    el.classList.add('truncated');
+                    el.innerHTML=lines.slice(0,4).join('<br>')+'... <span class="expand-btn" onclick="event.stopPropagation();toggleExpand(\''+id+'\',\''+fullText+'\')">展开全文</span>';
+                }
+            };
 
             window.openDetail=function(type,id){
                 let item;
@@ -597,9 +586,6 @@
 
             window.addEventListener('storage',(e)=>{
                 if(e.key===DATA_KEY && e.newValue){
-                    try { storedData = JSON.parse(e.newValue); } catch(e) {}
-                    // 重新执行兼容层
-                    // 简化处理：刷新页面
                     location.reload();
                 }
             });
@@ -611,9 +597,7 @@
                 }
             });
 
-            if (!restoreFromHash()) {
-                renderHome();
-            }
+            if (!restoreFromHash()) { renderHome(); }
         })();
     </script>
 </body>
