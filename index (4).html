@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>易饰乾园素材库</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F9F7F2; --card-bg:#FFFFFF; --ink:#1a1815; --ink-light:#888;
+  --gold:#b8832a; --gold-pale:#f7f0e0;
+  --border:rgba(0,0,0,0.07); --radius-lg:24px; --radius-full:50px;
+  --shadow-sm:0 2px 16px rgba(0,0,0,0.05); --shadow-md:0 8px 32px rgba(0,0,0,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;color:var(--ink);min-height:100vh;}
+.container{max-width:960px;margin:0 auto;padding:0 24px;}
+
+/* HOME */
+#homeView{animation:fadeIn .3s ease;}
+.hero{text-align:center;padding:64px 0 48px;}
+.hero-eyebrow{display:inline-block;font-size:.65rem;letter-spacing:.4em;color:var(--gold);background:var(--gold-pale);padding:5px 16px;border-radius:var(--radius-full);margin-bottom:20px;}
+.hero-title{font-family:'Noto Serif SC','SimSun',serif;font-size:clamp(1.9rem,5vw,2.6rem);font-weight:900;letter-spacing:.06em;line-height:1.2;margin-bottom:14px;}
+.hero-sub{font-size:.82rem;color:var(--ink-light);letter-spacing:.2em;}
+.hero-line{width:40px;height:2px;background:var(--gold);margin:16px auto 0;}
+
+.module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;padding-bottom:80px;}
+.module-card{background:var(--card-bg);border-radius:var(--radius-lg);padding:28px 24px 24px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden;}
+.module-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);}
+.module-card-icon{font-size:1.6rem;margin-bottom:14px;display:block;}
+.module-card-title{font-family:'Noto Serif SC','SimSun',serif;font-size:1.05rem;font-weight:700;margin-bottom:6px;letter-spacing:.04em;}
+.module-card-desc{font-size:.75rem;color:var(--ink-light);letter-spacing:.08em;line-height:1.6;}
+.module-card-arrow{position:absolute;bottom:20px;right:22px;color:#d0cbc2;font-size:1rem;transition:color .18s,transform .18s;}
+.module-card:hover .module-card-arrow{color:var(--gold);transform:translateX(3px);}
+
+/* SUB PAGE */
+#subView{display:none;animation:fadeIn .3s ease;}
+.sub-header{display:flex;align-items:center;gap:14px;padding:20px 0 18px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.back-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 16px;border-radius:var(--radius-full);background:#ede9e0;border:none;cursor:pointer;font-size:.72rem;letter-spacing:.12em;color:var(--ink-light);font-family:inherit;transition:background .18s;white-space:nowrap;}
+.back-btn:hover{background:#ddd8ce;color:var(--ink);}
+.sub-title{font-family:'Noto Serif SC','SimSun',serif;font-size:1.05rem;font-weight:700;letter-spacing:.06em;flex:1;}
+.search-wrap{position:relative;}
+.search-wrap input{padding:7px 16px 7px 34px;border-radius:var(--radius-full);border:1.5px solid var(--border);background:var(--card-bg);font-size:.78rem;font-family:inherit;outline:none;transition:border-color .18s;width:180px;}
+.search-wrap input:focus{border-color:var(--gold);}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:.78rem;color:#bbb;pointer-events:none;}
+
+.filter-bar{display:flex;flex-wrap:wrap;gap:8px;padding:16px 0 4px;}
+.filter-pill{padding:6px 16px;border-radius:var(--radius-full);background:var(--card-bg);border:1.5px solid var(--border);cursor:pointer;font-size:.75rem;letter-spacing:.1em;color:#666;font-family:inherit;transition:all .18s;white-space:nowrap;}
+.filter-pill:hover{border-color:var(--gold);color:var(--gold);}
+.filter-pill.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+
+/* TEXT CARDS */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:20px 0 80px;}
+.copy-card{background:var(--card-bg);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:12px;transition:box-shadow .18s;}
+.copy-card:hover{box-shadow:var(--shadow-md);}
+.copy-text{font-size:.875rem;line-height:2;white-space:pre-wrap;color:#2a2520;font-weight:300;}
+.copy-text-collapsed{max-height:11em;overflow:hidden;}
+.card-foot{display:flex;align-items:center;justify-content:space-between;}
+.card-angle-tag{font-size:.6rem;letter-spacing:.16em;color:var(--gold);background:var(--gold-pale);padding:2px 10px;border-radius:var(--radius-full);}
+.copy-btn{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;color:#bbb;cursor:pointer;background:none;border:1.5px solid #e8e4de;border-radius:var(--radius-full);padding:4px 12px;font-family:inherit;transition:all .18s;}
+.copy-btn:hover{border-color:var(--gold);color:var(--gold);}
+.expand-btn{display:inline-block;font-size:.7rem;color:var(--gold);cursor:pointer;margin-top:4px;}
+
+/* MEDIA CARDS */
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;padding:20px 0 80px;}
+.media-card{background:var(--card-bg);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.media-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.media-img{width:100%;aspect-ratio:4/3;background:#f0ede5;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:2rem;color:#d0cbc2;}
+.media-img img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
+.media-card:hover .media-img img{transform:scale(1.04);}
+.media-body{padding:14px 16px 16px;}
+.media-cat{font-size:.6rem;letter-spacing:.16em;color:var(--gold);background:var(--gold-pale);padding:2px 8px;border-radius:var(--radius-full);display:inline-block;margin-bottom:8px;}
+.media-title{font-size:.88rem;font-weight:500;margin-bottom:5px;line-height:1.4;}
+.media-desc{font-size:.78rem;color:#888;line-height:1.7;font-weight:300;}
+.media-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:.68rem;color:#bbb;}
+
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:600;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s;}
+.lightbox.open{opacity:1;pointer-events:auto;}
+.lightbox img{max-width:90vw;max-height:88vh;border-radius:10px;}
+.lightbox-close{position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:white;font-size:1.1rem;cursor:pointer;}
+
+.empty-state{text-align:center;padding:60px 20px;color:#ccc;font-size:.85rem;letter-spacing:.12em;grid-column:1/-1;}
+
+.admin-fab{position:fixed;bottom:24px;right:24px;width:48px;height:48px;background:var(--ink);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.1rem;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:background .18s,transform .18s;z-index:100;}
+.admin-fab:hover{background:#333;transform:scale(1.08);}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;padding:9px 22px;border-radius:var(--radius-full);font-size:.75rem;letter-spacing:.1em;opacity:0;transition:all .22s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){
+  .hero{padding:44px 0 36px;}
+  .module-grid{grid-template-columns:1fr 1fr;gap:12px;}
+  .card-grid,.media-grid{grid-template-columns:1fr;}
+  .search-wrap input{width:130px;}
+}
+</style>
+</head>
+<body>
+
+<div id="homeView">
+  <div class="container">
+    <header class="hero">
+      <div class="hero-eyebrow">YISHI QIANYUAN</div>
+      <h1 class="hero-title">易饰乾园素材库</h1>
+      <p class="hero-sub">极简文案资产 · 驱动品牌自然生长</p>
+      <div class="hero-line"></div>
+    </header>
+    <nav class="module-grid" id="moduleGrid"></nav>
+  </div>
+</div>
+
+<div id="subView">
+  <div class="container">
+    <div class="sub-header">
+      <button class="back-btn" onclick="goHome()">← 返回首页</button>
+      <span class="sub-title" id="subTitle"></span>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="搜索…" oninput="doSearch()">
+      </div>
+    </div>
+    <div class="filter-bar" id="filterBar"></div>
+    <div id="contentArea"></div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="event.stopPropagation();closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt=""/>
+</div>
+
+<a href="admin.html" class="admin-fab" title="后台管理">⚙</a>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const KEY='ysqy_data_v3';
+  const DEFAULT_MODULES=[
+    {id:'pyq',name:'朋友圈',type:'moments',icon:'✍️',desc:'高转化发圈文案库',categories:['数字冲击','对话还原','情绪唤醒']},
+    {id:'witness',name:'客户见证',type:'testimonial',icon:'🌟',desc:'真实案例 · 信任背书',categories:['文昌','沙龙','成交','夫妻关系','身体健康','知识成长','见识提升']},
+    {id:'course',name:'课程卖点',type:'course',icon:'🎯',desc:'核心价值 · 转化文案',categories:['核心价值','课程亮点']},
+  ];
+
+  function loadDB(){
+    let db;
+    try{db=JSON.parse(localStorage.getItem(KEY));}catch(e){db=null;}
+    if(!db||!Array.isArray(db.modules)||!db.modules.length)
+      return{modules:JSON.parse(JSON.stringify(DEFAULT_MODULES)),contents:[]};
+    db.modules=db.modules.filter(m=>m&&m.id&&m.name&&m.name!=='undefined'&&m.name!=='null');
+    db.modules.forEach(m=>{if(!m.icon)m.icon='📄';if(!m.desc)m.desc='点击查看内容';if(!m.categories)m.categories=[];});
+    if(!Array.isArray(db.contents))db.contents=[];
+    return db;
+  }
+
+  let db=loadDB(),curModId=null,curFilter='全部',query='';
+
+  function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
+  function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  function renderHome(){
+    document.getElementById('moduleGrid').innerHTML=db.modules.map(m=>`
+      <div class="module-card" onclick="openModule('${m.id}')">
+        <span class="module-card-icon">${m.icon||'📄'}</span>
+        <div class="module-card-title">${esc(m.name)}</div>
+        <div class="module-card-desc">${esc(m.desc||'点击查看内容')}</div>
+        <span class="module-card-arrow">→</span>
+      </div>`).join('');
+  }
+
+  window.openModule=function(id){
+    curModId=id;curFilter='全部';query='';
+    document.getElementById('searchInput').value='';
+    const mod=db.modules.find(m=>m.id===id);
+    if(!mod)return;
+    document.getElementById('homeView').style.display='none';
+    document.getElementById('subView').style.display='block';
+    document.getElementById('subTitle').textContent=mod.name;
+    renderSub();
+  };
+
+  window.goHome=function(){
+    document.getElementById('subView').style.display='none';
+    document.getElementById('homeView').style.display='block';
+    db=loadDB();renderHome();
+  };
+
+  window.doSearch=function(){query=document.getElementById('searchInput').value.trim();renderSub();};
+
+  function renderSub(){
+    const mod=db.modules.find(m=>m.id===curModId);
+    if(!mod)return;
+    const cats=mod.categories||[];
+    const contents=(db.contents||[]).filter(c=>c.moduleId===curModId);
+
+    document.getElementById('filterBar').innerHTML=
+      ['全部',...cats].map(c=>`<button class="filter-pill${curFilter===c?' active':''}" onclick="setFilter('${c}')">${c}</button>`).join('');
+
+    const area=document.getElementById('contentArea');
+
+    if(mod.type==='moments'){
+      let list=contents;
+      if(curFilter!=='全部')list=list.filter(c=>c.angle===curFilter);
+      if(query)list=list.filter(c=>(c.text||'').includes(query));
+      if(!list.length){area.innerHTML='<div class="empty-state">暂无文案</div>';return;}
+      area.innerHTML=`<div class="card-grid">${list.map(p=>{
+        const lines=(p.text||'').split('\n');
+        const needExpand=lines.length>7;
+        const safeText=(p.text||'').replace(/\\/g,'\\\\').replace(/`/g,'\\`');
+        const uid='ct_'+p.id;
+        return`<div class="copy-card">
+          <div class="copy-text${needExpand?' copy-text-collapsed':''}" id="${uid}">${esc(p.text||'')}${needExpand?`<span class="expand-btn" onclick="document.getElementById('${uid}').classList.remove('copy-text-collapsed');this.remove()"> 展开全文</span>`:''}
+          </div>
+          <div class="card-foot">
+            <span class="card-angle-tag">${esc(p.angle||'')}</span>
+            <button class="copy-btn" onclick="cpText(\`${safeText}\`)">复制</button>
+          </div>
+        </div>`;
+      }).join('')}</div>`;
+    } else {
+      let list=contents;
+      if(curFilter!=='全部')list=list.filter(c=>c.category===curFilter);
+      if(query)list=list.filter(c=>(c.title||'').includes(query)||(c.description||'').includes(query));
+      if(!list.length){area.innerHTML='<div class="empty-state">暂无内容</div>';return;}
+      area.innerHTML=`<div class="media-grid">${list.map(c=>`
+        <div class="media-card">
+          <div class="media-img" onclick="openLightbox('${c.imageUrl||''}')">
+            ${c.imageUrl?`<img src="${esc(c.imageUrl)}" alt="${esc(c.title||'')}" loading="lazy"/>`:'🖼'}
+          </div>
+          <div class="media-body">
+            ${c.category?`<span class="media-cat">${esc(c.category)}</span>`:''}
+            ${c.title?`<div class="media-title">${esc(c.title)}</div>`:''}
+            ${c.description?`<div class="media-desc">${esc(c.description)}</div>`:''}
+            <div class="media-meta">
+              <span>${esc(c.date||'')}${c.clientName?' · '+esc(c.clientName):''}</span>
+              <button class="copy-btn" onclick="cpText(\`${((c.title||'')+'\\n'+(c.description||'')).replace(/`/g,'\\`')}\`)">复制</button>
+            </div>
+          </div>
+        </div>`).join('')}</div>`;
+    }
+  }
+
+  window.setFilter=function(v){curFilter=v;renderSub();};
+  window.cpText=function(t){navigator.clipboard.writeText(t).then(()=>toast('已复制 ✓'));};
+  window.openLightbox=function(src){if(!src)return;document.getElementById('lightboxImg').src=src;document.getElementById('lightbox').classList.add('open');};
+  window.closeLightbox=function(){document.getElementById('lightbox').classList.remove('open');};
+
+  window.addEventListener('storage',e=>{if(e.key===KEY){db=loadDB();renderHome();if(curModId)renderSub();}});
+  renderHome();
+})();
+</script>
+</body>
+</html>
