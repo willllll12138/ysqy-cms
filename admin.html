@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>易饰乾园 · 后台管理 V6</title>
+    <title>易饰乾园 · 后台管理</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -43,7 +43,7 @@
         .admin-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:16px;}
         .admin-card{background:#fff;border-radius:var(--radius-lg);padding:18px;border:1px solid var(--border);}
         .admin-card .preview-title{font-weight:600;margin-bottom:6px;}
-        .admin-card .preview-text{font-size:0.85rem;color:#555;max-height:10em;overflow-y:auto;white-space:pre-wrap;}
+        .admin-card .preview-text{font-size:0.85rem;color:#555;min-height:6em;max-height:10em;overflow-y:auto;white-space:pre-wrap;}
         .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000;}
         .modal-box{background:#fff;border-radius:var(--radius-lg);padding:32px;max-width:500px;width:90%;}
         .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 24px;border-radius:30px;font-size:0.8rem;opacity:0;transition:0.3s;z-index:3000;}
@@ -94,42 +94,39 @@
     const DEFAULT_PWD = 'ysqy798';
     const RESET_CODE = 'ysqy_reset';
 
-    // 默认模块（固定的id和name）
     const DEFAULT_MODULES = [
         { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原'] },
         { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙'] },
         { id:'course', name:'课程卖点', type:'course', categories:['核心价值'] }
     ];
 
-    // 数据加载与修复
-    let raw = localStorage.getItem(DATA_KEY);
-    let db = null;
-    try { db = raw ? JSON.parse(raw) : null; } catch(e) { db = null; }
+    // ---- 数据加载与自动清洗 ----
+    function loadDB() {
+        let raw = localStorage.getItem(DATA_KEY);
+        let data = null;
+        try { data = raw ? JSON.parse(raw) : null; } catch(e) { data = null; }
 
-    // 如果数据无效，重新初始化
-    if (!db || !db.modules || !Array.isArray(db.modules) || db.modules.length === 0) {
-        db = {
-            modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)),
-            contents: []
-        };
-    } else {
-        // 修复所有模块的名称字段
-        db.modules.forEach(m => {
-            if (!m.name || typeof m.name !== 'string') {
-                // 根据id匹配默认名称
-                const def = DEFAULT_MODULES.find(d => d.id === m.id);
-                m.name = def ? def.name : (m.id || '未命名');
-            }
-        });
-        if (!db.contents) db.contents = [];
+        if (!data || !data.modules || !Array.isArray(data.modules)) {
+            // 无效数据，直接使用默认
+            data = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
+        }
+
+        // 清洗模块：移除所有无效条目（没有id或name的对象）
+        data.modules = data.modules.filter(m => m && typeof m === 'object' && m.id && m.name);
+        // 补充name字段
+        data.modules.forEach(m => { if (!m.name) m.name = m.id; });
+        // 如果清洗后没有任何模块，恢复默认
+        if (data.modules.length === 0) {
+            data.modules = JSON.parse(JSON.stringify(DEFAULT_MODULES));
+        }
+        // 确保contents存在
+        if (!data.contents || !Array.isArray(data.contents)) data.contents = [];
+
+        return data;
     }
 
-    // 再次确保默认模块存在（防止模块被意外删除后只剩“未命名”）
-    if (!db.modules.find(m => m.id === 'pyq')) db.modules.unshift(JSON.parse(JSON.stringify(DEFAULT_MODULES[0])));
-    if (!db.modules.find(m => m.id === 'witness')) db.modules.splice(1, 0, JSON.parse(JSON.stringify(DEFAULT_MODULES[1])));
-    if (!db.modules.find(m => m.id === 'course')) db.modules.splice(2, 0, JSON.parse(JSON.stringify(DEFAULT_MODULES[2])));
-
-    save();
+    let db = loadDB();
+    save(); // 立即保存清洗后的数据
 
     function save() { localStorage.setItem(DATA_KEY, JSON.stringify(db)); }
     function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
@@ -142,16 +139,17 @@
             renderSidebar();
         } else {
             const err = document.createElement('p'); err.style.color = '#c33'; err.textContent = '密码错误';
-            document.querySelector('.login-card').appendChild(err); setTimeout(()=>err.remove(), 2500);
+            document.querySelector('.login-card').appendChild(err);
+            setTimeout(()=>err.remove(), 2500);
         }
     };
 
-    // 修改密码模态框
+    // 修改密码
     window.showChangePwdModal = function() {
         const modal = document.createElement('div'); modal.className = 'modal';
         modal.innerHTML = `<div class="modal-box"><h3>修改管理密码</h3>
             <input type="password" id="oldPwdChg" placeholder="当前密码">
-            <input type="password" id="newPwd1" placeholder="新密码（至少4位）">
+            <input type="password" id="newPwd1" placeholder="新密码">
             <input type="password" id="newPwd2" placeholder="确认新密码">
             <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
                 <button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button>
@@ -171,7 +169,7 @@
         modal.onclick = e => { if (e.target === modal) modal.remove(); };
     };
 
-    // 忘记密码模态框
+    // 忘记密码
     window.showForgotPwdModal = function() {
         const modal = document.createElement('div'); modal.className = 'modal';
         modal.innerHTML = `<div class="modal-box"><h3>重置密码</h3>
@@ -193,11 +191,10 @@
     let currentModuleId = null;
     function renderSidebar() {
         const list = document.getElementById('moduleList');
-        // 再次确保每个模块都有名称
-        db.modules.forEach(m => { if (!m.name) m.name = m.id || '未命名'; });
+        if (!db.modules || !Array.isArray(db.modules)) return;
         list.innerHTML = db.modules.map(m => `
             <div class="module-item ${currentModuleId===m.id?'active':''}" onclick="selectModule('${m.id}')">
-                <span>${m.name}</span>
+                <span>${m.name || '(未命名)'}</span>
                 <div onclick="event.stopPropagation()">
                     <i class="fa-solid fa-pen" onclick="renameModule('${m.id}')"></i>
                     <i class="fa-solid fa-trash" onclick="deleteModule('${m.id}')"></i>
@@ -218,32 +215,28 @@
         <input type="text" id="newCatInput" placeholder="新分类"><button class="btn" onclick="addCategory()">添加</button>`;
 
         if (mod.type === 'moments') {
-            html += `<h4 style="margin-top:16px;">📝 发布文案</h4>
-            <select id="pubAngle">${(mod.categories||[]).map(c=>`<option>${c}</option>`).join('')}</select>
+            html += `<select id="pubAngle">${(mod.categories||[]).map(c=>`<option>${c}</option>`).join('')}</select>
             <textarea id="pubText" placeholder="文案内容..."></textarea>
             <button class="btn" onclick="publish()">发布</button>`;
         } else {
-            html += `<h4 style="margin-top:16px;">📝 新增内容</h4>
-            <select id="pubCategory">${(mod.categories||[]).map(c=>`<option>${c}</option>`).join('')}</select>
+            html += `<select id="pubCategory">${(mod.categories||[]).map(c=>`<option>${c}</option>`).join('')}</select>
             <input type="text" id="pubTitle" placeholder="标题">
             <input type="text" id="pubImage" placeholder="图片URL">
             <input type="text" id="pubVideo" placeholder="视频URL">
             <textarea id="pubDesc" placeholder="描述"></textarea>
-            <input type="text" id="pubDate" placeholder="日期 (2024-05-15)">
+            <input type="text" id="pubDate" placeholder="日期">
             <button class="btn" onclick="publish()">保存</button>`;
         }
 
-        html += `<h4 style="margin-top:20px;">已发布内容</h4>`;
+        html += `<h4>已发布内容</h4>`;
         if (contents.length === 0) html += '<p style="color:#aaa;">暂无内容</p>';
         else {
             html += `<div class="admin-card-grid">`;
             contents.forEach(c => {
                 const idx = db.contents.indexOf(c);
-                let preview = '';
-                if (c.title) preview += `<div class="preview-title">${c.title}</div>`;
-                preview += `<div class="preview-text">${c.text || c.description || ''}</div>`;
                 html += `<div class="admin-card">
-                    ${preview}
+                    ${c.title?`<div class="preview-title">${c.title}</div>`:''}
+                    <div class="preview-text">${c.text || c.description || ''}</div>
                     <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:8px;">
                         <i class="fa-solid fa-arrow-up" onclick="moveContent(${idx},-1)"></i>
                         <i class="fa-solid fa-arrow-down" onclick="moveContent(${idx},1)"></i>
@@ -306,83 +299,40 @@
         overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
     };
 
-    window.addCategory = function() {
-        const val = document.getElementById('newCatInput').value.trim();
-        if (!val) return;
-        const mod = db.modules.find(m=>m.id===currentModuleId);
-        if (!mod.categories) mod.categories = [];
-        if (mod.categories.includes(val)) return toast('已存在');
-        mod.categories.push(val);
-        save(); renderContent();
-    };
-    window.deleteCategory = function(val) {
-        const mod = db.modules.find(m=>m.id===currentModuleId);
-        mod.categories = mod.categories.filter(c=>c!==val);
-        save(); renderContent();
-    };
-    window.moveContent = function(idx, dir) {
-        const newIdx = idx + dir;
-        if (newIdx < 0 || newIdx >= db.contents.length) return;
-        [db.contents[idx], db.contents[newIdx]] = [db.contents[newIdx], db.contents[idx]];
-        save(); renderContent();
-    };
-    window.deleteContent = function(idx) { if (confirm('删除？')) { db.contents.splice(idx,1); save(); renderContent(); } };
+    window.addCategory = function() { const val=document.getElementById('newCatInput').value.trim(); if(val){ const mod=db.modules.find(m=>m.id===currentModuleId); if(!mod.categories) mod.categories=[]; if(mod.categories.includes(val)) return toast('已存在'); mod.categories.push(val); save(); renderContent(); } };
+    window.deleteCategory = function(val) { const mod=db.modules.find(m=>m.id===currentModuleId); mod.categories = mod.categories.filter(c=>c!==val); save(); renderContent(); };
+    window.moveContent = function(idx, dir) { const newIdx=idx+dir; if(newIdx<0||newIdx>=db.contents.length) return; [db.contents[idx],db.contents[newIdx]]=[db.contents[newIdx],db.contents[idx]]; save(); renderContent(); };
+    window.deleteContent = function(idx) { if(confirm('删除？')){db.contents.splice(idx,1);save();renderContent();} };
 
-    window.addModule = function() {
-        const name = prompt('模块名称');
-        if (name) {
-            const type = prompt('类型 (moments / testimonial / course)', 'moments') || 'moments';
-            const id = 'mod_' + Date.now();
-            db.modules.push({ id, name, type, categories: [] });
-            save(); renderSidebar();
-        }
-    };
-    window.renameModule = function(id) {
-        const mod = db.modules.find(m=>m.id===id);
-        const newName = prompt('新名称', mod.name);
-        if (newName) { mod.name = newName; save(); renderSidebar(); if (currentModuleId===id) renderContent(); }
-    };
-    window.deleteModule = function(id) {
-        if (confirm('删除模块将清空其所有内容')) {
-            db.modules = db.modules.filter(m=>m.id!==id);
-            db.contents = db.contents.filter(c=>c.moduleId!==id);
-            if (currentModuleId === id) {
-                currentModuleId = null;
-                document.getElementById('contentPanel').innerHTML = '← 选择模块';
-            }
-            save(); renderSidebar();
-        }
-    };
+    window.addModule = function() { const name=prompt('模块名称'); if(name){ const type=prompt('类型 (moments / testimonial / course)','moments')||'moments'; db.modules.push({id:'mod_'+Date.now(), name, type, categories:[]}); save(); renderSidebar(); } };
+    window.renameModule = function(id) { const mod=db.modules.find(m=>m.id===id); const newName=prompt('新名称',mod.name); if(newName){mod.name=newName;save();renderSidebar(); if(currentModuleId===id) renderContent(); } };
+    window.deleteModule = function(id) { if(confirm('删除模块将清空其所有内容')){db.modules=db.modules.filter(m=>m.id!==id);db.contents=db.contents.filter(c=>c.moduleId!==id); if(currentModuleId===id){currentModuleId=null; document.getElementById('contentPanel').innerHTML='← 选择模块';} save();renderSidebar(); } };
 
-    window.exportData = function() {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([JSON.stringify(db)], {type:'application/json'}));
-        a.download = 'backup.json'; a.click();
-    };
+    window.exportData = function() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:'application/json'})); a.download='backup.json'; a.click(); };
     window.importData = function(input) {
-        const file = input.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
+        const file=input.files[0]; if(!file) return;
+        const reader=new FileReader();
+        reader.onload=e=>{
             try {
-                const data = JSON.parse(e.target.result);
-                if (data.modules && data.contents) {
-                    if (confirm('导入将覆盖当前数据，继续？')) {
+                const data=JSON.parse(e.target.result);
+                if(data.modules && data.contents){
+                    if(confirm('导入将覆盖当前数据，继续？')){
+                        // 导入时同样清洗模块
+                        data.modules = data.modules.filter(m => m && m.id && m.name);
+                        data.modules.forEach(m => { if(!m.name) m.name = m.id; });
+                        if (data.modules.length === 0) data.modules = JSON.parse(JSON.stringify(DEFAULT_MODULES));
+                        if (!data.contents || !Array.isArray(data.contents)) data.contents = [];
                         db = data;
-                        // 修复导入数据中的模块名称
-                        db.modules.forEach(m => { if (!m.name) m.name = m.id || '未命名'; });
-                        if (!db.contents) db.contents = [];
                         save();
-                        currentModuleId = null;
+                        currentModuleId=null;
                         renderSidebar();
-                        document.getElementById('contentPanel').innerHTML = '← 选择模块';
+                        document.getElementById('contentPanel').innerHTML='← 选择模块';
                         toast('导入成功');
                     }
                 } else toast('格式不正确');
-            } catch (err) { toast('解析失败'); }
+            } catch(err){toast('解析失败');}
         };
-        reader.readAsText(file);
-        input.value = '';
+        reader.readAsText(file); input.value='';
     };
 })();
 </script>
