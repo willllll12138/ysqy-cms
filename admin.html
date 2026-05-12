@@ -93,10 +93,10 @@
 
 <script>
 (function() {
-    // ========== 可选的JSONBin配置 ==========
-    const JSONBIN_BIN_ID = '你的Bin ID';
-    const JSONBIN_API_KEY = '你的Master Key';
-    const USE_CLOUD = JSONBIN_BIN_ID !== '你的Bin ID';
+    // ========== JSONBin 配置 ==========
+    const JSONBIN_BIN_ID = '6a02eef4250b1311c33a8e0d';
+    const JSONBIN_API_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
+    const USE_CLOUD = true;
 
     const DATA_KEY = 'ysqy_data_v3';
     const DEFAULT_PWD = 'ysqy798';
@@ -163,7 +163,6 @@
         } else toast('密码错误');
     };
 
-    // 密码相关
     window.showChangePwdModal = function() {
         const modal = document.createElement('div'); modal.className = 'modal';
         modal.innerHTML = `<div class="modal-box"><h3>修改管理密码</h3>
@@ -391,8 +390,7 @@
         input.value = '';
     };
 
-    // 启动
-    loadData().then(() => { /* 加载完毕，等待用户登录 */ });
+    loadData();
 })();
 </script>
 </body>
