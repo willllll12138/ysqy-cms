@@ -3,75 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>易饰乾园 · 后台管理</title>
+    <title>易饰乾园 · 后台管理 V5</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --bg: #F9F7F2;
-            --card-bg: #FFFFFF;
-            --ink: #1a1815;
-            --ink-light: #5c574f;
-            --gold: #b8832a;
-            --gold-pale: #f7f0e0;
-            --border: rgba(0,0,0,0.06);
-            --radius-sm: 10px;
-            --radius-md: 18px;
-            --radius-lg: 24px;
-            --radius-full: 50px;
+            --bg: #F9F7F2; --card-bg: #FFFFFF; --ink: #1a1815; --ink-light: #5c574f;
+            --gold: #b8832a; --gold-pale: #f7f0e0; --border: rgba(0,0,0,0.06);
+            --radius-sm: 10px; --radius-md: 18px; --radius-lg: 24px; --radius-full: 50px;
+            --shadow-sm: 0 2px 12px rgba(0,0,0,0.04); --shadow-md: 0 8px 30px rgba(0,0,0,0.07);
         }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { background:var(--bg); font-family:'Noto Sans SC', sans-serif; color:var(--ink); }
-        .container { max-width:1000px; margin:0 auto; padding:0 24px; }
-        .login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; }
-        .login-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:48px 36px; max-width:380px; width:100%; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.08); }
-        .login-card h1 { font-family:'Noto Serif SC', serif; font-size:1.8rem; }
-        .login-card input { width:100%; padding:14px 18px; border:1.5px solid #ddd; border-radius:var(--radius-full); text-align:center; font-size:1rem; margin-bottom:16px; }
-        .btn { background:var(--ink); color:#fff; border:none; padding:12px 24px; border-radius:var(--radius-full); cursor:pointer; font-weight:500; }
-        .btn-full { width:100%; }
-        .btn-outline {
-            background:transparent; color:var(--ink); border:1.5px solid #ccc;
-            padding:8px 20px; border-radius:var(--radius-full); cursor:pointer;
-            font-size:0.8rem; font-weight:600; text-decoration:none; display:inline-block;
-        }
-        .btn-outline:hover { background:#f5f5f5; }
-        .admin-header { display:flex; justify-content:space-between; align-items:center; padding:32px 0 24px; }
-        .admin-header h1 { font-family:'Noto Serif SC', serif; font-size:1.8rem; }
-        .header-actions { display:flex; gap:10px; align-items:center; }
-        .header-actions .btn-outline { font-weight:600; }
-        .panel-grid { display:grid; grid-template-columns:240px 1fr; gap:20px; }
-        .module-sidebar { background:var(--card-bg); border-radius:var(--radius-lg); padding:20px; border:1px solid var(--border); }
-        .module-item { display:flex; justify-content:space-between; padding:10px 12px; border-radius:var(--radius-md); cursor:pointer; }
-        .module-item.active { background:var(--gold-pale); }
-        .content-panel { background:var(--card-bg); border-radius:var(--radius-lg); padding:28px; border:1px solid var(--border); }
-        input[type="text"], input[type="url"], select { border-radius:30px!important; padding:12px 18px; border:1.5px solid #e0dbd0; width:100%; margin-bottom:8px; }
-        textarea { border-radius:25px!important; padding:14px 18px; min-height:150px; border:1.5px solid #e0dbd0; width:100%; resize:vertical; }
-        .tag-list { display:flex; flex-wrap:wrap; gap:8px; }
-        .tag-item { background:#f0ede5; padding:6px 14px; border-radius:20px; font-size:0.8rem; }
-        .admin-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; margin-top:16px; }
-        .admin-card { background:#fff; border-radius:var(--radius-lg); padding:18px; border:1px solid var(--border); }
-        .admin-card .preview-title { font-weight:600; }
-        .admin-card .preview-text { font-size:0.82rem; color:var(--ink-light); min-height:6em; max-height:10em; overflow-y:auto; }
-        .modal { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:2000; }
-        .modal-box { background:#fff; border-radius:var(--radius-lg); padding:28px; max-width:500px; width:90%; }
-        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 24px; border-radius:30px; font-size:0.8rem; opacity:0; transition:0.3s; }
-        .toast.show { opacity:1; }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:var(--bg);font-family:'Noto Sans SC',sans-serif;color:var(--ink);}
+        .container{max-width:1000px;margin:0 auto;padding:0 24px;}
+        .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;}
+        .login-card{background:var(--card-bg);border-radius:var(--radius-lg);padding:48px 36px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.08);}
+        .login-card .hero-tag{display:inline-block;font-size:0.7rem;letter-spacing:0.35em;color:var(--gold);background:var(--gold-pale);padding:6px 18px;border-radius:var(--radius-full);margin-bottom:16px;}
+        .login-card h1{font-family:'Noto Serif SC',serif;font-size:1.8rem;margin-bottom:12px;}
+        .login-card .sub{font-size:0.8rem;color:var(--ink-light);margin-bottom:24px;}
+        .login-card input{width:100%;padding:14px 18px;border:1.5px solid var(--border);border-radius:var(--radius-full);text-align:center;font-size:1rem;outline:none;margin-bottom:16px;background:var(--bg);}
+        .btn{background:var(--ink);color:#fff;border:none;padding:12px 24px;border-radius:var(--radius-full);cursor:pointer;font-weight:500;font-family:inherit;}
+        .btn-full{width:100%;}
+        .btn-outline{background:transparent;color:var(--ink);border:1.5px solid #ccc;padding:10px 20px;border-radius:var(--radius-full);cursor:pointer;font-weight:600;font-size:0.8rem;display:inline-flex;align-items:center;gap:6px;text-decoration:none;margin:0 4px;}
+        .btn-outline:hover{background:#f5f5f5;}
+        .login-links{margin-top:16px;display:flex;justify-content:center;gap:20px;}
+        .login-links a{color:var(--ink-light);font-size:0.8rem;text-decoration:none;cursor:pointer;}
+        .login-links a:hover{color:var(--gold);}
+        .admin-header{display:flex;justify-content:space-between;align-items:center;padding:32px 0 24px;flex-wrap:wrap;gap:12px;}
+        .header-actions{display:flex;align-items:center;gap:8px;}
+        .panel-grid{display:grid;grid-template-columns:240px 1fr;gap:20px;}
+        .module-sidebar{background:var(--card-bg);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);}
+        .module-item{display:flex;justify-content:space-between;padding:12px;border-radius:var(--radius-md);cursor:pointer;font-size:0.9rem;}
+        .module-item.active{background:var(--gold-pale);}
+        .content-panel{background:var(--card-bg);border-radius:var(--radius-lg);padding:28px;border:1px solid var(--border);}
+        input[type="text"],input[type="url"],input[type="date"],select{border-radius:30px!important;padding:12px 18px;border:1.5px solid #e0dbd0;width:100%;margin-bottom:10px;font-family:inherit;background:#fdfdfb;}
+        textarea{border-radius:25px!important;padding:14px 18px;min-height:150px;border:1.5px solid #e0dbd0;width:100%;resize:vertical;font-family:inherit;}
+        .tag-list{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;}
+        .tag-item{background:#f0ede5;padding:6px 14px;border-radius:20px;font-size:0.8rem;display:flex;align-items:center;gap:6px;}
+        .admin-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:16px;}
+        .admin-card{background:#fff;border-radius:var(--radius-lg);padding:18px;border:1px solid var(--border);}
+        .admin-card .preview-title{font-weight:600;margin-bottom:6px;}
+        .admin-card .preview-text{font-size:0.85rem;color:#555;max-height:10em;overflow-y:auto;white-space:pre-wrap;}
+        .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000;}
+        .modal-box{background:#fff;border-radius:var(--radius-lg);padding:32px;max-width:500px;width:90%;}
+        .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 24px;border-radius:30px;font-size:0.8rem;opacity:0;transition:0.3s;z-index:3000;}
+        .toast.show{opacity:1;}
     </style>
 </head>
 <body>
 <div id="loginScreen" class="login-screen">
     <div class="login-card">
+        <div class="hero-tag">ADMIN PANEL</div>
         <h1>易饰乾园 · 后台</h1>
-        <input type="password" id="pwdInput" placeholder="管理密码">
+        <p class="sub">文案资产管理系统</p>
+        <input type="password" id="pwdInput" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter')login()">
         <button class="btn btn-full" onclick="login()">进入后台</button>
-        <a href="index.html" class="btn-outline" style="margin-top:16px; display:inline-block;">← 返回前台</a>
+        <div class="login-links">
+            <a onclick="showChangePwdModal()">修改密码</a>
+            <a onclick="showForgotPwdModal()">忘记密码？</a>
+        </div>
+        <a href="index.html" class="btn-outline" style="margin-top:16px;display:inline-flex;justify-content:center;">← 返回前台</a>
     </div>
 </div>
 
 <div id="adminMain" style="display:none;">
     <div class="container">
         <div class="admin-header">
-            <h1>库管理中心</h1>
+            <h1>⚙️ 库管理中心</h1>
             <div class="header-actions">
                 <a href="index.html" class="btn-outline">← 前台</a>
                 <button class="btn-outline" onclick="exportData()">📤 导出</button>
@@ -88,143 +86,214 @@
         </div>
     </div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
 (function() {
     const DATA_KEY = 'ysqy_data_v3';
+    const DEFAULT_PWD = 'ysqy798';
+    const RESET_CODE = 'ysqy_reset';
+
     const DEFAULT_MODULES = [
         { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原'] },
         { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙'] },
         { id:'course', name:'课程卖点', type:'course', categories:['核心价值'] }
     ];
+
+    // 数据初始化并强制修复模块名称
     let raw = localStorage.getItem(DATA_KEY);
-    let db = raw ? JSON.parse(raw) : { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
-    if (!db.modules) db = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
+    let db;
+    try { db = raw ? JSON.parse(raw) : null; } catch(e) { db = null; }
+    if (!db || !db.modules || !Array.isArray(db.modules)) {
+        db = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
+    }
+    // 修复可能缺失的name字段
+    db.modules.forEach(m => { if (!m.name) m.name = m.id || '未命名'; });
+    if (!db.contents) db.contents = [];
     save();
+
     function save() { localStorage.setItem(DATA_KEY, JSON.stringify(db)); }
     function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
+    function getPwd() { return localStorage.getItem('ysqy_admin_pwd') || DEFAULT_PWD; }
 
     window.login = function() {
-        if (document.getElementById('pwdInput').value === 'ysqy798') {
+        if (document.getElementById('pwdInput').value === getPwd()) {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('adminMain').style.display = 'block';
             renderSidebar();
-        } else toast('密码错误');
+        } else {
+            const err = document.createElement('p');
+            err.style.color = '#c33'; err.textContent = '密码错误';
+            document.querySelector('.login-card').appendChild(err);
+            setTimeout(()=>err.remove(), 2500);
+        }
+    };
+
+    // 修改密码
+    window.showChangePwdModal = function() {
+        const modal = document.createElement('div'); modal.className = 'modal';
+        modal.innerHTML = `<div class="modal-box"><h3>修改管理密码</h3>
+            <input type="password" id="oldPwdChg" placeholder="当前密码">
+            <input type="password" id="newPwd1" placeholder="新密码">
+            <input type="password" id="newPwd2" placeholder="确认新密码">
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
+                <button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button>
+                <button class="btn" id="confirmChangePwd">确认修改</button>
+            </div></div>`;
+        document.body.appendChild(modal);
+        document.getElementById('confirmChangePwd').onclick = function() {
+            const o = document.getElementById('oldPwdChg').value;
+            const n1 = document.getElementById('newPwd1').value;
+            const n2 = document.getElementById('newPwd2').value;
+            if (o !== getPwd()) return toast('当前密码错误');
+            if (n1.length < 4) return toast('密码至少4位');
+            if (n1 !== n2) return toast('两次输入不一致');
+            localStorage.setItem('ysqy_admin_pwd', n1);
+            modal.remove(); toast('密码已修改 ✓');
+        };
+        modal.onclick = e => { if (e.target === modal) modal.remove(); };
+    };
+
+    // 忘记密码
+    window.showForgotPwdModal = function() {
+        const modal = document.createElement('div'); modal.className = 'modal';
+        modal.innerHTML = `<div class="modal-box"><h3>重置密码</h3>
+            <input type="text" id="forgotCode" placeholder="重置暗号">
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
+                <button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button>
+                <button class="btn" id="confirmResetPwd">重置密码</button>
+            </div></div>`;
+        document.body.appendChild(modal);
+        document.getElementById('confirmResetPwd').onclick = function() {
+            if (document.getElementById('forgotCode').value === RESET_CODE) {
+                localStorage.removeItem('ysqy_admin_pwd');
+                modal.remove(); toast('密码已重置为默认密码 ysqy798');
+            } else toast('暗号错误');
+        };
+        modal.onclick = e => { if (e.target === modal) modal.remove(); };
     };
 
     let currentModuleId = null;
     function renderSidebar() {
-        document.getElementById('moduleList').innerHTML = db.modules.map(m => `
+        const list = document.getElementById('moduleList');
+        list.innerHTML = db.modules.map(m => `
             <div class="module-item ${currentModuleId===m.id?'active':''}" onclick="selectModule('${m.id}')">
-                <span>${m.name}</span>
+                <span>${m.name || '(未命名)'}</span>
                 <div onclick="event.stopPropagation()">
                     <i class="fa-solid fa-pen" onclick="renameModule('${m.id}')"></i>
                     <i class="fa-solid fa-trash" onclick="deleteModule('${m.id}')"></i>
                 </div>
-            </div>`).join('');
+            </div>
+        `).join('');
         if (currentModuleId) renderContent();
     }
-    window.selectModule = function(id) { currentModuleId=id; renderSidebar(); };
+
+    window.selectModule = function(id) { currentModuleId = id; renderSidebar(); };
 
     function renderContent() {
-        const mod = db.modules.find(m=>m.id===currentModuleId);
+        const mod = db.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
-        const contents = db.contents.filter(c=>c.moduleId===currentModuleId);
-        let html = `<h3>${mod.name}</h3>`;
-        html += `<div class="tag-list">${(mod.categories||[]).map(c=>`<span class="tag-item">${c} <i class="fa-solid fa-xmark" onclick="deleteCategory('${c}')"></i></span>`).join('')}</div>
+        const contents = db.contents.filter(c => c.moduleId === currentModuleId);
+        let html = `<h3>${mod.name} (${mod.type})</h3>`;
+        html += `<div class="tag-list">${(mod.categories||[]).map(c => `<span class="tag-item">${c} <i class="fa-solid fa-xmark" onclick="deleteCategory('${c}')"></i></span>`).join('')}</div>
         <input type="text" id="newCatInput" placeholder="新分类"><button class="btn" onclick="addCategory()">添加</button>`;
-        if (mod.type==='moments') {
-            html += `<select id="pubAngle">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select>
-            <textarea id="pubText" placeholder="文案..."></textarea><button class="btn" onclick="publish()">发布</button>`;
+
+        if (mod.type === 'moments') {
+            html += `<select id="pubAngle">${(mod.categories||[]).map(c=>`<option>${c}</option>`).join('')}</select>
+            <textarea id="pubText" placeholder="文案内容..."></textarea>
+            <button class="btn" onclick="publish()">发布</button>`;
         } else {
-            html += `<select id="pubCategory">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select>
-            <input type="text" id="pubTitle" placeholder="标题"><input type="text" id="pubImage" placeholder="图片URL">
-            <input type="text" id="pubVideo" placeholder="视频URL"><textarea id="pubDesc" placeholder="描述"></textarea>
-            <input type="text" id="pubDate" placeholder="日期"><button class="btn" onclick="publish()">保存</button>`;
+            html += `<select id="pubCategory">${(mod.categories||[]).map(c=>`<option>${c}</option>`).join('')}</select>
+            <input type="text" id="pubTitle" placeholder="标题">
+            <input type="text" id="pubImage" placeholder="图片URL">
+            <input type="text" id="pubVideo" placeholder="视频URL">
+            <textarea id="pubDesc" placeholder="描述"></textarea>
+            <input type="text" id="pubDate" placeholder="日期">
+            <button class="btn" onclick="publish()">保存</button>`;
         }
-        html += `<div class="admin-card-grid">`;
-        contents.forEach(c => {
-            const idx = db.contents.indexOf(c);
-            html += `<div class="admin-card">
-                ${c.title?`<div class="preview-title">${c.title}</div>`:''}
-                <div class="preview-text">${c.text||c.description||''}</div>
-                <div class="card-actions" style="display:flex;justify-content:flex-end;gap:6px;margin-top:8px;">
-                    <i class="fa-solid fa-arrow-up" onclick="moveContent(${idx},-1)"></i>
-                    <i class="fa-solid fa-arrow-down" onclick="moveContent(${idx},1)"></i>
-                    <i class="fa-solid fa-pen" onclick="editContent(${idx})"></i>
-                    <i class="fa-solid fa-trash" onclick="deleteContent(${idx})"></i>
-                </div>
-            </div>`;
-        });
-        html += `</div>`;
+
+        html += `<h4>已发布内容</h4>`;
+        if (contents.length === 0) html += '<p style="color:#aaa;">暂无内容</p>';
+        else {
+            html += `<div class="admin-card-grid">`;
+            contents.forEach(c => {
+                const idx = db.contents.indexOf(c);
+                html += `<div class="admin-card">
+                    ${c.title?`<div class="preview-title">${c.title}</div>`:''}
+                    <div class="preview-text">${c.text || c.description || ''}</div>
+                    <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:8px;">
+                        <i class="fa-solid fa-arrow-up" onclick="moveContent(${idx},-1)"></i>
+                        <i class="fa-solid fa-arrow-down" onclick="moveContent(${idx},1)"></i>
+                        <i class="fa-solid fa-pen" onclick="editContent(${idx})"></i>
+                        <i class="fa-solid fa-trash" onclick="deleteContent(${idx})"></i>
+                    </div>
+                </div>`;
+            });
+            html += `</div>`;
+        }
         document.getElementById('contentPanel').innerHTML = html;
     }
 
     window.publish = function() {
         const mod = db.modules.find(m=>m.id===currentModuleId);
-        const item = { id:Date.now(), moduleId:currentModuleId };
-        if (mod.type==='moments') {
+        if (!mod) return;
+        const item = { id: Date.now(), moduleId: currentModuleId };
+        if (mod.type === 'moments') {
             item.angle = document.getElementById('pubAngle').value;
             item.text = document.getElementById('pubText').value.trim();
+            if (!item.text) return toast('内容不能为空');
+            item.time = Date.now();
         } else {
             item.category = document.getElementById('pubCategory').value;
             item.title = document.getElementById('pubTitle').value.trim();
             item.description = document.getElementById('pubDesc').value.trim();
+            if (!item.title || !item.description) return toast('标题和描述必填');
             item.imageUrl = document.getElementById('pubImage').value.trim();
             item.videoUrl = document.getElementById('pubVideo').value.trim();
             item.date = document.getElementById('pubDate').value.trim();
         }
-        db.contents.unshift(item); save(); renderContent(); toast('已发布');
+        db.contents.unshift(item);
+        save(); renderContent(); toast('已发布');
     };
 
     window.editContent = function(idx) {
         const c = db.contents[idx];
         const mod = db.modules.find(m=>m.id===c.moduleId);
         let form = '';
-        if (mod.type==='moments') {
-            form = `<select id="editAngle">${mod.categories.map(cat=>`<option ${cat===c.angle?'selected':''}>${cat}</option>`).join('')}</select>
+        if (mod.type === 'moments') {
+            form = `<select id="editAngle">${(mod.categories||[]).map(cat => `<option ${cat===c.angle?'selected':''}>${cat}</option>`).join('')}</select>
             <textarea id="editText" style="min-height:150px;">${c.text}</textarea>`;
         } else {
-            form = `<select id="editCat">${mod.categories.map(cat=>`<option ${cat===c.category?'selected':''}>${cat}</option>`).join('')}</select>
+            form = `<select id="editCat">${(mod.categories||[]).map(cat => `<option ${cat===c.category?'selected':''}>${cat}</option>`).join('')}</select>
             <input type="text" id="editTitle" value="${c.title||''}">
             <textarea id="editDesc" style="min-height:150px;">${c.description||''}</textarea>`;
         }
-        const overlay = document.createElement('div');
-        overlay.className = 'modal';
-        overlay.innerHTML = `<div class="modal-box">
-            <h3>编辑内容</h3>${form}
+        const overlay = document.createElement('div'); overlay.className = 'modal';
+        overlay.innerHTML = `<div class="modal-box"><h3>编辑内容</h3>${form}
             <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
                 <button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button>
                 <button class="btn" id="saveEditBtn">保存</button>
-            </div>
-        </div>`;
+            </div></div>`;
         document.body.appendChild(overlay);
         document.getElementById('saveEditBtn').onclick = function() {
-            if (mod.type==='moments') {
-                c.angle = document.getElementById('editAngle').value;
-                c.text = document.getElementById('editText').value.trim();
-            } else {
-                c.category = document.getElementById('editCat').value;
-                c.title = document.getElementById('editTitle').value.trim();
-                c.description = document.getElementById('editDesc').value.trim();
-            }
+            if (mod.type === 'moments') { c.angle = document.getElementById('editAngle').value; c.text = document.getElementById('editText').value.trim(); }
+            else { c.category = document.getElementById('editCat').value; c.title = document.getElementById('editTitle').value.trim(); c.description = document.getElementById('editDesc').value.trim(); }
             save(); renderContent(); overlay.remove(); toast('已更新');
         };
-        overlay.onclick = function(e) { if (e.target===overlay) overlay.remove(); };
+        overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
     };
 
-    // 辅助函数（移动、删除、分类管理等）与之前相同，略
-    window.moveContent = function(idx, dir) { /* ... */ };
+    window.addCategory = function() { const val=document.getElementById('newCatInput').value.trim(); if(val){ const mod=db.modules.find(m=>m.id===currentModuleId); if(!mod.categories) mod.categories=[]; if(mod.categories.includes(val)) return toast('已存在'); mod.categories.push(val); save(); renderContent(); } };
+    window.deleteCategory = function(val) { const mod=db.modules.find(m=>m.id===currentModuleId); mod.categories = mod.categories.filter(c=>c!==val); save(); renderContent(); };
+    window.moveContent = function(idx, dir) { const newIdx=idx+dir; if(newIdx<0||newIdx>=db.contents.length) return; [db.contents[idx],db.contents[newIdx]]=[db.contents[newIdx],db.contents[idx]]; save(); renderContent(); };
     window.deleteContent = function(idx) { if(confirm('删除？')){db.contents.splice(idx,1);save();renderContent();} };
-    window.addCategory = function() { /* ... */ };
-    window.deleteCategory = function(val) { /* ... */ };
-    window.addModule = function() { const name=prompt('模块名称'); if(name){ db.modules.push({id:'mod_'+Date.now(),name,type:'moments',categories:[]}); save();renderSidebar(); } };
-    window.renameModule = function(id) { const mod=db.modules.find(m=>m.id===id); const newName=prompt('新名称',mod.name); if(newName){mod.name=newName;save();renderSidebar();} };
-    window.deleteModule = function(id) { if(confirm('删除将清空内容')){db.modules=db.modules.filter(m=>m.id!==id);db.contents=db.contents.filter(c=>c.moduleId!==id);save();renderSidebar();} };
+
+    window.addModule = function() { const name=prompt('模块名称'); if(name){ const type=prompt('类型 (moments / testimonial / course)','moments')||'moments'; db.modules.push({id:'mod_'+Date.now(), name, type, categories:[]}); save(); renderSidebar(); } };
+    window.renameModule = function(id) { const mod=db.modules.find(m=>m.id===id); const newName=prompt('新名称',mod.name); if(newName){mod.name=newName;save();renderSidebar(); if(currentModuleId===id) renderContent(); } };
+    window.deleteModule = function(id) { if(confirm('删除模块将清空其所有内容')){db.modules=db.modules.filter(m=>m.id!==id);db.contents=db.contents.filter(c=>c.moduleId!==id); if(currentModuleId===id){currentModuleId=null; document.getElementById('contentPanel').innerHTML='← 选择模块';} save();renderSidebar(); } };
+
     window.exportData = function() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:'application/json'})); a.download='backup.json'; a.click(); };
-    window.importData = function(input) { const reader=new FileReader(); reader.onload=e=>{db=JSON.parse(e.target.result);save();renderSidebar();document.getElementById('contentPanel').innerHTML='← 选择模块';}; reader.readAsText(input.files[0]); };
+    window.importData = function(input) { const file=input.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=e=>{ try{ const data=JSON.parse(e.target.result); if(data.modules&&data.contents){ if(confirm('导入将覆盖当前数据，继续？')){ db=data; db.modules.forEach(m=>{ if(!m.name) m.name='未命名'; }); if(!db.contents) db.contents=[]; save(); currentModuleId=null; renderSidebar(); document.getElementById('contentPanel').innerHTML='← 选择模块'; toast('导入成功'); } } else toast('格式不正确'); } catch(err){toast('解析失败');} }; reader.readAsText(file); input.value=''; };
 })();
 </script>
 </body>
