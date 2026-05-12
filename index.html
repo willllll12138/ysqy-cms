@@ -184,7 +184,6 @@
             const DEFAULT_TESTIMONIAL_CATS = ['文昌','沙龙','成交','夫妻关系','身体健康','知识成长','见识提升'];
             const DEFAULT_COURSE_CATS = ['核心价值','课程亮点','学员反馈'];
 
-            // 数据加载与清洗
             async function loadData() {
                 if (USE_CLOUD) {
                     try {
@@ -210,6 +209,7 @@
                         const mod = data.modules.find(m => m.id === c.moduleId);
                         if (!mod) return;
                         if (mod.type === 'moments') {
+                            // 核心修复：对每行trim并拼接
                             const cleanText = (c.text || '').split('\n').map(l => l.trim()).join('\n');
                             posts.push({ id: c.id, module: mod.name, angle: c.angle || '', text: cleanText, time: c.time || Date.now() });
                             if (c.angle && !angles.includes(c.angle)) angles.push(c.angle);
@@ -252,12 +252,7 @@
             let db = createDefaultData();
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
 
-            function toast(msg) {
-                const t = document.getElementById('toast');
-                t.textContent = msg; t.classList.add('show');
-                clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 1500);
-            }
-
+            function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1500); }
             window.handleCopy = function(btn) {
                 const text = btn.getAttribute('data-copy');
                 if (!text) return;
@@ -294,7 +289,6 @@
                 document.getElementById('subTitle').textContent = m;
                 renderSubPage(); window.scrollTo(0,0);
             };
-
             window.goHome = function() {
                 document.getElementById('subView').style.display = 'none';
                 document.getElementById('homeView').style.display = 'block';
@@ -329,14 +323,19 @@
                 const grid = document.getElementById('cardGrid');
                 if (!filtered.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
                 grid.innerHTML = filtered.map(p => {
+                    // 关键：每一行 trim 后，直接拼成带 <br> 的字符串，且模板字符串中不缩进
                     const lines = p.text.split('\n').map(l => l.trim());
                     const truncated = lines.length > 6;
-                    const displayHtml = lines.slice(0,6).join('<br>') + (truncated ? `<span class="expand-btn" onclick="event.stopPropagation();toggleExpand('${p.id}')"> 展开全文</span>` : '');
+                    const displayLines = truncated ? lines.slice(0, 6) : lines;
+                    // 构建文案HTML，完全顶格，避免模板字符串缩进
+                    let textHtml = displayLines.join('<br>');
+                    if (truncated) {
+                        textHtml += `<span class="expand-btn" onclick="event.stopPropagation();toggleExpand('${p.id}')"> 展开全文</span>`;
+                    }
                     const copyText = p.text.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    // 注意：整个div.copy-text内部html不能有缩进
                     return `<div class="copy-card">
-                        <div class="copy-text ${truncated ? '' : 'expanded'}" id="txt-${p.id}">
-                            ${displayHtml}
-                        </div>
+                        <div class="copy-text ${truncated ? '' : 'expanded'}" id="txt-${p.id}">${textHtml}</div>
                         <div class="card-meta">
                             <span># ${p.angle}</span>
                             <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span>
@@ -452,7 +451,6 @@
             window.addEventListener('storage', (e) => { if (e.key === DATA_KEY && e.newValue) location.reload(); });
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetail(); closeLightbox(); } });
 
-            // 启动
             loadData().then(data => {
                 db = data;
                 localStorage.setItem(DATA_KEY, JSON.stringify(db));
