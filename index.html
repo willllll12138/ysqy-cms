@@ -174,10 +174,10 @@
 
     <script>
         (function() {
-            // ========== 可选的JSONBin配置 ==========
-            const JSONBIN_BIN_ID = '你的Bin ID';
-            const JSONBIN_API_KEY = '你的Master Key';
-            const USE_CLOUD = JSONBIN_BIN_ID !== '你的Bin ID';
+            // ========== JSONBin 配置 ==========
+            const JSONBIN_BIN_ID = '6a02eef4250b1311c33a8e0d';
+            const JSONBIN_API_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
+            const USE_CLOUD = true;
 
             const DATA_KEY = 'ysqy_data_v3';
             const DEFAULT_MODULES = ['朋友圈','客户见证','课程卖点'];
@@ -185,7 +185,6 @@
             const DEFAULT_TESTIMONIAL_CATS = ['文昌','沙龙','成交','夫妻关系','身体健康','知识成长','见识提升'];
             const DEFAULT_COURSE_CATS = ['核心价值','课程亮点','学员反馈'];
 
-            // 数据加载
             async function loadData() {
                 if (USE_CLOUD) {
                     try {
@@ -205,7 +204,6 @@
                 if (!data || !data.modules) {
                     return createDefaultData();
                 }
-                // 如果 modules 是对象数组 (新格式) 则转换
                 if (data.modules.length && typeof data.modules[0] === 'object') {
                     const modules = data.modules.filter(m => m && m.id && m.name).map(m => m.name);
                     const angles = [], testCats = [], courseCats = [];
@@ -232,7 +230,6 @@
                         posts, testimonials, courses
                     };
                 }
-                // 旧格式清洗
                 data.modules = data.modules.filter(m => typeof m === 'string' && m.trim() && m !== 'undefined' && m !== 'null');
                 if (!data.angles) data.angles = DEFAULT_ANGLES.slice();
                 if (!data.testimonialCategories) data.testimonialCategories = DEFAULT_TESTIMONIAL_CATS.slice();
@@ -455,7 +452,6 @@
             window.addEventListener('storage', (e) => { if (e.key === DATA_KEY && e.newValue) location.reload(); });
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetail(); closeLightbox(); } });
 
-            // 启动
             loadData().then(data => {
                 db = data;
                 localStorage.setItem(DATA_KEY, JSON.stringify(db));
