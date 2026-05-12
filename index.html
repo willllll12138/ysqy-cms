@@ -25,7 +25,7 @@
             --radius-full: 50px;
             --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
             --shadow-md: 0 8px 30px rgba(0,0,0,0.07);
-            --transition: 0.3s cubic-bezier(0.23,1,0.32,1);
+            --transition: 0.2s cubic-bezier(0.23,1,0.32,1);
             --font-serif: 'Noto Serif SC', 'Songti SC', serif;
             --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
@@ -49,8 +49,13 @@
         .hero-subtitle { font-size:0.9rem; color:var(--ink-light); font-weight:300; letter-spacing:0.15em; }
         .hero-line { width:50px; height:2px; background:var(--gold); margin:20px auto 0; border-radius:2px; }
         .module-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; padding-bottom:60px; }
-        .module-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:32px 26px 26px; cursor:pointer; transition:var(--transition); border:1px solid var(--border); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px; box-shadow:var(--shadow-sm); }
-        .module-card:hover { transform:translateY(-6px); box-shadow:0 20px 40px rgba(0,0,0,0.08); border-color:var(--border-strong); }
+        .module-card {
+            background:var(--card-bg); border-radius:var(--radius-lg); padding:32px 26px 26px;
+            cursor:pointer; transition: var(--transition); border:1px solid var(--border);
+            text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px;
+            box-shadow:var(--shadow-sm); will-change: transform;
+        }
+        .module-card:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(0,0,0,0.06); border-color:var(--border-strong); }
         .module-card-icon { font-size:1.8rem; color:var(--gold); }
         .module-card-title { font-family:var(--font-serif); font-size:1.3rem; font-weight:700; letter-spacing:0.04em; }
         .module-card-desc { font-size:0.8rem; color:var(--ink-light); }
@@ -76,7 +81,7 @@
         .copy-text {
             font-size:0.92rem; font-weight:300; line-height:1.9; white-space:pre-wrap;
             max-height: 11.4em; overflow: hidden; position: relative;
-            text-indent: 0; padding-left: 0;
+            text-indent: 0 !important; padding-left: 0 !important;
         }
         .copy-text.expanded { max-height: none; }
         .copy-text .expand-btn { color:var(--gold); cursor:pointer; font-size:0.8rem; margin-top:4px; display:inline-block; }
@@ -97,15 +102,9 @@
         }
         .media-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
         .media-card-image {
-            width: 100%;
-            height: 240px;
-            background: #f0ede5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            cursor: zoom-in;
+            width: 100%; height: 240px; background: #f0ede5;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; position: relative; cursor: zoom-in;
         }
         .media-card-image img { width: 100%; height: 100%; object-fit: cover; }
         .media-card-image iframe { width: 100%; height: 100%; border: 0; }
@@ -174,7 +173,7 @@
 
     <script>
         (function() {
-            // ========== JSONBin 配置 ==========
+            // ========== 云端配置 ==========
             const JSONBIN_BIN_ID = '6a02eef4250b1311c33a8e0d';
             const JSONBIN_API_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
             const USE_CLOUD = true;
@@ -185,6 +184,7 @@
             const DEFAULT_TESTIMONIAL_CATS = ['文昌','沙龙','成交','夫妻关系','身体健康','知识成长','见识提升'];
             const DEFAULT_COURSE_CATS = ['核心价值','课程亮点','学员反馈'];
 
+            // 数据加载与清洗
             async function loadData() {
                 if (USE_CLOUD) {
                     try {
@@ -201,9 +201,7 @@
             }
 
             function normalizeData(data) {
-                if (!data || !data.modules) {
-                    return createDefaultData();
-                }
+                if (!data || !data.modules) return createDefaultData();
                 if (data.modules.length && typeof data.modules[0] === 'object') {
                     const modules = data.modules.filter(m => m && m.id && m.name).map(m => m.name);
                     const angles = [], testCats = [], courseCats = [];
@@ -212,7 +210,8 @@
                         const mod = data.modules.find(m => m.id === c.moduleId);
                         if (!mod) return;
                         if (mod.type === 'moments') {
-                            posts.push({ id: c.id, module: mod.name, angle: c.angle || '', text: (c.text||'').split('\n').map(l=>l.trim()).join('\n'), time: c.time || Date.now() });
+                            const cleanText = (c.text || '').split('\n').map(l => l.trim()).join('\n');
+                            posts.push({ id: c.id, module: mod.name, angle: c.angle || '', text: cleanText, time: c.time || Date.now() });
                             if (c.angle && !angles.includes(c.angle)) angles.push(c.angle);
                         } else if (mod.type === 'testimonial') {
                             testimonials.push({ id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '', clientName: c.clientName || '', date: c.date || '' });
@@ -234,7 +233,7 @@
                 if (!data.angles) data.angles = DEFAULT_ANGLES.slice();
                 if (!data.testimonialCategories) data.testimonialCategories = DEFAULT_TESTIMONIAL_CATS.slice();
                 if (!data.courseCategories) data.courseCategories = DEFAULT_COURSE_CATS.slice();
-                data.posts = data.posts || [];
+                data.posts = (data.posts || []).map(p => ({ ...p, text: (p.text || '').split('\n').map(l => l.trim()).join('\n') }));
                 data.testimonials = data.testimonials || [];
                 data.courses = data.courses || [];
                 return data;
@@ -246,16 +245,18 @@
                     angles: DEFAULT_ANGLES.slice(),
                     testimonialCategories: DEFAULT_TESTIMONIAL_CATS.slice(),
                     courseCategories: DEFAULT_COURSE_CATS.slice(),
-                    posts: [],
-                    testimonials: [],
-                    courses: []
+                    posts: [], testimonials: [], courses: []
                 };
             }
 
             let db = createDefaultData();
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
 
-            function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1500); }
+            function toast(msg) {
+                const t = document.getElementById('toast');
+                t.textContent = msg; t.classList.add('show');
+                clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 1500);
+            }
 
             window.handleCopy = function(btn) {
                 const text = btn.getAttribute('data-copy');
@@ -328,14 +329,13 @@
                 const grid = document.getElementById('cardGrid');
                 if (!filtered.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
                 grid.innerHTML = filtered.map(p => {
-                    const cleanText = p.text.split('\n').map(l => l.trim()).join('\n');
-                    const truncated = cleanText.split('\n').length > 6;
-                    const display = truncated ? cleanText.split('\n').slice(0,6).join('\n') : cleanText;
-                    const copyText = cleanText.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    const lines = p.text.split('\n').map(l => l.trim());
+                    const truncated = lines.length > 6;
+                    const displayHtml = lines.slice(0,6).join('<br>') + (truncated ? `<span class="expand-btn" onclick="event.stopPropagation();toggleExpand('${p.id}')"> 展开全文</span>` : '');
+                    const copyText = p.text.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
                     return `<div class="copy-card">
                         <div class="copy-text ${truncated ? '' : 'expanded'}" id="txt-${p.id}">
-                            ${display.replace(/\n/g,'<br>')}
-                            ${truncated ? `<span class="expand-btn" onclick="event.stopPropagation();toggleExpand('${p.id}')">展开全文</span>` : ''}
+                            ${displayHtml}
                         </div>
                         <div class="card-meta">
                             <span># ${p.angle}</span>
@@ -452,6 +452,7 @@
             window.addEventListener('storage', (e) => { if (e.key === DATA_KEY && e.newValue) location.reload(); });
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetail(); closeLightbox(); } });
 
+            // 启动
             loadData().then(data => {
                 db = data;
                 localStorage.setItem(DATA_KEY, JSON.stringify(db));
