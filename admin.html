@@ -233,8 +233,9 @@
             <textarea id="pubText" placeholder="文案内容..."></textarea>
             <button class="btn" onclick="publish()">发布</button>`;
         } else {
+            // 客户见证/课程 发布表单，标题输入框移至前面，但不强制必填
             html += `<select id="pubCategory">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select>
-            <input type="text" id="pubTitle" placeholder="标题">
+            <input type="text" id="pubTitle" placeholder="标题（可选）">
             <input type="text" id="pubImage" placeholder="图片URL">
             <input type="text" id="pubVideo" placeholder="视频URL">
             <textarea id="pubDesc" placeholder="描述"></textarea>
@@ -264,6 +265,7 @@
         document.getElementById('contentPanel').innerHTML = html;
     }
 
+    // 发布函数：修改点——对于 testimonial，标题非必填，仅描述必填
     window.publish = function() {
         const mod = db.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
@@ -277,10 +279,12 @@
             item.category = document.getElementById('pubCategory').value;
             item.title = document.getElementById('pubTitle').value.trim();
             item.description = document.getElementById('pubDesc').value.trim();
-            if (!item.title || !item.description) return toast('标题和描述必填');
             item.imageUrl = document.getElementById('pubImage').value.trim();
             item.videoUrl = document.getElementById('pubVideo').value.trim();
             item.date = document.getElementById('pubDate').value.trim();
+            // 修改点：只有课程类型才强制标题，见证类型允许标题为空
+            if (mod.type === 'course' && !item.title) return toast('标题不能为空');
+            if (!item.description) return toast('描述不能为空');
         }
         db.contents.unshift(item);
         save(); renderContent(); toast('已发布');
@@ -294,9 +298,14 @@
             form = `<select id="editAngle">${(mod.categories||[]).map(cat => `<option ${cat===c.angle?'selected':''}>${cat}</option>`).join('')}</select>
             <textarea id="editText" style="min-height:150px;">${c.text}</textarea>`;
         } else {
+            // 编辑时显示所有字段：分类、标题、图片、视频、描述、客户名称（见证）、日期
             form = `<select id="editCat">${(mod.categories||[]).map(cat => `<option ${cat===c.category?'selected':''}>${cat}</option>`).join('')}</select>
-            <input type="text" id="editTitle" value="${c.title||''}">
-            <textarea id="editDesc" style="min-height:150px;">${c.description||''}</textarea>`;
+            <input type="text" id="editTitle" value="${c.title||''}" placeholder="标题">
+            <input type="text" id="editImage" value="${c.imageUrl||''}" placeholder="图片URL">
+            <input type="text" id="editVideo" value="${c.videoUrl||''}" placeholder="视频URL">
+            <textarea id="editDesc" style="min-height:150px;">${c.description||''}</textarea>
+            ${mod.type === 'testimonial' ? `<input type="text" id="editClient" value="${c.clientName||''}" placeholder="客户名称">` : ''}
+            <input type="text" id="editDate" value="${c.date||''}" placeholder="日期">`;
         }
         const overlay = document.createElement('div'); overlay.className = 'modal';
         overlay.innerHTML = `<div class="modal-box"><h3>编辑内容</h3>${form}
@@ -313,12 +322,17 @@
                 c.category = document.getElementById('editCat').value;
                 c.title = document.getElementById('editTitle').value.trim();
                 c.description = document.getElementById('editDesc').value.trim();
+                c.imageUrl = document.getElementById('editImage').value.trim();
+                c.videoUrl = document.getElementById('editVideo').value.trim();
+                c.date = document.getElementById('editDate').value.trim();
+                if (mod.type === 'testimonial') c.clientName = document.getElementById('editClient').value.trim();
             }
             save(); renderContent(); overlay.remove(); toast('已更新');
         };
         overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
     };
 
+    // 其余函数保持不变
     window.addCategory = function() {
         const val = document.getElementById('newCatInput').value.trim();
         if (!val) return;
