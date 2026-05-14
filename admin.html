@@ -237,7 +237,7 @@
             <input type="text" id="pubTitle" placeholder="标题（可选）">
             <input type="text" id="pubImage" placeholder="图片URL（多图用英文逗号分隔）">
             <input type="text" id="pubVideo" placeholder="视频URL">
-            <textarea id="pubDesc" placeholder="描述"></textarea>
+            <textarea id="pubDesc" placeholder="描述（可选）"></textarea>
             <input type="text" id="pubDate" placeholder="日期（可选）">
             <button class="btn" onclick="publish()">保存</button>`;
         }
@@ -276,11 +276,10 @@
         } else {
             item.category = document.getElementById('pubCategory').value;
             item.title = document.getElementById('pubTitle').value.trim();
-            item.description = document.getElementById('pubDesc').value.trim();
+            item.description = document.getElementById('pubDesc').value.trim();  // 允许为空
             item.imageUrl = document.getElementById('pubImage').value.trim();
             item.videoUrl = document.getElementById('pubVideo').value.trim();
             item.date = document.getElementById('pubDate').value.trim();
-            if (!item.description) return toast('描述不能为空');
         }
         db.contents.unshift(item);
         save(); renderContent(); toast('已发布');
@@ -316,7 +315,7 @@
             } else {
                 c.category = document.getElementById('editCat').value;
                 c.title = document.getElementById('editTitle').value.trim();
-                c.description = document.getElementById('editDesc').value.trim();
+                c.description = document.getElementById('editDesc').value.trim();  // 允许为空
                 c.imageUrl = document.getElementById('editImage').value.trim();
                 c.videoUrl = document.getElementById('editVideo').value.trim();
                 c.date = document.getElementById('editDate').value.trim();
