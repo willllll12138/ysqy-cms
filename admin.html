@@ -230,16 +230,15 @@
 
         if (mod.type === 'moments') {
             html += `<select id="pubAngle">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select>
-            <textarea id="pubText" placeholder="文案内容..."></textarea>
+            <textarea id="pubText" placeholder="文案内容（可选）"></textarea>
             <button class="btn" onclick="publish()">发布</button>`;
         } else {
-            // 客户见证/课程 发布表单，标题输入框移至前面，但不强制必填
             html += `<select id="pubCategory">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select>
             <input type="text" id="pubTitle" placeholder="标题（可选）">
-            <input type="text" id="pubImage" placeholder="图片URL">
-            <input type="text" id="pubVideo" placeholder="视频URL">
-            <textarea id="pubDesc" placeholder="描述"></textarea>
-            <input type="text" id="pubDate" placeholder="日期">
+            <input type="text" id="pubImage" placeholder="图片URL（可选，多个用英文逗号分隔）">
+            <input type="text" id="pubVideo" placeholder="视频URL（可选）">
+            <textarea id="pubDesc" placeholder="描述（可选）"></textarea>
+            <input type="text" id="pubDate" placeholder="日期（可选）">
             <button class="btn" onclick="publish()">保存</button>`;
         }
 
@@ -265,7 +264,7 @@
         document.getElementById('contentPanel').innerHTML = html;
     }
 
-    // 发布函数：修改点——对于 testimonial，标题非必填，仅描述必填
+    // 发布函数：所有字段均可选填
     window.publish = function() {
         const mod = db.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
@@ -273,7 +272,6 @@
         if (mod.type === 'moments') {
             item.angle = document.getElementById('pubAngle').value;
             item.text = document.getElementById('pubText').value.trim();
-            if (!item.text) return toast('内容不能为空');
             item.time = Date.now();
         } else {
             item.category = document.getElementById('pubCategory').value;
@@ -282,12 +280,9 @@
             item.imageUrl = document.getElementById('pubImage').value.trim();
             item.videoUrl = document.getElementById('pubVideo').value.trim();
             item.date = document.getElementById('pubDate').value.trim();
-            // 修改点：只有课程类型才强制标题，见证类型允许标题为空
-            if (mod.type === 'course' && !item.title) return toast('标题不能为空');
-            if (!item.description) return toast('描述不能为空');
         }
         db.contents.unshift(item);
-        save(); renderContent(); toast('已发布');
+        save(); renderContent(); toast('已保存（全部字段可选填）');
     };
 
     window.editContent = function(idx) {
@@ -296,16 +291,15 @@
         let form = '';
         if (mod.type === 'moments') {
             form = `<select id="editAngle">${(mod.categories||[]).map(cat => `<option ${cat===c.angle?'selected':''}>${cat}</option>`).join('')}</select>
-            <textarea id="editText" style="min-height:150px;">${c.text}</textarea>`;
+            <textarea id="editText" style="min-height:150px;">${c.text||''}</textarea>`;
         } else {
-            // 编辑时显示所有字段：分类、标题、图片、视频、描述、客户名称（见证）、日期
             form = `<select id="editCat">${(mod.categories||[]).map(cat => `<option ${cat===c.category?'selected':''}>${cat}</option>`).join('')}</select>
-            <input type="text" id="editTitle" value="${c.title||''}" placeholder="标题">
-            <input type="text" id="editImage" value="${c.imageUrl||''}" placeholder="图片URL">
-            <input type="text" id="editVideo" value="${c.videoUrl||''}" placeholder="视频URL">
+            <input type="text" id="editTitle" value="${c.title||''}" placeholder="标题（可选）">
+            <input type="text" id="editImage" value="${c.imageUrl||''}" placeholder="图片URL（可选，多个用英文逗号分隔）">
+            <input type="text" id="editVideo" value="${c.videoUrl||''}" placeholder="视频URL（可选）">
             <textarea id="editDesc" style="min-height:150px;">${c.description||''}</textarea>
-            ${mod.type === 'testimonial' ? `<input type="text" id="editClient" value="${c.clientName||''}" placeholder="客户名称">` : ''}
-            <input type="text" id="editDate" value="${c.date||''}" placeholder="日期">`;
+            ${mod.type === 'testimonial' ? `<input type="text" id="editClient" value="${c.clientName||''}" placeholder="客户名称（可选）">` : ''}
+            <input type="text" id="editDate" value="${c.date||''}" placeholder="日期（可选）">`;
         }
         const overlay = document.createElement('div'); overlay.className = 'modal';
         overlay.innerHTML = `<div class="modal-box"><h3>编辑内容</h3>${form}
@@ -332,7 +326,7 @@
         overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
     };
 
-    // 其余函数保持不变
+    // 其余辅助函数保持不变
     window.addCategory = function() {
         const val = document.getElementById('newCatInput').value.trim();
         if (!val) return;
