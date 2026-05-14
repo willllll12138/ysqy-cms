@@ -103,9 +103,10 @@
         .media-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
         .media-card-image {
             width: 100%; height: 240px; background: #f0ede5;
-            display: flex; align-items: center; overflow-x: auto; scroll-snap-type: x mandatory;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; position: relative; cursor: zoom-in;
         }
-        .media-card-image img { height: 100%; width: auto; max-width: none; scroll-snap-align: start; flex-shrink: 0; }
+        .media-card-image img { width: 100%; height: 100%; object-fit: cover; }
         .media-card-image iframe { width: 100%; height: 100%; border: 0; }
         .media-card-body { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
         .media-card-body h3 { font-size: 1.15rem; font-weight: 700; color: var(--ink); }
@@ -218,10 +219,9 @@
                             courses.push({ id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '', date: c.date || '' });
                             if (c.category && !courseCats.includes(c.category)) courseCats.push(c.category);
                         } else {
-                            // 其他自定义类型，按通用处理，放到testimonials/courses扩展
                             const item = { id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '', date: c.date || '' };
                             if (mod.type === 'testimonial') testimonials.push(item);
-                            else courses.push(item); // 默认为课程类型处理
+                            else courses.push(item);
                         }
                     });
                     return {
@@ -316,7 +316,6 @@
                     document.getElementById('mediaCardGrid').style.display = 'grid';
                     renderMediaCards('课程卖点');
                 } else {
-                    // 自定义模块：通用媒体卡片
                     document.getElementById('mediaCardGrid').style.display = 'grid';
                     renderGenericCards();
                 }
@@ -352,6 +351,7 @@
                 };
             }
 
+            // 多图拆分核心：为每张图片生成独立卡片
             function renderMediaCards(moduleName) {
                 const isTestimonial = moduleName === '客户见证';
                 const cats = isTestimonial ? db.testimonialCategories : db.courseCategories;
@@ -361,47 +361,72 @@
                 if (searchQuery) items = items.filter(i => (i.title||'').includes(searchQuery) || (i.description||'').includes(searchQuery));
                 const grid = document.getElementById('mediaCardGrid');
                 if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
-                grid.innerHTML = items.map(i => {
-                    let imagesHtml = '';
-                    if (i.imageUrl) {
-                        const urls = i.imageUrl.split(',').map(u => u.trim());
-                        imagesHtml = urls.map(u => `<img src="${u}" onerror="this.style.display='none'">`).join('');
+
+                // 处理每条数据，可能拆分为多个卡片
+                let cardsHtml = '';
+                items.forEach(i => {
+                    const copyText = ((i.title||'') + '\n' + (i.description||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+                    // 获取图片URL数组（处理逗号分隔）
+                    const imageUrls = i.imageUrl ? i.imageUrl.split(',').map(u => u.trim()).filter(u => u) : [];
+                    const hasVideo = i.videoUrl && i.videoUrl.trim();
+
+                    // 如果没有任何媒体，生成一个占位卡片
+                    if (imageUrls.length === 0 && !hasVideo) {
+                        cardsHtml += buildMediaCard(i, '', copyText, isTestimonial);
+                    } else if (hasVideo) {
+                        // 视频优先，只显示一个卡片（视频不能拆分）
+                        cardsHtml += buildMediaCard(i, 'video', copyText, isTestimonial);
+                    } else {
+                        // 为每张图片生成独立卡片
+                        imageUrls.forEach(imgUrl => {
+                            cardsHtml += buildMediaCard(i, imgUrl, copyText, isTestimonial);
+                        });
                     }
-                    return `<div class="media-card" onclick="openDetail('${isTestimonial?'testimonial':'course'}',${i.id})">
-                        <div class="media-card-image" onclick="event.stopPropagation();openLightbox('${i.imageUrl||''}','${i.videoUrl||''}')">
-                            ${imagesHtml || (i.videoUrl ? `<iframe src="${i.videoUrl}" allowfullscreen></iframe>` : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>')}
+                });
+                grid.innerHTML = cardsHtml;
+            }
+
+            function buildMediaCard(item, mediaUrl, copyText, isTestimonial) {
+                const isVideo = mediaUrl === 'video';
+                const imageSection = isVideo 
+                    ? `<iframe src="${item.videoUrl}" allowfullscreen></iframe>`
+                    : mediaUrl 
+                        ? `<img src="${mediaUrl}" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'">` 
+                        : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>';
+                
+                return `<div class="media-card" onclick="openDetail('${isTestimonial?'testimonial':'course'}',${item.id})">
+                    <div class="media-card-image" onclick="event.stopPropagation(); openLightbox('${mediaUrl === 'video' ? '' : mediaUrl}', '${mediaUrl === 'video' ? item.videoUrl : ''}')">
+                        ${imageSection}
+                    </div>
+                    <div class="media-card-body">
+                        <h3>${item.title||''}</h3>
+                        <div class="desc">${item.description||''}</div>
+                        <div class="media-card-footer">
+                            <span class="category-badge">${item.category||''}</span>
+                            <span>${item.date||''} ${item.clientName ? '· ' + item.clientName : ''}</span>
                         </div>
-                        <div class="media-card-body">
-                            <h3>${i.title||''}</h3>
-                            <div class="desc">${i.description||''}</div>
-                            <div class="media-card-footer">
-                                <span class="category-badge">${i.category||''}</span>
-                                <span>${i.date||''} ${i.clientName ? '· ' + i.clientName : ''}</span>
-                            </div>
-                            <span class="copy-btn" data-copy="${(i.title||'') + '\n' + (i.description||'')}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
-                        </div>
-                    </div>`;
-                }).join('');
+                        <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
+                    </div>
+                </div>`;
             }
 
             function renderGenericCards() {
                 const allContent = [...db.posts.filter(p => p.module === currentModule), ...db.testimonials.filter(t => t.module === currentModule), ...db.courses.filter(c => c.module === currentModule)];
                 const grid = document.getElementById('mediaCardGrid');
                 if (!allContent.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
-                grid.innerHTML = allContent.map(c => {
-                    let imagesHtml = '';
-                    if (c.imageUrl) {
-                        const urls = c.imageUrl.split(',').map(u => u.trim());
-                        imagesHtml = urls.map(u => `<img src="${u}">`).join('');
+                let cardsHtml = '';
+                allContent.forEach(c => {
+                    const copyText = ((c.title||'') + '\n' + (c.description||c.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+                    const imageUrls = c.imageUrl ? c.imageUrl.split(',').map(u => u.trim()).filter(u => u) : [];
+                    if (imageUrls.length === 0) {
+                        cardsHtml += `<div class="media-card"><div class="media-card-image"><i class="fa-solid fa-image"></i></div><div class="media-card-body"><h4>${c.title||''}</h4><p>${c.description||c.text||''}</p></div></div>`;
+                    } else {
+                        imageUrls.forEach(imgUrl => {
+                            cardsHtml += `<div class="media-card"><div class="media-card-image"><img src="${imgUrl}" onclick="event.stopPropagation();openLightbox('${imgUrl}','')"></div><div class="media-card-body"><h4>${c.title||''}</h4><p>${c.description||c.text||''}</p></div></div>`;
+                        });
                     }
-                    return `<div class="media-card">
-                        <div class="media-card-image">${imagesHtml || '<i class="fa-solid fa-image"></i>'}</div>
-                        <div class="media-card-body">
-                            <h4>${c.title||''}</h4>
-                            <p>${c.description||c.text||''}</p>
-                        </div>
-                    </div>`;
-                }).join('');
+                });
+                grid.innerHTML = cardsHtml;
             }
 
             window.setAngle = function(a) { currentAngle = a; renderSubPage(); };
@@ -418,11 +443,13 @@
             };
             window.doSearch = function() { searchQuery = document.getElementById('searchInput').value.trim(); renderSubPage(); };
 
-            window.openLightbox = function(img,video) {
+            window.openLightbox = function(img, video) {
                 const lb = document.getElementById('lightbox');
-                if (video) { document.getElementById('lightboxContent').innerHTML = `<iframe src="${video}" allowfullscreen style="width:80vw;height:60vh;"></iframe>`; }
-                else if (img) { document.getElementById('lightboxContent').innerHTML = `<img src="${img.split(',')[0].trim()}" onerror="this.parentElement.innerHTML='<p style=color:#fff>图片加载失败</p>'">`; }
-                else return;
+                if (video) {
+                    document.getElementById('lightboxContent').innerHTML = `<iframe src="${video}" allowfullscreen style="width:80vw;height:60vh;"></iframe>`;
+                } else if (img) {
+                    document.getElementById('lightboxContent').innerHTML = `<img src="${img}" onerror="this.parentElement.innerHTML='<p style=color:#fff>图片加载失败</p>'">`;
+                } else return;
                 lb.classList.add('open');
             };
             window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
@@ -432,13 +459,14 @@
                 if (type === 'testimonial') item = db.testimonials.find(t => t.id === id);
                 else item = db.courses.find(c => c.id === id);
                 if (!item) return;
-                const copyText = (item.title||'') + '\n' + (item.description||'');
+                const copyText = ((item.title||'') + '\n' + (item.description||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
                 document.getElementById('detailContent').innerHTML = `
-                    ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen style="width:100%;height:300px;"></iframe>` : (item.imageUrl ? `<div style="display:flex;overflow-x:auto;">${item.imageUrl.split(',').map(u => `<img src="${u.trim()}" style="height:200px;margin-right:8px;">`).join('')}</div>` : '')}
+                    ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen style="width:100%;height:300px;"></iframe>` : 
+                    (item.imageUrl ? `<div style="display:flex;overflow-x:auto;gap:8px;">${item.imageUrl.split(',').map(u => `<img src="${u.trim()}" style="height:200px;cursor:pointer;" onclick="openLightbox('${u.trim()}','')">`).join('')}</div>` : '')}
                     <h3 style="margin:16px 0 8px;">${item.title||''}</h3>
                     <p style="color:#888;">${item.category||''} · ${item.date||''} · ${item.clientName||''}</p>
                     <p style="white-space:pre-wrap;line-height:1.8;">${item.description||''}</p>
-                    <button class="copy-btn" data-copy="${copyText.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" onclick="handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制文案</button>
+                    <button class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制文案</button>
                 `;
                 document.getElementById('detailOverlay').classList.add('open');
                 document.body.style.overflow = 'hidden';
