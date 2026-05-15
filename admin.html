@@ -101,9 +101,9 @@
     const DATA_KEY = 'ysqy_data_v3';
     const DEFAULT_PWD = 'ysqy798';
     const DEFAULT_MODULES = [
-        { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原'] },
-        { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙'] },
-        { id:'course', name:'课程卖点', type:'course', categories:['核心价值'] }
+        { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原'], locked: false },
+        { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙'], locked: false },
+        { id:'course', name:'课程卖点', type:'course', categories:['核心价值'], locked: false }
     ];
 
     function cleanModules(data) {
@@ -111,6 +111,8 @@
             data.modules = JSON.parse(JSON.stringify(DEFAULT_MODULES));
         } else {
             data.modules = data.modules.filter(m => m && typeof m === 'object' && m.id && m.name && m.name !== 'undefined' && m.name !== 'null');
+            // 补充可能缺失的 locked 字段
+            data.modules.forEach(m => { if (m.locked === undefined) m.locked = false; });
             if (data.modules.length === 0) data.modules = JSON.parse(JSON.stringify(DEFAULT_MODULES));
         }
         if (!data.contents || !Array.isArray(data.contents)) data.contents = [];
@@ -161,9 +163,27 @@
     let currentModuleId = null;
     function renderSidebar() {
         const list = document.getElementById('moduleList');
-        list.innerHTML = db.modules.map(m => `<div class="module-item ${currentModuleId===m.id?'active':''}" onclick="selectModule('${m.id}')"><span>${m.name || '(未命名)'}</span><div onclick="event.stopPropagation()"><i class="fa-solid fa-pen" onclick="renameModule('${m.id}')"></i><i class="fa-solid fa-trash" onclick="deleteModule('${m.id}')"></i></div></div>`).join('');
+        list.innerHTML = db.modules.map(m => `<div class="module-item ${currentModuleId===m.id?'active':''}" onclick="selectModule('${m.id}')">
+            <span>${m.name || '(未命名)'}</span>
+            <div onclick="event.stopPropagation()">
+                <i class="fa-solid ${m.locked ? 'fa-lock' : 'fa-unlock'}" style="cursor:pointer; margin-right:4px;" onclick="toggleLock('${m.id}')" title="${m.locked ? '解锁' : '锁定'}"></i>
+                <i class="fa-solid fa-pen" onclick="renameModule('${m.id}')"></i>
+                <i class="fa-solid fa-trash" onclick="deleteModule('${m.id}')"></i>
+            </div>
+        </div>`).join('');
         if (currentModuleId) renderContent();
     }
+
+    window.toggleLock = function(id) {
+        const mod = db.modules.find(m => m.id === id);
+        if (mod) {
+            mod.locked = !mod.locked;
+            save();
+            renderSidebar();
+            toast(mod.locked ? '模块已锁定' : '模块已解锁');
+        }
+    };
+
     window.selectModule = function(id) { currentModuleId = id; renderSidebar(); };
 
     function renderContent() {
@@ -189,13 +209,10 @@
             contents.forEach(c => {
                 const idx = db.contents.indexOf(c);
                 const imageUrls = c.imageUrl ? c.imageUrl.split(',').map(u => u.trim()).filter(u => u) : [];
-                // 为每张图片生成一个卡片，若没有图片则生成一个占位卡片
                 if (imageUrls.length === 0) {
                     html += generateAdminCard(c, idx, null);
                 } else {
-                    imageUrls.forEach(imgUrl => {
-                        html += generateAdminCard(c, idx, imgUrl);
-                    });
+                    imageUrls.forEach(imgUrl => { html += generateAdminCard(c, idx, imgUrl); });
                 }
             });
             html += `</div>`;
@@ -277,7 +294,7 @@
     window.moveContent = function(idx, dir) { const newIdx = idx + dir; if (newIdx < 0 || newIdx >= db.contents.length) return; [db.contents[idx], db.contents[newIdx]] = [db.contents[newIdx], db.contents[idx]]; save(); renderContent(); };
     window.deleteContent = function(idx) { if (confirm('确认删除？')) { db.contents.splice(idx, 1); save(); renderContent(); } };
 
-    window.addModule = function() { const name = prompt('模块名称'); if (name) { const type = prompt('类型 (moments / testimonial / course)', 'moments') || 'moments'; db.modules.push({ id: 'mod_' + Date.now(), name, type, categories: [] }); save(); renderSidebar(); } };
+    window.addModule = function() { const name = prompt('模块名称'); if (name) { const type = prompt('类型 (moments / testimonial / course)', 'moments') || 'moments'; db.modules.push({ id: 'mod_' + Date.now(), name, type, categories: [], locked: false }); save(); renderSidebar(); } };
     window.renameModule = function(id) { const mod = db.modules.find(m => m.id === id); const newName = prompt('新名称', mod.name); if (newName) { mod.name = newName; save(); renderSidebar(); if (currentModuleId === id) renderContent(); } };
     window.deleteModule = function(id) { if (confirm('删除模块将清空其所有内容')) { db.modules = db.modules.filter(m => m.id !== id); db.contents = db.contents.filter(c => c.moduleId !== id); if (currentModuleId === id) { currentModuleId = null; document.getElementById('contentPanel').innerHTML = '← 选择模块'; } save(); renderSidebar(); } };
 
