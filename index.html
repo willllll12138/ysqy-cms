@@ -94,7 +94,6 @@
         .detail-modal { background:#fff; border-radius:var(--radius-lg); padding:32px 28px; max-width:600px; width:90%; max-height:85vh; overflow-y:auto; position:relative; }
         .detail-modal .close-btn { position:absolute; top:16px; right:16px; font-size:1.2rem; cursor:pointer; }
         .empty-state { text-align:center; padding:60px 20px; color:#ccc; }
-        /* 统一密码输入框 */
         .unified-input {
             width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px;
             font-family:var(--font-sans); font-size:0.9rem; outline:none; margin:8px 0;
@@ -130,14 +129,13 @@
             const JSONBIN_API_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
             const USE_CLOUD = true;
             const DATA_KEY = 'ysqy_data_v3';
-            const DEFAULT_ANGLES = ['数字冲击','对话还原','情绪唤醒','场景反差','旁观者视角','预言式','时间轴','选择题','内幕揭秘','反常识','学员故事','身体感知','追问式','画面描写'];
             const LOCK_PWD_KEY = 'ysqy_module_pwd';
             const DEFAULT_LOCK_PWD = 'zheshimima';
             let pendingLockedModule = null;
 
             function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
 
-            let db = { modules: [], angles: [], contents: [], _modules: [] };
+            let db = { modules: [], contents: [], _modules: [] };
 
             async function loadData() {
                 if (USE_CLOUD) {
@@ -159,16 +157,16 @@
                     modules = _modules.filter(m => typeof m === 'string');
                 }
                 if (modules.length === 0) modules = ['朋友圈','客户见证','课程卖点'];
-                const angles = data.angles || DEFAULT_ANGLES.slice();
+                // 不再使用独立的 angles 数组，而是从模块对象中获取 categories
                 const contents = (data.contents || []).map(c => {
                     if (!c.module) { const mod = _modules.find(m => m.id === c.moduleId); c.module = mod ? mod.name : ''; }
                     return c;
                 });
-                return { modules, angles, contents, _modules };
+                return { modules, contents, _modules };
             }
 
             function createDefaultData() {
-                return { modules: ['朋友圈','客户见证','课程卖点'], angles: DEFAULT_ANGLES.slice(), contents: [], _modules: [] };
+                return { modules: ['朋友圈','客户见证','课程卖点'], contents: [], _modules: [] };
             }
 
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
@@ -240,9 +238,14 @@
                 const mod = (db._modules || []).find(m => m.name === currentModule);
                 const cats = mod?.categories || [];
                 if (currentModule === '朋友圈') {
-                    document.getElementById('angleBar').style.display='flex';
+                    // 从模块对象中获取角度列表，而不是用独立的 angles 数组
+                    const angles = mod?.categories || [];
+                    if (angles.length > 0) {
+                        document.getElementById('angleBar').style.display='flex';
+                        document.getElementById('angleBar').innerHTML = ['全部', ...angles].map(a => `<span class="angle-pill ${currentAngle===a?'active':''}" onclick="setAngle('${a}')">${a}</span>`).join('');
+                    }
                     document.getElementById('cardGrid').style.display='grid';
-                    renderMoments();
+                    renderMoments(mod);
                 } else {
                     if (cats.length > 0) {
                         document.getElementById('catTabs').style.display='flex';
@@ -256,11 +259,12 @@
                 }
             }
 
-            function renderMoments() {
-                document.getElementById('angleBar').innerHTML = ['全部', ...db.angles].map(a => `<span class="angle-pill ${currentAngle===a?'active':''}" onclick="setAngle('${a}')">${a}</span>`).join('');
+            function renderMoments(mod) {
                 let items = db.contents.filter(c => c.module === '朋友圈' && c.angle);
                 if (currentAngle !== '全部') items = items.filter(c => c.angle === currentAngle);
                 if (searchQuery) items = items.filter(c => (c.text||'').includes(searchQuery));
+                // 按时间降序排列（最新在前）
+                items.sort((a, b) => (b.time || 0) - (a.time || 0));
                 const grid = document.getElementById('cardGrid');
                 if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
                 grid.innerHTML = items.map(p => {
@@ -280,6 +284,8 @@
             function renderMediaCards(items, mod) {
                 const grid = document.getElementById('mediaCardGrid');
                 if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
+                // 按 id 降序（近似上传时间）
+                items.sort((a, b) => (b.id || 0) - (a.id || 0));
                 let cardsHtml = '';
                 items.forEach(item => {
                     const copyText = ((item.title||'') + '\n' + (item.description||item.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
