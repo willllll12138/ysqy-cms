@@ -130,22 +130,27 @@
             let sortOrder = 'desc';
             const preloadCache = {};
 
+            // 动态获取网站基础路径（用于拼接相对路径）
+            const BASE_PATH = (function() {
+                const path = window.location.pathname;
+                return path.substring(0, path.lastIndexOf('/') + 1);
+            })();
+
             function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
 
-            // 自动缩略图生成：使用 images.weserv.nl 免费服务，宽度600px
+            // 生成缩略图 URL（使用两个备选服务，并增加回退逻辑）
             function getThumbUrl(originalUrl) {
                 if (!originalUrl) return '';
-                // 如果已经是绝对http链接，直接使用；否则补全当前域名的路径
                 let fullUrl = originalUrl;
+                // 如果是相对路径，补全为完整 URL
                 if (!/^https?:\/\//i.test(originalUrl)) {
-                    fullUrl = location.origin + (originalUrl.startsWith('/') ? '' : '/') + originalUrl;
+                    fullUrl = new URL(originalUrl, window.location.origin + BASE_PATH).href;
                 }
-                // 已经经过 weserv 处理的不要再嵌套
-                if (fullUrl.includes('images.weserv.nl')) return fullUrl;
-                return `https://images.weserv.nl/?url=${encodeURIComponent(fullUrl)}&w=600`;
+                // 优先使用 wsrv.nl （更稳定）
+                return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}&w=600`;
             }
 
-            // 预加载原图（用于灯箱）
+            // 预加载原图
             window.preloadImage = function(url) {
                 if (!url || preloadCache[url]) return;
                 preloadCache[url] = true;
@@ -283,11 +288,13 @@
 
                     if (images.length) {
                         images.forEach(img => {
-                            const thumbUrl = getThumbUrl(img);  // 自动生成缩略图
-                            const originalImg = img;           // 灯箱/预加载使用原图
+                            const thumbUrl = getThumbUrl(img);
+                            const originalImg = img;
+                            // 缩略图加载失败时回退显示原图
+                            const imgTag = `<img src="${thumbUrl}" loading="lazy" onerror="if(this.src!=='${originalImg}'){this.src='${originalImg}';}">`;
                             html += `<div class="media-card">
                                 <div class="media-card-image" onclick="event.stopPropagation();${clickAction}" ${!jumpLink ? `onmouseenter="preloadImage('${originalImg.replace(/'/g, "\\'")}')"` : ''}>
-                                    <img src="${thumbUrl}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'">
+                                    ${imgTag}
                                 </div>
                                 <div class="media-card-body">
                                     <h3>${item.title||''}</h3>
