@@ -102,7 +102,6 @@
     </style>
 </head>
 <body>
-    <!-- 首页视图 -->
     <div id="homeView">
         <div class="container">
             <header class="hero">
@@ -115,7 +114,6 @@
         </div>
     </div>
 
-    <!-- 二级页面视图 -->
     <div id="subView" style="display:none;">
         <div class="container">
             <div class="sub-header">
@@ -140,17 +138,12 @@
         </div>
     </div>
 
-    <!-- 管理后台入口 -->
     <a href="admin.html" class="admin-float" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
 
-    <!-- 灯箱 -->
     <div class="lightbox" id="lightbox" onclick="closeLightbox()"><span class="close-lightbox" onclick="closeLightbox()">&times;</span><div id="lightboxContent"></div></div>
-    <!-- 详情弹窗 -->
     <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)"><div class="detail-modal" id="detailModal" onclick="event.stopPropagation()"><span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span><div id="detailContent"></div></div></div>
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <!-- 模块锁定弹窗（含忘记密码） -->
     <div id="lockModal" class="modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:2500;">
         <div class="modal-box" style="background:#fff;border-radius:24px;padding:32px;max-width:380px;width:90%;text-align:center;">
             <h3>🔒 此模块已锁定</h3>
@@ -166,7 +159,6 @@
 
     <script>
         (function() {
-            // ========== 配置 ==========
             const JSONBIN_BIN_ID = '6a02eef4250b1311c33a8e0d';
             const JSONBIN_API_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
             const USE_CLOUD = true;
@@ -179,10 +171,8 @@
 
             function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
 
-            // 数据结构
             let db = { modules: [], angles: [], contents: [], _modules: [] };
 
-            // 加载并标准化数据
             async function loadData() {
                 let raw;
                 if (USE_CLOUD) {
@@ -242,7 +232,6 @@
                 });
             };
 
-            // 首页渲染
             function renderHome() {
                 const grid = document.getElementById('moduleGrid');
                 const icons = { '朋友圈':'fa-pen-to-square', '客户见证':'fa-comments', '课程卖点':'fa-graduation-cap' };
@@ -258,7 +247,6 @@
                 }).join('');
             }
 
-            // 锁屏弹窗
             window.showLockModal = function(moduleName) {
                 pendingLockedModule = moduleName;
                 document.getElementById('lockPwdInput').value = '';
@@ -273,7 +261,6 @@
             window.verifyLockPwd = function() {
                 const pwd = document.getElementById('lockPwdInput').value;
                 if (pwd === getLockPwd()) {
-                    // 先跳转，再关闭弹窗，确保pendingLockedModule有效
                     const targetModule = pendingLockedModule;
                     closeLockModal();
                     if (targetModule) openModule(targetModule);
@@ -292,7 +279,6 @@
                 }
             };
 
-            // 进入模块
             window.openModule = function(m) {
                 currentModule = m; currentAngle = '全部'; currentCategory = '全部'; searchQuery = '';
                 document.getElementById('searchInput').value = '';
@@ -389,7 +375,11 @@
 
             function buildCard(item, media, copyText) {
                 const isVideo = media === 'video';
-                const imgHtml = isVideo ? `<iframe src="${item.videoUrl}" allowfullscreen></iframe>` : media ? `<img src="${media}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'">` : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>';
+                const imgHtml = isVideo 
+                    ? `<iframe src="${item.videoUrl}" allowfullscreen loading="lazy"></iframe>` 
+                    : media 
+                        ? `<img src="${media}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'">` 
+                        : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>';
                 return `<div class="media-card" onclick="openDetail('${item.id}', '${item.module}')">
                     <div class="media-card-image" onclick="event.stopPropagation();openLightbox('${media === 'video' ? '' : media}', '${media === 'video' ? item.videoUrl : ''}')">${imgHtml}</div>
                     <div class="media-card-body">
@@ -437,7 +427,6 @@
             window.addEventListener('storage', (e) => { if (e.key === DATA_KEY && e.newValue) location.reload(); });
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetail(); closeLightbox(); } });
 
-            // 启动
             loadData().then(() => {
                 renderHome();
             });
