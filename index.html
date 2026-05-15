@@ -130,27 +130,29 @@
             let sortOrder = 'desc';
             const preloadCache = {};
 
-            // 动态获取网站基础路径（用于拼接相对路径）
-            const BASE_PATH = (function() {
-                const path = window.location.pathname;
-                return path.substring(0, path.lastIndexOf('/') + 1);
-            })();
+            // GitHub 仓库信息（用于将相对路径转为 raw 直链）
+            const GITHUB_USER = 'willllll12138';
+            const GITHUB_REPO = 'ysqy-cms';
+            const GITHUB_BRANCH = 'main';
 
             function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
 
-            // 生成缩略图 URL（使用两个备选服务，并增加回退逻辑）
+            // 缩略图生成：相对路径 → raw 直链 → 缩略图服务
             function getThumbUrl(originalUrl) {
                 if (!originalUrl) return '';
-                let fullUrl = originalUrl;
-                // 如果是相对路径，补全为完整 URL
-                if (!/^https?:\/\//i.test(originalUrl)) {
-                    fullUrl = new URL(originalUrl, window.location.origin + BASE_PATH).href;
+                let rawUrl = originalUrl;
+                // 如果已是绝对链接，直接使用
+                if (/^https?:\/\//i.test(originalUrl)) {
+                    rawUrl = originalUrl;
+                } else {
+                    // 相对路径 → raw.githubusercontent.com 直链
+                    const cleanPath = originalUrl.replace(/^\/+/, '');
+                    rawUrl = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${cleanPath}`;
                 }
-                // 优先使用 wsrv.nl （更稳定）
-                return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}&w=600`;
+                return `https://images.weserv.nl/?url=${encodeURIComponent(rawUrl)}&w=400`;
             }
 
-            // 预加载原图
+            // 预加载原图（用于灯箱）
             window.preloadImage = function(url) {
                 if (!url || preloadCache[url]) return;
                 preloadCache[url] = true;
@@ -290,7 +292,7 @@
                         images.forEach(img => {
                             const thumbUrl = getThumbUrl(img);
                             const originalImg = img;
-                            // 缩略图加载失败时回退显示原图
+                            // 缩略图加载失败时回退显示原图（通过 onerror）
                             const imgTag = `<img src="${thumbUrl}" loading="lazy" onerror="if(this.src!=='${originalImg}'){this.src='${originalImg}';}">`;
                             html += `<div class="media-card">
                                 <div class="media-card-image" onclick="event.stopPropagation();${clickAction}" ${!jumpLink ? `onmouseenter="preloadImage('${originalImg.replace(/'/g, "\\'")}')"` : ''}>
