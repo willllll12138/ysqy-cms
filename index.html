@@ -30,18 +30,8 @@
             --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background:var(--bg);
-            font-family:var(--font-sans);
-            color:var(--ink);
-            line-height:1.6;
-            min-height:100vh;
-        }
-        body::before {
-            content:''; position:fixed; top:0; left:0; right:0; height:3px;
-            background:linear-gradient(90deg,var(--gold),#8b3a3a,#5a6b4d);
-            z-index:1000;
-        }
+        body { background:var(--bg); font-family:var(--font-sans); color:var(--ink); line-height:1.6; min-height:100vh; }
+        body::before { content:''; position:fixed; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--gold),#8b3a3a,#5a6b4d); z-index:1000; }
         .container { max-width:960px; margin:0 auto; padding:0 24px; }
         .hero { text-align:center; padding:72px 0 48px; }
         .hero-tag { display:inline-block; font-size:0.7rem; letter-spacing:0.35em; color:var(--gold); background:var(--gold-pale); padding:6px 18px; border-radius:var(--radius-full); margin-bottom:16px; font-weight:500; }
@@ -49,12 +39,7 @@
         .hero-subtitle { font-size:0.9rem; color:var(--ink-light); font-weight:300; letter-spacing:0.15em; }
         .hero-line { width:50px; height:2px; background:var(--gold); margin:20px auto 0; border-radius:2px; }
         .module-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; padding-bottom:60px; }
-        .module-card {
-            background:var(--card-bg); border-radius:var(--radius-lg); padding:32px 26px 26px;
-            cursor:pointer; transition: var(--transition); border:1px solid var(--border);
-            text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px;
-            box-shadow:var(--shadow-sm); will-change: transform;
-        }
+        .module-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:32px 26px 26px; cursor:pointer; transition: var(--transition); border:1px solid var(--border); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px; box-shadow:var(--shadow-sm); will-change: transform; }
         .module-card:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(0,0,0,0.06); border-color:var(--border-strong); }
         .module-card-icon { font-size:1.8rem; color:var(--gold); }
         .module-card-title { font-family:var(--font-serif); font-size:1.3rem; font-weight:700; letter-spacing:0.04em; }
@@ -78,34 +63,16 @@
         .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; padding:10px 0 50px; }
         .copy-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:28px 24px; transition:var(--transition); border:1px solid var(--border); display:flex; flex-direction:column; gap:16px; box-shadow:var(--shadow-sm); }
         .copy-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.08); }
-        .copy-text {
-            font-size:0.92rem; font-weight:300; line-height:1.9; white-space:pre-wrap;
-            max-height: 11.4em; overflow: hidden; position: relative;
-            text-indent: 0 !important; padding-left: 0 !important;
-        }
+        .copy-text { font-size:0.92rem; font-weight:300; line-height:1.9; white-space:pre-wrap; max-height: 11.4em; overflow: hidden; position: relative; text-indent: 0 !important; padding-left: 0 !important; }
         .copy-text.expanded { max-height: none; }
         .copy-text .expand-btn { color:var(--gold); cursor:pointer; font-size:0.8rem; margin-top:4px; display:inline-block; }
         .card-meta { display:flex; justify-content:space-between; align-items:center; font-size:0.7rem; color:#aaa; }
         .copy-btn { cursor:pointer; color:#888; transition:var(--transition); padding:4px 8px; border-radius:6px; }
         .copy-btn:hover { color:var(--gold); background:var(--gold-pale); }
         .media-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; padding:10px 0 50px; }
-        .media-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-        }
+        .media-card { background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition); cursor: pointer; display: flex; flex-direction: column; }
         .media-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
-        .media-card-image {
-            width: 100%; height: 240px; background: #f0ede5;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden; position: relative; cursor: zoom-in;
-        }
+        .media-card-image { width: 100%; height: 240px; background: #f0ede5; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: zoom-in; }
         .media-card-image img { width: 100%; height: 100%; object-fit: cover; }
         .media-card-image iframe { width: 100%; height: 100%; border: 0; }
         .media-card-body { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
@@ -130,87 +97,47 @@
     </style>
 </head>
 <body>
-    <div id="homeView">
-        <div class="container">
-            <header class="hero">
-                <div class="hero-tag">YISHI QIANYUAN</div>
-                <h1 class="hero-title">易饰乾园素材库</h1>
-                <p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p>
-                <div class="hero-line"></div>
-            </header>
-            <nav class="module-grid" id="moduleGrid"></nav>
-        </div>
-    </div>
-
-    <div id="subView" style="display:none;">
-        <div class="container">
-            <div class="sub-header">
-                <div class="sub-title-area">
-                    <button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> 返回首页</button>
-                    <h2 class="sub-title" id="subTitle">朋友圈</h2>
-                </div>
-                <div class="search-wrap" id="searchWrap">
-                    <button class="search-toggle" onclick="toggleSearch()"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    <div class="search-input-wrap" id="searchInputWrap">
-                        <input type="text" id="searchInput" placeholder="搜索内容…" oninput="doSearch()">
-                        <span class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="angle-bar" id="angleBar"></div>
-            <div class="cat-tabs" id="catTabs"></div>
-            <div class="card-grid" id="cardGrid"></div>
-            <div class="media-card-grid" id="mediaCardGrid"></div>
-            <div class="empty-state" id="emptyState">暂无内容</div>
-        </div>
-    </div>
-
+    <div id="homeView"><div class="container"><header class="hero"><div class="hero-tag">YISHI QIANYUAN</div><h1 class="hero-title">易饰乾园素材库</h1><p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p><div class="hero-line"></div></header><nav class="module-grid" id="moduleGrid"></nav></div></div>
+    <div id="subView" style="display:none;"><div class="container"><div class="sub-header"><div class="sub-title-area"><button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> 返回首页</button><h2 class="sub-title" id="subTitle">朋友圈</h2></div><div class="search-wrap" id="searchWrap"><button class="search-toggle" onclick="toggleSearch()"><i class="fa-solid fa-magnifying-glass"></i></button><div class="search-input-wrap" id="searchInputWrap"><input type="text" id="searchInput" placeholder="搜索内容…" oninput="doSearch()"><span class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></span></div></div></div><div class="angle-bar" id="angleBar"></div><div class="cat-tabs" id="catTabs"></div><div class="card-grid" id="cardGrid"></div><div class="media-card-grid" id="mediaCardGrid"></div><div class="empty-state" id="emptyState">暂无内容</div></div></div>
     <a href="admin.html" class="admin-float" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
-
     <div class="lightbox" id="lightbox" onclick="closeLightbox()"><span class="close-lightbox" onclick="closeLightbox()">&times;</span><div id="lightboxContent"></div></div>
     <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)"><div class="detail-modal" id="detailModal" onclick="event.stopPropagation()"><span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span><div id="detailContent"></div></div></div>
     <div class="toast" id="toast"></div>
-
     <script>
         (function() {
-            // ========== 云端配置 ==========
             const JSONBIN_BIN_ID = '6a02eef4250b1311c33a8e0d';
             const JSONBIN_API_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
             const USE_CLOUD = true;
-
             const DATA_KEY = 'ysqy_data_v3';
             const DEFAULT_MODULES = ['朋友圈','客户见证','课程卖点'];
             const DEFAULT_ANGLES = ['数字冲击','对话还原','情绪唤醒','场景反差','旁观者视角','预言式','时间轴','选择题','内幕揭秘','反常识','学员故事','身体感知','追问式','画面描写'];
             const DEFAULT_TESTIMONIAL_CATS = ['文昌','沙龙','成交','夫妻关系','身体健康','知识成长','见识提升'];
             const DEFAULT_COURSE_CATS = ['核心价值','课程亮点','学员反馈'];
 
+            let db = { modules: DEFAULT_MODULES.slice(), angles: DEFAULT_ANGLES.slice(), testimonialCategories: DEFAULT_TESTIMONIAL_CATS.slice(), courseCategories: DEFAULT_COURSE_CATS.slice(), posts: [], testimonials: [], courses: [], _modules: [] };
+
             async function loadData() {
                 if (USE_CLOUD) {
                     try {
-                        const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                            headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                        });
-                        if (res.ok) {
-                            const json = await res.json();
-                            return normalizeData(json.record);
-                        }
-                    } catch(e) { console.warn('云端加载失败，使用本地数据'); }
+                        const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, { headers: { 'X-Master-Key': JSONBIN_API_KEY } });
+                        if (res.ok) { const json = await res.json(); db = normalizeData(json.record); localStorage.setItem(DATA_KEY, JSON.stringify(db)); return; }
+                    } catch(e) { console.warn('云端加载失败'); }
                 }
-                return normalizeData(JSON.parse(localStorage.getItem(DATA_KEY) || 'null'));
+                db = normalizeData(JSON.parse(localStorage.getItem(DATA_KEY) || 'null'));
             }
 
             function normalizeData(data) {
                 if (!data || !data.modules) return createDefaultData();
+                // 保存原始模块对象，供自定义模块使用
+                const _modules = data.modules;
                 if (data.modules.length && typeof data.modules[0] === 'object') {
-                    const modules = data.modules.filter(m => m && m.id && m.name).map(m => m.name);
-                    const angles = [], testCats = [], courseCats = [];
-                    const posts = [], testimonials = [], courses = [];
+                    const modules = _modules.filter(m => m && m.id && m.name).map(m => m.name);
+                    const angles = [], testCats = [], courseCats = [], posts = [], testimonials = [], courses = [];
                     (data.contents || []).forEach(c => {
-                        const mod = data.modules.find(m => m.id === c.moduleId);
+                        const mod = _modules.find(m => m.id === c.moduleId);
                         if (!mod) return;
                         if (mod.type === 'moments') {
-                            const cleanText = (c.text || '').split('\n').map(l => l.trim()).join('\n');
-                            posts.push({ id: c.id, module: mod.name, angle: c.angle || '', text: cleanText, time: c.time || Date.now() });
+                            posts.push({ id: c.id, module: mod.name, angle: c.angle || '', text: (c.text||'').split('\n').map(l=>l.trim()).join('\n'), time: c.time || Date.now() });
                             if (c.angle && !angles.includes(c.angle)) angles.push(c.angle);
                         } else if (mod.type === 'testimonial') {
                             testimonials.push({ id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '', clientName: c.clientName || '', date: c.date || '' });
@@ -224,35 +151,23 @@
                             else courses.push(item);
                         }
                     });
-                    return {
-                        modules: modules.length ? modules : DEFAULT_MODULES.slice(),
-                        angles: angles.length ? angles : DEFAULT_ANGLES.slice(),
-                        testimonialCategories: testCats.length ? testCats : DEFAULT_TESTIMONIAL_CATS.slice(),
-                        courseCategories: courseCats.length ? courseCats : DEFAULT_COURSE_CATS.slice(),
-                        posts, testimonials, courses
-                    };
+                    return { modules, angles, testimonialCategories: testCats, courseCategories: courseCats, posts, testimonials, courses, _modules };
                 }
-                data.modules = data.modules.filter(m => typeof m === 'string' && m.trim() && m !== 'undefined' && m !== 'null');
+                data.modules = data.modules.filter(m => typeof m === 'string');
                 if (!data.angles) data.angles = DEFAULT_ANGLES.slice();
                 if (!data.testimonialCategories) data.testimonialCategories = DEFAULT_TESTIMONIAL_CATS.slice();
                 if (!data.courseCategories) data.courseCategories = DEFAULT_COURSE_CATS.slice();
-                data.posts = (data.posts || []).map(p => ({ ...p, text: (p.text || '').split('\n').map(l => l.trim()).join('\n') }));
+                data.posts = (data.posts || []).map(p => ({ ...p, text: (p.text||'').split('\n').map(l=>l.trim()).join('\n') }));
                 data.testimonials = data.testimonials || [];
                 data.courses = data.courses || [];
+                data._modules = _modules || [];
                 return data;
             }
 
             function createDefaultData() {
-                return {
-                    modules: DEFAULT_MODULES.slice(),
-                    angles: DEFAULT_ANGLES.slice(),
-                    testimonialCategories: DEFAULT_TESTIMONIAL_CATS.slice(),
-                    courseCategories: DEFAULT_COURSE_CATS.slice(),
-                    posts: [], testimonials: [], courses: []
-                };
+                return { modules: DEFAULT_MODULES.slice(), angles: DEFAULT_ANGLES.slice(), testimonialCategories: DEFAULT_TESTIMONIAL_CATS.slice(), courseCategories: DEFAULT_COURSE_CATS.slice(), posts: [], testimonials: [], courses: [], _modules: [] };
             }
 
-            let db = createDefaultData();
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
 
             function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1500); }
@@ -260,65 +175,87 @@
                 const text = btn.getAttribute('data-copy');
                 if (!text) return;
                 navigator.clipboard.writeText(text).then(() => toast('已复制 ✓')).catch(() => {
-                    const textarea = document.createElement('textarea');
-                    textarea.value = text;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    toast('已复制 ✓');
+                    const textarea = document.createElement('textarea'); textarea.value = text; document.body.appendChild(textarea); textarea.select(); document.execCommand('copy'); document.body.removeChild(textarea); toast('已复制 ✓');
                 });
             };
 
             function renderHome() {
                 const grid = document.getElementById('moduleGrid');
                 const icons = { '朋友圈':'fa-pen-to-square', '客户见证':'fa-comments', '课程卖点':'fa-graduation-cap' };
-                grid.innerHTML = db.modules.map(m => `
-                    <div class="module-card" onclick="openModule('${m}')">
-                        <div class="module-card-icon"><i class="fa-solid ${icons[m] || 'fa-folder'}"></i></div>
-                        <div class="module-card-title">${m}</div>
-                        <div class="module-card-desc">点击查看内容</div>
-                        <div class="module-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                    </div>
-                `).join('');
+                grid.innerHTML = db.modules.map(m => `<div class="module-card" onclick="openModule('${m}')"><div class="module-card-icon"><i class="fa-solid ${icons[m] || 'fa-folder'}"></i></div><div class="module-card-title">${m}</div><div class="module-card-desc">点击查看内容</div><div class="module-card-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>`).join('');
             }
 
-            window.openModule = function(m) {
-                currentModule = m; currentAngle = '全部'; currentCategory = '全部'; searchQuery = '';
-                document.getElementById('searchInput').value = '';
-                document.getElementById('searchInputWrap').classList.remove('open');
-                document.getElementById('homeView').style.display = 'none';
-                document.getElementById('subView').style.display = 'block';
-                document.getElementById('subTitle').textContent = m;
-                renderSubPage(); window.scrollTo(0,0);
-            };
-            window.goHome = function() {
-                document.getElementById('subView').style.display = 'none';
-                document.getElementById('homeView').style.display = 'block';
-            };
+            window.openModule = function(m) { currentModule = m; currentAngle = '全部'; currentCategory = '全部'; searchQuery = ''; document.getElementById('searchInput').value=''; document.getElementById('searchInputWrap').classList.remove('open'); document.getElementById('homeView').style.display='none'; document.getElementById('subView').style.display='block'; document.getElementById('subTitle').textContent=m; renderSubPage(); window.scrollTo(0,0); };
+            window.goHome = function() { document.getElementById('subView').style.display='none'; document.getElementById('homeView').style.display='block'; };
 
             function renderSubPage() {
                 if (!currentModule) return;
-                document.getElementById('angleBar').style.display = 'none';
-                document.getElementById('catTabs').style.display = 'none';
-                document.getElementById('cardGrid').style.display = 'none';
-                document.getElementById('mediaCardGrid').style.display = 'none';
-                if (currentModule === '朋友圈') {
-                    document.getElementById('angleBar').style.display = 'flex';
-                    document.getElementById('cardGrid').style.display = 'grid';
-                    renderMoments();
-                } else if (currentModule === '客户见证') {
+                document.getElementById('angleBar').style.display='none';
+                document.getElementById('catTabs').style.display='none';
+                document.getElementById('cardGrid').style.display='none';
+                document.getElementById('mediaCardGrid').style.display='none';
+                if (currentModule === '朋友圈') { document.getElementById('angleBar').style.display='flex'; document.getElementById('cardGrid').style.display='grid'; renderMoments(); }
+                else if (currentModule === '客户见证') { document.getElementById('catTabs').style.display='flex'; document.getElementById('mediaCardGrid').style.display='grid'; renderMediaCards('客户见证'); }
+                else if (currentModule === '课程卖点') { document.getElementById('catTabs').style.display='flex'; document.getElementById('mediaCardGrid').style.display='grid'; renderMediaCards('课程卖点'); }
+                else { renderCustomModule(); }
+            }
+
+            function renderCustomModule() {
+                const mod = (db._modules || []).find(m => m.name === currentModule);
+                const cats = mod?.categories || [];
+                if (cats.length > 0) {
                     document.getElementById('catTabs').style.display = 'flex';
-                    document.getElementById('mediaCardGrid').style.display = 'grid';
-                    renderMediaCards('客户见证');
-                } else if (currentModule === '课程卖点') {
-                    document.getElementById('catTabs').style.display = 'flex';
-                    document.getElementById('mediaCardGrid').style.display = 'grid';
-                    renderMediaCards('课程卖点');
-                } else {
-                    document.getElementById('mediaCardGrid').style.display = 'grid';
-                    renderGenericCards();
+                    document.getElementById('catTabs').innerHTML = ['全部', ...cats].map(c => `<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
                 }
+                document.getElementById('mediaCardGrid').style.display = 'grid';
+                const allContent = [...db.posts.filter(p=>p.module===currentModule), ...db.testimonials.filter(t=>t.module===currentModule), ...db.courses.filter(c=>c.module===currentModule)];
+                if (currentCategory !== '全部') {
+                    // 过滤分类（假设自定义模块的内容中有category字段）
+                    const filtered = allContent.filter(c => c.category === currentCategory);
+                    renderGenericCards(filtered);
+                } else {
+                    renderGenericCards(allContent);
+                }
+            }
+
+            function renderGenericCards(contents) {
+                const grid = document.getElementById('mediaCardGrid');
+                if (!contents.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
+                let cardsHtml = '';
+                contents.forEach(c => {
+                    const copyText = ((c.title||'') + '\n' + (c.description||c.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+                    const imageUrls = c.imageUrl ? c.imageUrl.split(',').map(u => u.trim()).filter(u => u) : [];
+                    if (imageUrls.length === 0) {
+                        cardsHtml += `<div class="media-card">
+                            <div class="media-card-image"><i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i></div>
+                            <div class="media-card-body">
+                                <h4>${c.title||''}</h4>
+                                <p>${c.description||c.text||''}</p>
+                                <div class="media-card-footer">
+                                    ${c.category ? `<span class="category-badge">${c.category}</span>` : ''}
+                                    <span>${c.date||''}</span>
+                                </div>
+                                <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
+                            </div>
+                        </div>`;
+                    } else {
+                        imageUrls.forEach(imgUrl => {
+                            cardsHtml += `<div class="media-card" onclick="openLightbox('${imgUrl}','')">
+                                <div class="media-card-image" onclick="event.stopPropagation(); openLightbox('${imgUrl}','')"><img src="${imgUrl}" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'"></div>
+                                <div class="media-card-body">
+                                    <h4>${c.title||''}</h4>
+                                    <p>${c.description||c.text||''}</p>
+                                    <div class="media-card-footer">
+                                        ${c.category ? `<span class="category-badge">${c.category}</span>` : ''}
+                                        <span>${c.date||''}</span>
+                                    </div>
+                                    <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
+                                </div>
+                            </div>`;
+                        });
+                    }
+                });
+                grid.innerHTML = cardsHtml;
             }
 
             function renderMoments() {
@@ -335,23 +272,11 @@
                     let textHtml = displayLines.join('<br>');
                     if (truncated) textHtml += `<span class="expand-btn" onclick="event.stopPropagation();toggleExpand('${p.id}')"> 展开全文</span>`;
                     const copyText = p.text.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                    return `<div class="copy-card">
-                        <div class="copy-text ${truncated ? '' : 'expanded'}" id="txt-${p.id}">${textHtml}</div>
-                        <div class="card-meta">
-                            <span># ${p.angle}</span>
-                            <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span>
-                        </div>
-                    </div>`;
+                    return `<div class="copy-card"><div class="copy-text ${truncated ? '' : 'expanded'}" id="txt-${p.id}">${textHtml}</div><div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
                 }).join('');
-                window.toggleExpand = function(id) {
-                    const el = document.getElementById('txt-'+id);
-                    el.classList.toggle('expanded');
-                    const btn = el.querySelector('.expand-btn');
-                    if (btn) btn.textContent = el.classList.contains('expanded') ? '收起' : '展开全文';
-                };
+                window.toggleExpand = function(id) { const el = document.getElementById('txt-'+id); el.classList.toggle('expanded'); const btn = el.querySelector('.expand-btn'); if (btn) btn.textContent = el.classList.contains('expanded') ? '收起' : '展开全文'; };
             }
 
-            // 多图拆分核心：为每张图片生成独立卡片
             function renderMediaCards(moduleName) {
                 const isTestimonial = moduleName === '客户见证';
                 const cats = isTestimonial ? db.testimonialCategories : db.courseCategories;
@@ -361,68 +286,17 @@
                 if (searchQuery) items = items.filter(i => (i.title||'').includes(searchQuery) || (i.description||'').includes(searchQuery));
                 const grid = document.getElementById('mediaCardGrid');
                 if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
-
-                // 处理每条数据，可能拆分为多个卡片
                 let cardsHtml = '';
                 items.forEach(i => {
                     const copyText = ((i.title||'') + '\n' + (i.description||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                    // 获取图片URL数组（处理逗号分隔）
                     const imageUrls = i.imageUrl ? i.imageUrl.split(',').map(u => u.trim()).filter(u => u) : [];
-                    const hasVideo = i.videoUrl && i.videoUrl.trim();
-
-                    // 如果没有任何媒体，生成一个占位卡片
-                    if (imageUrls.length === 0 && !hasVideo) {
-                        cardsHtml += buildMediaCard(i, '', copyText, isTestimonial);
-                    } else if (hasVideo) {
-                        // 视频优先，只显示一个卡片（视频不能拆分）
-                        cardsHtml += buildMediaCard(i, 'video', copyText, isTestimonial);
-                    } else {
-                        // 为每张图片生成独立卡片
-                        imageUrls.forEach(imgUrl => {
-                            cardsHtml += buildMediaCard(i, imgUrl, copyText, isTestimonial);
-                        });
-                    }
-                });
-                grid.innerHTML = cardsHtml;
-            }
-
-            function buildMediaCard(item, mediaUrl, copyText, isTestimonial) {
-                const isVideo = mediaUrl === 'video';
-                const imageSection = isVideo 
-                    ? `<iframe src="${item.videoUrl}" allowfullscreen></iframe>`
-                    : mediaUrl 
-                        ? `<img src="${mediaUrl}" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'">` 
-                        : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>';
-                
-                return `<div class="media-card" onclick="openDetail('${isTestimonial?'testimonial':'course'}',${item.id})">
-                    <div class="media-card-image" onclick="event.stopPropagation(); openLightbox('${mediaUrl === 'video' ? '' : mediaUrl}', '${mediaUrl === 'video' ? item.videoUrl : ''}')">
-                        ${imageSection}
-                    </div>
-                    <div class="media-card-body">
-                        <h3>${item.title||''}</h3>
-                        <div class="desc">${item.description||''}</div>
-                        <div class="media-card-footer">
-                            <span class="category-badge">${item.category||''}</span>
-                            <span>${item.date||''} ${item.clientName ? '· ' + item.clientName : ''}</span>
-                        </div>
-                        <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
-                    </div>
-                </div>`;
-            }
-
-            function renderGenericCards() {
-                const allContent = [...db.posts.filter(p => p.module === currentModule), ...db.testimonials.filter(t => t.module === currentModule), ...db.courses.filter(c => c.module === currentModule)];
-                const grid = document.getElementById('mediaCardGrid');
-                if (!allContent.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
-                let cardsHtml = '';
-                allContent.forEach(c => {
-                    const copyText = ((c.title||'') + '\n' + (c.description||c.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                    const imageUrls = c.imageUrl ? c.imageUrl.split(',').map(u => u.trim()).filter(u => u) : [];
-                    if (imageUrls.length === 0) {
-                        cardsHtml += `<div class="media-card"><div class="media-card-image"><i class="fa-solid fa-image"></i></div><div class="media-card-body"><h4>${c.title||''}</h4><p>${c.description||c.text||''}</p></div></div>`;
+                    if (imageUrls.length === 0 && !i.videoUrl) {
+                        cardsHtml += `<div class="media-card" onclick="openDetail('${isTestimonial?'testimonial':'course'}',${i.id})"><div class="media-card-image"><i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i></div><div class="media-card-body"><h3>${i.title||''}</h3><div class="desc">${i.description||''}</div><div class="media-card-footer"><span class="category-badge">${i.category||''}</span><span>${i.date||''} ${i.clientName ? '· '+i.clientName : ''}</span></div><span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
+                    } else if (i.videoUrl) {
+                        cardsHtml += `<div class="media-card" onclick="openDetail('${isTestimonial?'testimonial':'course'}',${i.id})"><div class="media-card-image" onclick="event.stopPropagation();openLightbox('','${i.videoUrl}')"><iframe src="${i.videoUrl}" allowfullscreen></iframe></div><div class="media-card-body"><h3>${i.title||''}</h3><div class="desc">${i.description||''}</div><div class="media-card-footer"><span class="category-badge">${i.category||''}</span><span>${i.date||''} ${i.clientName ? '· '+i.clientName : ''}</span></div><span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
                     } else {
                         imageUrls.forEach(imgUrl => {
-                            cardsHtml += `<div class="media-card"><div class="media-card-image"><img src="${imgUrl}" onclick="event.stopPropagation();openLightbox('${imgUrl}','')"></div><div class="media-card-body"><h4>${c.title||''}</h4><p>${c.description||c.text||''}</p></div></div>`;
+                            cardsHtml += `<div class="media-card" onclick="openDetail('${isTestimonial?'testimonial':'course'}',${i.id})"><div class="media-card-image" onclick="event.stopPropagation();openLightbox('${imgUrl}','')"><img src="${imgUrl}" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'"></div><div class="media-card-body"><h3>${i.title||''}</h3><div class="desc">${i.description||''}</div><div class="media-card-footer"><span class="category-badge">${i.category||''}</span><span>${i.date||''} ${i.clientName ? '· '+i.clientName : ''}</span></div><span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
                         });
                     }
                 });
@@ -431,29 +305,17 @@
 
             window.setAngle = function(a) { currentAngle = a; renderSubPage(); };
             window.setCategory = function(c) { currentCategory = c; renderSubPage(); };
-
-            window.toggleSearch = function() {
-                const wrap = document.getElementById('searchInputWrap');
-                if (wrap.classList.contains('open')) { closeSearch(); } else { wrap.classList.add('open'); setTimeout(()=>document.getElementById('searchInput').focus(),200); }
-            };
-            window.closeSearch = function() {
-                document.getElementById('searchInputWrap').classList.remove('open');
-                document.getElementById('searchInput').value = '';
-                searchQuery = ''; renderSubPage();
-            };
+            window.toggleSearch = function() { const wrap=document.getElementById('searchInputWrap'); if(wrap.classList.contains('open')){closeSearch();}else{wrap.classList.add('open');setTimeout(()=>document.getElementById('searchInput').focus(),200);} };
+            window.closeSearch = function() { document.getElementById('searchInputWrap').classList.remove('open'); document.getElementById('searchInput').value=''; searchQuery=''; renderSubPage(); };
             window.doSearch = function() { searchQuery = document.getElementById('searchInput').value.trim(); renderSubPage(); };
-
             window.openLightbox = function(img, video) {
                 const lb = document.getElementById('lightbox');
-                if (video) {
-                    document.getElementById('lightboxContent').innerHTML = `<iframe src="${video}" allowfullscreen style="width:80vw;height:60vh;"></iframe>`;
-                } else if (img) {
-                    document.getElementById('lightboxContent').innerHTML = `<img src="${img}" onerror="this.parentElement.innerHTML='<p style=color:#fff>图片加载失败</p>'">`;
-                } else return;
+                if (video) { document.getElementById('lightboxContent').innerHTML = `<iframe src="${video}" allowfullscreen style="width:80vw;height:60vh;"></iframe>`; }
+                else if (img) { document.getElementById('lightboxContent').innerHTML = `<img src="${img}" onerror="this.parentElement.innerHTML='<p style=color:#fff>图片加载失败</p>'">`; }
+                else return;
                 lb.classList.add('open');
             };
             window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
-
             window.openDetail = function(type, id) {
                 let item;
                 if (type === 'testimonial') item = db.testimonials.find(t => t.id === id);
@@ -461,8 +323,7 @@
                 if (!item) return;
                 const copyText = ((item.title||'') + '\n' + (item.description||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
                 document.getElementById('detailContent').innerHTML = `
-                    ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen style="width:100%;height:300px;"></iframe>` : 
-                    (item.imageUrl ? `<div style="display:flex;overflow-x:auto;gap:8px;">${item.imageUrl.split(',').map(u => `<img src="${u.trim()}" style="height:200px;cursor:pointer;" onclick="openLightbox('${u.trim()}','')">`).join('')}</div>` : '')}
+                    ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen style="width:100%;height:300px;"></iframe>` : (item.imageUrl ? `<div style="display:flex;overflow-x:auto;gap:8px;">${item.imageUrl.split(',').map(u => `<img src="${u.trim()}" style="height:200px;cursor:pointer;" onclick="openLightbox('${u.trim()}','')">`).join('')}</div>` : '')}
                     <h3 style="margin:16px 0 8px;">${item.title||''}</h3>
                     <p style="color:#888;">${item.category||''} · ${item.date||''} · ${item.clientName||''}</p>
                     <p style="white-space:pre-wrap;line-height:1.8;">${item.description||''}</p>
@@ -471,17 +332,11 @@
                 document.getElementById('detailOverlay').classList.add('open');
                 document.body.style.overflow = 'hidden';
             };
-            window.closeDetail = function(e) {
-                if (e && e.target !== document.getElementById('detailOverlay')) return;
-                document.getElementById('detailOverlay').classList.remove('open');
-                document.body.style.overflow = '';
-            };
-
+            window.closeDetail = function(e) { if (e && e.target !== document.getElementById('detailOverlay')) return; document.getElementById('detailOverlay').classList.remove('open'); document.body.style.overflow = ''; };
             window.addEventListener('storage', (e) => { if (e.key === DATA_KEY && e.newValue) location.reload(); });
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetail(); closeLightbox(); } });
 
-            loadData().then(data => {
-                db = data;
+            loadData().then(() => {
                 localStorage.setItem(DATA_KEY, JSON.stringify(db));
                 renderHome();
             });
