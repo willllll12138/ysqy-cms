@@ -51,12 +51,7 @@
         .admin-card .card-image img { width:100%; height:100%; object-fit:cover; }
         .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000;}
         .modal-box{background:#fff;border-radius:var(--radius-lg);padding:32px;max-width:500px;width:90%;}
-        /* 统一密码输入框 */
-        .unified-input {
-            width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px;
-            font-family:'Noto Sans SC',sans-serif; font-size:0.9rem; outline:none; margin:8px 0;
-            background: #fdfdfb; transition: border-color 0.2s;
-        }
+        .unified-input { width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px; font-family:'Noto Sans SC',sans-serif; font-size:0.9rem; outline:none; margin:8px 0; background: #fdfdfb; transition: border-color 0.2s; }
         .unified-input:focus { border-color: var(--gold); }
         .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 24px;border-radius:30px;font-size:0.8rem;opacity:0;transition:0.3s;z-index:3000;}
         .toast.show{opacity:1;}
@@ -186,17 +181,14 @@
         if (currentModuleId) renderContent();
     }
 
-    window.toggleLock = function(id) {
-        const mod = db.modules.find(m => m.id === id);
-        if (mod) { mod.locked = !mod.locked; save(); renderSidebar(); toast(mod.locked ? '模块已锁定' : '模块已解锁'); }
-    };
-
+    window.toggleLock = function(id) { const mod = db.modules.find(m => m.id === id); if (mod) { mod.locked = !mod.locked; save(); renderSidebar(); toast(mod.locked ? '模块已锁定' : '模块已解锁'); } };
     window.selectModule = function(id) { currentModuleId = id; renderSidebar(); };
 
     function renderContent() {
         const mod = db.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
-        const contents = db.contents.filter(c => c.moduleId === currentModuleId);
+        // 按id降序排列内容
+        const contents = db.contents.filter(c => c.moduleId === currentModuleId).sort((a, b) => b.id - a.id);
         let html = `<h3>${mod.name} (${mod.type})</h3>`;
         html += `<div class="tag-list">${(mod.categories||[]).map(c => `<span class="tag-item">${c} <i class="fa-solid fa-xmark" onclick="deleteCategory('${c}')"></i></span>`).join('')}</div>
         <input type="text" id="newCatInput" placeholder="新分类" class="unified-input"><button class="btn" onclick="addCategory()">添加</button>`;
