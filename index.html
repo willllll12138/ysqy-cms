@@ -87,6 +87,8 @@
         .empty-state { text-align:center; padding:60px 20px; color:#ccc; }
         .unified-input { width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px; font-family:var(--font-sans); font-size:0.9rem; outline:none; margin:8px 0; background: #fdfdfb; transition: border-color 0.2s; }
         .unified-input:focus { border-color: var(--gold); }
+        /* 图片懒加载占位 */
+        .image-placeholder { background: #f0ede5; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
         @media (max-width:680px) { .hero-title { font-size:2rem; } }
     </style>
 </head>
@@ -120,7 +122,7 @@
             const LOCK_PWD_KEY = 'ysqy_module_pwd';
             const DEFAULT_LOCK_PWD = 'zheshimima';
             let pendingLockedModule = null;
-            let sortOrder = 'desc'; // 默认降序
+            let sortOrder = 'desc';
 
             function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
 
@@ -146,6 +148,7 @@
                     modules = _modules.filter(m => typeof m === 'string');
                 }
                 if (modules.length === 0) modules = ['朋友圈','客户见证','课程卖点'];
+                // 确保 angles 取实时的（后台修改后的）
                 const angles = data.angles || DEFAULT_ANGLES.slice();
                 const contents = (data.contents || []).map(c => {
                     if (!c.module) { const mod = _modules.find(m => m.id === c.moduleId); c.module = mod ? mod.name : ''; }
@@ -204,8 +207,11 @@
             window.verifyLockPwd = function() {
                 const pwd = document.getElementById('lockPwdInput').value;
                 if (pwd === getLockPwd()) {
+                    const modName = pendingLockedModule;
                     closeLockModal();
-                    if (pendingLockedModule) openModule(pendingLockedModule);
+                    if (modName) {
+                        openModule(modName);  // 直接打开模块
+                    }
                 } else {
                     document.getElementById('lockError').textContent = '密码错误';
                 }
@@ -242,6 +248,8 @@
                 const cats = mod?.categories || [];
                 if (currentModule === '朋友圈') {
                     document.getElementById('angleBar').style.display='flex';
+                    // 使用实时的 angles 数组
+                    document.getElementById('angleBar').innerHTML = ['全部', ...db.angles].map(a => `<span class="angle-pill ${currentAngle===a?'active':''}" onclick="setAngle('${a}')">${a}</span>`).join('');
                     document.getElementById('cardGrid').style.display='grid';
                     let items = db.contents.filter(c => c.module === '朋友圈' && c.angle);
                     if (currentAngle !== '全部') items = items.filter(c => c.angle === currentAngle);
@@ -299,7 +307,7 @@
 
             function buildCard(item, media, copyText) {
                 const isVideo = media === 'video';
-                const imgHtml = isVideo ? `<iframe src="${item.videoUrl}" allowfullscreen></iframe>` : media ? `<img src="${media}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'">` : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>';
+                const imgHtml = isVideo ? `<iframe src="${item.videoUrl}" allowfullscreen></iframe>` : media ? `<img src="${media}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'image-placeholder\\'><i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i></div>'">` : '<div class="image-placeholder"><i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i></div>';
                 return `<div class="media-card" onclick="openDetail('${item.id}', '${item.module}')">
                     <div class="media-card-image" onclick="event.stopPropagation();openLightbox('${media === 'video' ? '' : media}', '${media === 'video' ? item.videoUrl : ''}')">${imgHtml}</div>
                     <div class="media-card-body">
@@ -322,7 +330,7 @@
             window.openLightbox = function(img, video) {
                 const lb = document.getElementById('lightbox');
                 if (video) { document.getElementById('lightboxContent').innerHTML = `<iframe src="${video}" allowfullscreen style="width:80vw;height:60vh;"></iframe>`; }
-                else if (img) { document.getElementById('lightboxContent').innerHTML = `<img src="${img}" onerror="this.parentElement.innerHTML='<p style=color:#fff>图片加载失败</p>'">`; }
+                else if (img) { document.getElementById('lightboxContent').innerHTML = `<img src="${img}" loading="lazy" onerror="this.parentElement.innerHTML='<p style=color:#fff>图片加载失败</p>'">`; }
                 else return;
                 lb.classList.add('open');
             };
@@ -333,7 +341,7 @@
                 if (!item) return;
                 const copyText = ((item.title||'') + '\n' + (item.description||item.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
                 document.getElementById('detailContent').innerHTML = `
-                    ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen style="width:100%;height:300px;"></iframe>` : (item.imageUrl ? `<div style="display:flex;overflow-x:auto;gap:8px;">${item.imageUrl.split(',').map(u => `<img src="${u.trim()}" style="height:200px;cursor:pointer;" onclick="openLightbox('${u.trim()}','')">`).join('')}</div>` : '')}
+                    ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen style="width:100%;height:300px;"></iframe>` : (item.imageUrl ? `<div style="display:flex;overflow-x:auto;gap:8px;">${item.imageUrl.split(',').map(u => `<img src="${u.trim()}" loading="lazy" style="height:200px;cursor:pointer;" onclick="openLightbox('${u.trim()}','')">`).join('')}</div>` : '')}
                     <h3 style="margin:16px 0 8px;">${item.title||''}</h3>
                     <p style="color:#888;">${item.category||''} · ${item.date||''} · ${item.clientName||''}</p>
                     <p style="white-space:pre-wrap;line-height:1.8;">${item.description||item.text||''}</p>
@@ -346,6 +354,8 @@
             window.addEventListener('storage', (e) => { if (e.key === DATA_KEY && e.newValue) location.reload(); });
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetail(); closeLightbox(); } });
 
+            // 启动：先显示加载状态再渲染
+            document.getElementById('moduleGrid').innerHTML = '<div style="text-align:center;padding:40px;color:#aaa;">加载中…</div>';
             loadData().then(() => {
                 localStorage.setItem(DATA_KEY, JSON.stringify(db));
                 renderHome();
