@@ -171,6 +171,15 @@
 
             function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
 
+            // 预加载缓存：避免重复加载同一张图片
+            const preloadCache = {};
+            window.preloadImage = function(url) {
+                if (!url || preloadCache[url]) return;
+                preloadCache[url] = true;
+                const img = new Image();
+                img.src = url;
+            };
+
             let db = { modules: [], angles: [], contents: [], _modules: [] };
 
             async function loadData() {
@@ -375,12 +384,14 @@
 
             function buildCard(item, media, copyText) {
                 const isVideo = media === 'video';
+                // 预加载钩子：对有图片的卡片，鼠标滑过时开始预加载这张大图
+                const preloadAttr = (!isVideo && media) ? ` onmouseenter="preloadImage('${media.replace(/'/g, "\\'")}')"` : '';
                 const imgHtml = isVideo 
                     ? `<iframe src="${item.videoUrl}" allowfullscreen loading="lazy"></iframe>` 
                     : media 
                         ? `<img src="${media}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'">` 
                         : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>';
-                return `<div class="media-card" onclick="openDetail('${item.id}', '${item.module}')">
+                return `<div class="media-card"${preloadAttr} onclick="openDetail('${item.id}', '${item.module}')">
                     <div class="media-card-image" onclick="event.stopPropagation();openLightbox('${media === 'video' ? '' : media}', '${media === 'video' ? item.videoUrl : ''}')">${imgHtml}</div>
                     <div class="media-card-body">
                         <h3>${item.title||''}</h3>
