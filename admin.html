@@ -51,6 +51,13 @@
         .admin-card .card-image img { width:100%; height:100%; object-fit:cover; }
         .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000;}
         .modal-box{background:#fff;border-radius:var(--radius-lg);padding:32px;max-width:500px;width:90%;}
+        /* 统一密码输入框 */
+        .unified-input {
+            width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px;
+            font-family:'Noto Sans SC',sans-serif; font-size:0.9rem; outline:none; margin:8px 0;
+            background: #fdfdfb; transition: border-color 0.2s;
+        }
+        .unified-input:focus { border-color: var(--gold); }
         .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 24px;border-radius:30px;font-size:0.8rem;opacity:0;transition:0.3s;z-index:3000;}
         .toast.show{opacity:1;}
     </style>
@@ -61,7 +68,7 @@
         <div class="hero-tag">ADMIN PANEL</div>
         <h1>易饰乾园 · 后台</h1>
         <p class="sub">文案资产管理系统</p>
-        <input type="password" id="pwdInput" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter')login()">
+        <input type="password" id="pwdInput" placeholder="请输入管理密码" class="unified-input" style="text-align:center;margin-bottom:16px;" onkeydown="if(event.key==='Enter')login()">
         <button class="btn btn-full" onclick="login()">进入后台</button>
         <div class="login-links">
             <a onclick="showChangePwdModal()">修改密码</a>
@@ -111,7 +118,6 @@
             data.modules = JSON.parse(JSON.stringify(DEFAULT_MODULES));
         } else {
             data.modules = data.modules.filter(m => m && typeof m === 'object' && m.id && m.name && m.name !== 'undefined' && m.name !== 'null');
-            // 补充可能缺失的 locked 字段
             data.modules.forEach(m => { if (m.locked === undefined) m.locked = false; });
             if (data.modules.length === 0) data.modules = JSON.parse(JSON.stringify(DEFAULT_MODULES));
         }
@@ -143,7 +149,11 @@
 
     window.showChangePwdModal = function() {
         const modal = document.createElement('div'); modal.className = 'modal';
-        modal.innerHTML = `<div class="modal-box"><h3>修改管理密码</h3><input type="password" id="oldPwdChg" placeholder="当前密码"><input type="password" id="newPwd1" placeholder="新密码"><input type="password" id="newPwd2" placeholder="确认新密码"><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="confirmChangePwd">确认修改</button></div></div>`;
+        modal.innerHTML = `<div class="modal-box"><h3>修改管理密码</h3>
+            <input type="password" id="oldPwdChg" placeholder="当前密码" class="unified-input">
+            <input type="password" id="newPwd1" placeholder="新密码" class="unified-input">
+            <input type="password" id="newPwd2" placeholder="确认新密码" class="unified-input">
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="confirmChangePwd">确认修改</button></div></div>`;
         document.body.appendChild(modal);
         document.getElementById('confirmChangePwd').onclick = function() {
             const o = document.getElementById('oldPwdChg').value, n1 = document.getElementById('newPwd1').value, n2 = document.getElementById('newPwd2').value;
@@ -154,7 +164,9 @@
     };
     window.showForgotPwdModal = function() {
         const modal = document.createElement('div'); modal.className = 'modal';
-        modal.innerHTML = `<div class="modal-box"><h3>重置密码</h3><input type="text" id="forgotCode" placeholder="重置暗号"><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="confirmResetPwd">重置密码</button></div></div>`;
+        modal.innerHTML = `<div class="modal-box"><h3>重置密码</h3>
+            <input type="text" id="forgotCode" placeholder="重置暗号" class="unified-input">
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="confirmResetPwd">重置密码</button></div></div>`;
         document.body.appendChild(modal);
         document.getElementById('confirmResetPwd').onclick = function() { if (document.getElementById('forgotCode').value === 'ysqy_reset') { localStorage.removeItem('ysqy_admin_pwd'); modal.remove(); toast('密码已重置为默认密码'); } else toast('暗号错误'); };
         modal.onclick = e => { if (e.target === modal) modal.remove(); };
@@ -176,12 +188,7 @@
 
     window.toggleLock = function(id) {
         const mod = db.modules.find(m => m.id === id);
-        if (mod) {
-            mod.locked = !mod.locked;
-            save();
-            renderSidebar();
-            toast(mod.locked ? '模块已锁定' : '模块已解锁');
-        }
+        if (mod) { mod.locked = !mod.locked; save(); renderSidebar(); toast(mod.locked ? '模块已锁定' : '模块已解锁'); }
     };
 
     window.selectModule = function(id) { currentModuleId = id; renderSidebar(); };
@@ -192,14 +199,14 @@
         const contents = db.contents.filter(c => c.moduleId === currentModuleId);
         let html = `<h3>${mod.name} (${mod.type})</h3>`;
         html += `<div class="tag-list">${(mod.categories||[]).map(c => `<span class="tag-item">${c} <i class="fa-solid fa-xmark" onclick="deleteCategory('${c}')"></i></span>`).join('')}</div>
-        <input type="text" id="newCatInput" placeholder="新分类"><button class="btn" onclick="addCategory()">添加</button>`;
+        <input type="text" id="newCatInput" placeholder="新分类" class="unified-input"><button class="btn" onclick="addCategory()">添加</button>`;
 
         if (mod.type === 'moments') {
             html += `<select id="pubAngle">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select><textarea id="pubText" placeholder="文案内容..."></textarea><button class="btn" onclick="publish()">发布</button>`;
         } else {
             html += `<select id="pubCategory">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select>
-            <input type="text" id="pubTitle" placeholder="标题（可选）"><input type="text" id="pubImage" placeholder="图片URL（多图用英文逗号分隔）"><input type="text" id="pubVideo" placeholder="视频URL">
-            <textarea id="pubDesc" placeholder="描述（可选）"></textarea><input type="text" id="pubDate" placeholder="日期（可选）"><button class="btn" onclick="publish()">保存</button>`;
+            <input type="text" id="pubTitle" placeholder="标题（可选）" class="unified-input"><input type="text" id="pubImage" placeholder="图片URL（多图用英文逗号分隔）" class="unified-input"><input type="text" id="pubVideo" placeholder="视频URL" class="unified-input">
+            <textarea id="pubDesc" placeholder="描述（可选）"></textarea><input type="text" id="pubDate" placeholder="日期（可选）" class="unified-input"><button class="btn" onclick="publish()">保存</button>`;
         }
 
         html += `<h4>已发布内容</h4>`;
@@ -263,12 +270,12 @@
             form = `<select id="editAngle">${(mod.categories||[]).map(cat => `<option ${cat===c.angle?'selected':''}>${cat}</option>`).join('')}</select><textarea id="editText" style="min-height:150px;">${c.text}</textarea>`;
         } else {
             form = `<select id="editCat">${(mod.categories||[]).map(cat => `<option ${cat===c.category?'selected':''}>${cat}</option>`).join('')}</select>
-            <input type="text" id="editTitle" value="${c.title||''}" placeholder="标题（可选）">
-            <input type="text" id="editImage" value="${c.imageUrl||''}" placeholder="图片URL（多图用逗号分隔）">
-            <input type="text" id="editVideo" value="${c.videoUrl||''}" placeholder="视频URL">
+            <input type="text" id="editTitle" value="${c.title||''}" placeholder="标题（可选）" class="unified-input">
+            <input type="text" id="editImage" value="${c.imageUrl||''}" placeholder="图片URL（多图用逗号分隔）" class="unified-input">
+            <input type="text" id="editVideo" value="${c.videoUrl||''}" placeholder="视频URL" class="unified-input">
             <textarea id="editDesc" style="min-height:150px;">${c.description||''}</textarea>
-            ${mod.type === 'testimonial' ? `<input type="text" id="editClient" value="${c.clientName||''}" placeholder="客户名称">` : ''}
-            <input type="text" id="editDate" value="${c.date||''}" placeholder="日期">`;
+            ${mod.type === 'testimonial' ? `<input type="text" id="editClient" value="${c.clientName||''}" placeholder="客户名称" class="unified-input">` : ''}
+            <input type="text" id="editDate" value="${c.date||''}" placeholder="日期" class="unified-input">`;
         }
         const overlay = document.createElement('div'); overlay.className = 'modal';
         overlay.innerHTML = `<div class="modal-box"><h3>编辑内容</h3>${form}<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="saveEditBtn">保存</button></div></div>`;
