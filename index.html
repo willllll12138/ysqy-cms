@@ -11,12 +11,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --bg: #F9F7F2; --card-bg: #FFFFFF; --ink: #1a1815; --ink-light: #5c574f;
-            --gold: #b8832a; --gold-pale: #f7f0e0; --border: rgba(0,0,0,0.06);
-            --border-strong: rgba(0,0,0,0.12); --radius-sm: 10px; --radius-md: 18px;
-            --radius-lg: 24px; --radius-full: 50px; --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
-            --shadow-md: 0 8px 30px rgba(0,0,0,0.07); --transition: 0.2s cubic-bezier(0.23,1,0.32,1);
-            --font-serif: 'Noto Serif SC', 'Songti SC', serif; --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            --bg: #F9F7F2;
+            --card-bg: #FFFFFF;
+            --ink: #1a1815;
+            --ink-light: #5c574f;
+            --gold: #b8832a;
+            --gold-pale: #f7f0e0;
+            --border: rgba(0,0,0,0.06);
+            --border-strong: rgba(0,0,0,0.12);
+            --radius-sm: 10px;
+            --radius-md: 18px;
+            --radius-lg: 24px;
+            --radius-full: 50px;
+            --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 30px rgba(0,0,0,0.07);
+            --transition: 0.2s cubic-bezier(0.23,1,0.32,1);
+            --font-serif: 'Noto Serif SC', 'Songti SC', serif;
+            --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { background:var(--bg); font-family:var(--font-sans); color:var(--ink); line-height:1.6; min-height:100vh; }
@@ -83,6 +94,13 @@
         .detail-modal { background:#fff; border-radius:var(--radius-lg); padding:32px 28px; max-width:600px; width:90%; max-height:85vh; overflow-y:auto; position:relative; }
         .detail-modal .close-btn { position:absolute; top:16px; right:16px; font-size:1.2rem; cursor:pointer; }
         .empty-state { text-align:center; padding:60px 20px; color:#ccc; }
+        /* 统一密码输入框 */
+        .unified-input {
+            width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px;
+            font-family:var(--font-sans); font-size:0.9rem; outline:none; margin:8px 0;
+            background: #fdfdfb; transition: border-color 0.2s;
+        }
+        .unified-input:focus { border-color: var(--gold); }
         @media (max-width:680px) { .hero-title { font-size:2rem; } }
     </style>
 </head>
@@ -96,7 +114,7 @@
     <div id="lockModal" class="modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:2500;">
         <div class="modal-box" style="background:#fff;border-radius:24px;padding:32px;max-width:380px;width:90%;text-align:center;">
             <h3>🔒 此模块已锁定</h3>
-            <input type="password" id="lockPwdInput" placeholder="请输入访问密码" style="width:100%;padding:12px;border-radius:30px;border:1px solid #ddd;margin:16px 0;" onkeydown="if(event.key==='Enter')verifyLockPwd()">
+            <input type="password" id="lockPwdInput" placeholder="请输入访问密码" class="unified-input" onkeydown="if(event.key==='Enter')verifyLockPwd()">
             <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
                 <button class="btn" onclick="verifyLockPwd()">解锁</button>
                 <button class="btn-outline" onclick="showResetLockPwd()">忘记密码？</button>
