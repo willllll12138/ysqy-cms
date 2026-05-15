@@ -11,23 +11,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --bg: #F9F7F2;
-            --card-bg: #FFFFFF;
-            --ink: #1a1815;
-            --ink-light: #5c574f;
-            --gold: #b8832a;
-            --gold-pale: #f7f0e0;
-            --border: rgba(0,0,0,0.06);
-            --border-strong: rgba(0,0,0,0.12);
-            --radius-sm: 10px;
-            --radius-md: 18px;
-            --radius-lg: 24px;
-            --radius-full: 50px;
-            --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
-            --shadow-md: 0 8px 30px rgba(0,0,0,0.07);
-            --transition: 0.2s cubic-bezier(0.23,1,0.32,1);
-            --font-serif: 'Noto Serif SC', 'Songti SC', serif;
-            --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            --bg: #F9F7F2; --card-bg: #FFFFFF; --ink: #1a1815; --ink-light: #5c574f;
+            --gold: #b8832a; --gold-pale: #f7f0e0; --border: rgba(0,0,0,0.06);
+            --border-strong: rgba(0,0,0,0.12); --radius-sm: 10px; --radius-md: 18px;
+            --radius-lg: 24px; --radius-full: 50px; --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 30px rgba(0,0,0,0.07); --transition: 0.2s cubic-bezier(0.23,1,0.32,1);
+            --font-serif: 'Noto Serif SC', 'Songti SC', serif; --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { background:var(--bg); font-family:var(--font-sans); color:var(--ink); line-height:1.6; min-height:100vh; }
@@ -51,7 +40,9 @@
         .sub-title { font-family:var(--font-serif); font-size:1.6rem; font-weight:700; }
         .btn-back { display:inline-flex; align-items:center; gap:6px; background:#eae6dc; color:var(--ink-light); padding:7px 14px; border-radius:var(--radius-full); font-size:0.73rem; letter-spacing:0.06em; cursor:pointer; text-decoration:none; transition:var(--transition); white-space:nowrap; border:none; font-family:inherit; }
         .btn-back:hover { background:#ddd8cc; color:var(--ink); }
-        .search-wrap { position:relative; display:flex; align-items:center; }
+        .search-wrap { position:relative; display:flex; align-items:center; gap:8px; }
+        .sort-btn { width:38px; height:38px; border-radius:50%; background:var(--card-bg); border:1px solid var(--border); cursor:pointer; font-size:0.9rem; color:var(--ink-light); display:flex; align-items:center; justify-content:center; transition:var(--transition); }
+        .sort-btn:hover { color:var(--gold); border-color:var(--gold); }
         .search-toggle { width:38px; height:38px; border-radius:50%; background:var(--card-bg); border:1px solid var(--border); cursor:pointer; font-size:1rem; color:var(--ink-light); display:flex; align-items:center; justify-content:center; transition:var(--transition); }
         .search-toggle:hover { color:var(--gold); border-color:var(--gold); }
         .search-input-wrap { position:absolute; right:0; top:50%; transform:translateY(-50%); width:0; overflow:hidden; transition:var(--transition); background:var(--card-bg); border-radius:var(--radius-full); display:flex; align-items:center; }
@@ -94,18 +85,14 @@
         .detail-modal { background:#fff; border-radius:var(--radius-lg); padding:32px 28px; max-width:600px; width:90%; max-height:85vh; overflow-y:auto; position:relative; }
         .detail-modal .close-btn { position:absolute; top:16px; right:16px; font-size:1.2rem; cursor:pointer; }
         .empty-state { text-align:center; padding:60px 20px; color:#ccc; }
-        .unified-input {
-            width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px;
-            font-family:var(--font-sans); font-size:0.9rem; outline:none; margin:8px 0;
-            background: #fdfdfb; transition: border-color 0.2s;
-        }
+        .unified-input { width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px; font-family:var(--font-sans); font-size:0.9rem; outline:none; margin:8px 0; background: #fdfdfb; transition: border-color 0.2s; }
         .unified-input:focus { border-color: var(--gold); }
         @media (max-width:680px) { .hero-title { font-size:2rem; } }
     </style>
 </head>
 <body>
     <div id="homeView"><div class="container"><header class="hero"><div class="hero-tag">YISHI QIANYUAN</div><h1 class="hero-title">易饰乾园素材库</h1><p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p><div class="hero-line"></div></header><nav class="module-grid" id="moduleGrid"></nav></div></div>
-    <div id="subView" style="display:none;"><div class="container"><div class="sub-header"><div class="sub-title-area"><button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> 返回首页</button><h2 class="sub-title" id="subTitle">朋友圈</h2></div><div class="search-wrap" id="searchWrap"><button class="search-toggle" onclick="toggleSearch()"><i class="fa-solid fa-magnifying-glass"></i></button><div class="search-input-wrap" id="searchInputWrap"><input type="text" id="searchInput" placeholder="搜索内容…" oninput="doSearch()"><span class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></span></div></div></div><div class="angle-bar" id="angleBar"></div><div class="cat-tabs" id="catTabs"></div><div class="card-grid" id="cardGrid"></div><div class="media-card-grid" id="mediaCardGrid"></div><div class="empty-state" id="emptyState">暂无内容</div></div></div>
+    <div id="subView" style="display:none;"><div class="container"><div class="sub-header"><div class="sub-title-area"><button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> 返回首页</button><h2 class="sub-title" id="subTitle">朋友圈</h2></div><div class="search-wrap"><button class="sort-btn" id="sortBtn" onclick="toggleSortOrder()" title="切换排序">↓</button><button class="search-toggle" onclick="toggleSearch()"><i class="fa-solid fa-magnifying-glass"></i></button><div class="search-input-wrap" id="searchInputWrap"><input type="text" id="searchInput" placeholder="搜索内容…" oninput="doSearch()"><span class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></span></div></div></div><div class="angle-bar" id="angleBar"></div><div class="cat-tabs" id="catTabs"></div><div class="card-grid" id="cardGrid"></div><div class="media-card-grid" id="mediaCardGrid"></div><div class="empty-state" id="emptyState">暂无内容</div></div></div>
     <a href="admin.html" class="admin-float" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
     <div class="lightbox" id="lightbox" onclick="closeLightbox()"><span class="close-lightbox" onclick="closeLightbox()">&times;</span><div id="lightboxContent"></div></div>
     <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)"><div class="detail-modal" id="detailModal" onclick="event.stopPropagation()"><span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span><div id="detailContent"></div></div></div>
@@ -129,13 +116,15 @@
             const JSONBIN_API_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
             const USE_CLOUD = true;
             const DATA_KEY = 'ysqy_data_v3';
+            const DEFAULT_ANGLES = ['数字冲击','对话还原','情绪唤醒','场景反差','旁观者视角','预言式','时间轴','选择题','内幕揭秘','反常识','学员故事','身体感知','追问式','画面描写'];
             const LOCK_PWD_KEY = 'ysqy_module_pwd';
             const DEFAULT_LOCK_PWD = 'zheshimima';
             let pendingLockedModule = null;
+            let sortOrder = 'desc'; // 默认降序
 
             function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
 
-            let db = { modules: [], contents: [], _modules: [] };
+            let db = { modules: [], angles: [], contents: [], _modules: [] };
 
             async function loadData() {
                 if (USE_CLOUD) {
@@ -157,16 +146,16 @@
                     modules = _modules.filter(m => typeof m === 'string');
                 }
                 if (modules.length === 0) modules = ['朋友圈','客户见证','课程卖点'];
-                // 不再使用独立的 angles 数组，而是从模块对象中获取 categories
+                const angles = data.angles || DEFAULT_ANGLES.slice();
                 const contents = (data.contents || []).map(c => {
                     if (!c.module) { const mod = _modules.find(m => m.id === c.moduleId); c.module = mod ? mod.name : ''; }
                     return c;
                 });
-                return { modules, contents, _modules };
+                return { modules, angles, contents, _modules };
             }
 
             function createDefaultData() {
-                return { modules: ['朋友圈','客户见证','课程卖点'], contents: [], _modules: [] };
+                return { modules: ['朋友圈','客户见证','课程卖点'], angles: DEFAULT_ANGLES.slice(), contents: [], _modules: [] };
             }
 
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
@@ -194,6 +183,12 @@
                     </div>`;
                 }).join('');
             }
+
+            window.toggleSortOrder = function() {
+                sortOrder = sortOrder === 'desc' ? 'asc' : 'desc';
+                document.getElementById('sortBtn').textContent = sortOrder === 'desc' ? '↓' : '↑';
+                renderSubPage();
+            };
 
             window.showLockModal = function(moduleName) {
                 pendingLockedModule = moduleName;
@@ -229,6 +224,14 @@
             window.openModule = function(m) { currentModule = m; currentAngle = '全部'; currentCategory = '全部'; searchQuery = ''; document.getElementById('searchInput').value=''; document.getElementById('searchInputWrap').classList.remove('open'); document.getElementById('homeView').style.display='none'; document.getElementById('subView').style.display='block'; document.getElementById('subTitle').textContent=m; renderSubPage(); window.scrollTo(0,0); };
             window.goHome = function() { document.getElementById('subView').style.display='none'; document.getElementById('homeView').style.display='block'; };
 
+            function sortContents(items) {
+                return items.sort((a, b) => {
+                    const timeA = a.time || a.id || 0;
+                    const timeB = b.time || b.id || 0;
+                    return sortOrder === 'desc' ? timeB - timeA : timeA - timeB;
+                });
+            }
+
             function renderSubPage() {
                 if (!currentModule) return;
                 document.getElementById('angleBar').style.display='none';
@@ -238,14 +241,13 @@
                 const mod = (db._modules || []).find(m => m.name === currentModule);
                 const cats = mod?.categories || [];
                 if (currentModule === '朋友圈') {
-                    // 从模块对象中获取角度列表，而不是用独立的 angles 数组
-                    const angles = mod?.categories || [];
-                    if (angles.length > 0) {
-                        document.getElementById('angleBar').style.display='flex';
-                        document.getElementById('angleBar').innerHTML = ['全部', ...angles].map(a => `<span class="angle-pill ${currentAngle===a?'active':''}" onclick="setAngle('${a}')">${a}</span>`).join('');
-                    }
+                    document.getElementById('angleBar').style.display='flex';
                     document.getElementById('cardGrid').style.display='grid';
-                    renderMoments(mod);
+                    let items = db.contents.filter(c => c.module === '朋友圈' && c.angle);
+                    if (currentAngle !== '全部') items = items.filter(c => c.angle === currentAngle);
+                    if (searchQuery) items = items.filter(c => (c.text||'').includes(searchQuery));
+                    items = sortContents(items);
+                    renderMoments(items);
                 } else {
                     if (cats.length > 0) {
                         document.getElementById('catTabs').style.display='flex';
@@ -255,16 +257,12 @@
                     let items = db.contents.filter(c => c.module === currentModule);
                     if (currentCategory !== '全部') items = items.filter(c => c.category === currentCategory);
                     if (searchQuery) items = items.filter(c => (c.title||'').includes(searchQuery) || (c.description||c.text||'').includes(searchQuery));
+                    items = sortContents(items);
                     renderMediaCards(items, mod);
                 }
             }
 
-            function renderMoments(mod) {
-                let items = db.contents.filter(c => c.module === '朋友圈' && c.angle);
-                if (currentAngle !== '全部') items = items.filter(c => c.angle === currentAngle);
-                if (searchQuery) items = items.filter(c => (c.text||'').includes(searchQuery));
-                // 按时间降序排列（最新在前）
-                items.sort((a, b) => (b.time || 0) - (a.time || 0));
+            function renderMoments(items) {
                 const grid = document.getElementById('cardGrid');
                 if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
                 grid.innerHTML = items.map(p => {
@@ -284,8 +282,6 @@
             function renderMediaCards(items, mod) {
                 const grid = document.getElementById('mediaCardGrid');
                 if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
-                // 按 id 降序（近似上传时间）
-                items.sort((a, b) => (b.id || 0) - (a.id || 0));
                 let cardsHtml = '';
                 items.forEach(item => {
                     const copyText = ((item.title||'') + '\n' + (item.description||item.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
