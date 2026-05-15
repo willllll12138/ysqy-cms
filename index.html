@@ -30,18 +30,8 @@
             --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background:var(--bg);
-            font-family:var(--font-sans);
-            color:var(--ink);
-            line-height:1.6;
-            min-height:100vh;
-        }
-        body::before {
-            content:''; position:fixed; top:0; left:0; right:0; height:3px;
-            background:linear-gradient(90deg,var(--gold),#8b3a3a,#5a6b4d);
-            z-index:1000;
-        }
+        body { background:var(--bg); font-family:var(--font-sans); color:var(--ink); line-height:1.6; min-height:100vh; }
+        body::before { content:''; position:fixed; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--gold),#8b3a3a,#5a6b4d); z-index:1000; }
         .container { max-width:960px; margin:0 auto; padding:0 24px; }
         .hero { text-align:center; padding:72px 0 48px; }
         .hero-tag { display:inline-block; font-size:0.7rem; letter-spacing:0.35em; color:var(--gold); background:var(--gold-pale); padding:6px 18px; border-radius:var(--radius-full); margin-bottom:16px; font-weight:500; }
@@ -49,12 +39,7 @@
         .hero-subtitle { font-size:0.9rem; color:var(--ink-light); font-weight:300; letter-spacing:0.15em; }
         .hero-line { width:50px; height:2px; background:var(--gold); margin:20px auto 0; border-radius:2px; }
         .module-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; padding-bottom:60px; }
-        .module-card {
-            background:var(--card-bg); border-radius:var(--radius-lg); padding:32px 26px 26px;
-            cursor:pointer; transition: var(--transition); border:1px solid var(--border);
-            text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px;
-            box-shadow:var(--shadow-sm); position:relative;
-        }
+        .module-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:32px 26px 26px; cursor:pointer; transition: var(--transition); border:1px solid var(--border); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px; box-shadow:var(--shadow-sm); position:relative; }
         .module-card:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(0,0,0,0.06); border-color:var(--border-strong); }
         .module-card.locked::after { content:'🔒'; position:absolute; top:12px; right:16px; font-size:1.2rem; opacity:0.6; }
         .module-card-icon { font-size:1.8rem; color:var(--gold); }
@@ -88,11 +73,7 @@
         .copy-btn { cursor:pointer; color:#888; transition:var(--transition); padding:4px 8px; border-radius:6px; }
         .copy-btn:hover { color:var(--gold); background:var(--gold-pale); }
         .media-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; padding:10px 0 50px; }
-        .media-card {
-            background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden;
-            border: 1px solid var(--border); box-shadow: var(--shadow-sm);
-            transition: var(--transition); cursor: pointer; display: flex; flex-direction: column;
-        }
+        .media-card { background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition); cursor: pointer; display: flex; flex-direction: column; }
         .media-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
         .media-card-image { width: 100%; height: 240px; background: #f0ede5; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: zoom-in; }
         .media-card-image img { width: 100%; height: 100%; object-fit: cover; }
@@ -221,7 +202,6 @@
             function processData(data) {
                 const _modules = data.modules || [];
                 const moduleNames = _modules.filter(m => m && m.id && m.name).map(m => m.name);
-                // 朋友圈角度：从id为'pyq'的模块读取
                 const pyqModule = _modules.find(m => m.id === 'pyq') || {};
                 const angles = pyqModule.categories || ['数字冲击','对话还原','情绪唤醒'];
                 const contents = (data.contents || []).map(c => {
@@ -248,7 +228,6 @@
                 clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 1500);
             }
 
-            // 复制功能
             window.handleCopy = function(btn) {
                 const text = btn.getAttribute('data-copy');
                 if (!text) return;
@@ -294,8 +273,10 @@
             window.verifyLockPwd = function() {
                 const pwd = document.getElementById('lockPwdInput').value;
                 if (pwd === getLockPwd()) {
+                    // 先跳转，再关闭弹窗，确保pendingLockedModule有效
+                    const targetModule = pendingLockedModule;
                     closeLockModal();
-                    if (pendingLockedModule) openModule(pendingLockedModule);
+                    if (targetModule) openModule(targetModule);
                 } else {
                     document.getElementById('lockError').textContent = '密码错误';
                 }
@@ -326,7 +307,6 @@
                 document.getElementById('homeView').style.display = 'block';
             };
 
-            // 排序切换
             window.toggleSortOrder = function() {
                 sortOrder = sortOrder === 'desc' ? 'asc' : 'desc';
                 document.getElementById('sortBtn').textContent = sortOrder === 'desc' ? '↓' : '↑';
