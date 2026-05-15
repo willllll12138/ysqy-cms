@@ -75,7 +75,7 @@
         .media-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; padding:10px 0 50px; }
         .media-card { background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition); cursor: pointer; display: flex; flex-direction: column; }
         .media-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
-        .media-card-image { width: 100%; height: 240px; background: #f0ede5; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: zoom-in; }
+        .media-card-image { width: 100%; height: 240px; background: #f0ede5; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: pointer; }
         .media-card-image img { width: 100%; height: 100%; object-fit: cover; }
         .media-card-image iframe { width: 100%; height: 100%; border: 0; }
         .media-card-body { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
@@ -102,57 +102,17 @@
     </style>
 </head>
 <body>
-    <div id="homeView">
-        <div class="container">
-            <header class="hero">
-                <div class="hero-tag">YISHI QIANYUAN</div>
-                <h1 class="hero-title">易饰乾园素材库</h1>
-                <p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p>
-                <div class="hero-line"></div>
-            </header>
-            <nav class="module-grid" id="moduleGrid"></nav>
-        </div>
-    </div>
-
-    <div id="subView" style="display:none;">
-        <div class="container">
-            <div class="sub-header">
-                <div class="sub-title-area">
-                    <button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> 返回首页</button>
-                    <h2 class="sub-title" id="subTitle">朋友圈</h2>
-                </div>
-                <div class="search-wrap">
-                    <button class="sort-btn" id="sortBtn" onclick="toggleSortOrder()" title="切换排序">↓</button>
-                    <button class="search-toggle" onclick="toggleSearch()"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    <div class="search-input-wrap" id="searchInputWrap">
-                        <input type="text" id="searchInput" placeholder="搜索内容…" oninput="doSearch()">
-                        <span class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="angle-bar" id="angleBar"></div>
-            <div class="cat-tabs" id="catTabs"></div>
-            <div class="card-grid" id="cardGrid"></div>
-            <div class="media-card-grid" id="mediaCardGrid"></div>
-            <div class="empty-state" id="emptyState">暂无内容</div>
-        </div>
-    </div>
-
+    <div id="homeView"><div class="container"><header class="hero"><div class="hero-tag">YISHI QIANYUAN</div><h1 class="hero-title">易饰乾园素材库</h1><p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p><div class="hero-line"></div></header><nav class="module-grid" id="moduleGrid"></nav></div></div>
+    <div id="subView" style="display:none;"><div class="container"><div class="sub-header"><div class="sub-title-area"><button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> 返回首页</button><h2 class="sub-title" id="subTitle">朋友圈</h2></div><div class="search-wrap"><button class="sort-btn" id="sortBtn" onclick="toggleSortOrder()" title="切换排序">↓</button><button class="search-toggle" onclick="toggleSearch()"><i class="fa-solid fa-magnifying-glass"></i></button><div class="search-input-wrap" id="searchInputWrap"><input type="text" id="searchInput" placeholder="搜索内容…" oninput="doSearch()"><span class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></span></div></div></div><div class="angle-bar" id="angleBar"></div><div class="cat-tabs" id="catTabs"></div><div class="card-grid" id="cardGrid"></div><div class="media-card-grid" id="mediaCardGrid"></div><div class="empty-state" id="emptyState">暂无内容</div></div></div>
     <a href="admin.html" class="admin-float" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
-
     <div class="lightbox" id="lightbox" onclick="closeLightbox()"><span class="close-lightbox" onclick="closeLightbox()">&times;</span><div id="lightboxContent"></div></div>
     <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)"><div class="detail-modal" id="detailModal" onclick="event.stopPropagation()"><span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span><div id="detailContent"></div></div></div>
     <div class="toast" id="toast"></div>
-
     <div id="lockModal" class="modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:2500;">
         <div class="modal-box" style="background:#fff;border-radius:24px;padding:32px;max-width:380px;width:90%;text-align:center;">
             <h3>🔒 此模块已锁定</h3>
             <input type="password" id="lockPwdInput" placeholder="请输入访问密码" class="unified-input" onkeydown="if(event.key==='Enter')verifyLockPwd()">
-            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                <button class="btn" onclick="verifyLockPwd()">解锁</button>
-                <button class="btn-outline" onclick="showForgotLockPwd()">忘记密码？</button>
-                <button class="btn-outline" onclick="closeLockModal()">取消</button>
-            </div>
+            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn" onclick="verifyLockPwd()">解锁</button><button class="btn-outline" onclick="showForgotLockPwd()">忘记密码？</button><button class="btn-outline" onclick="closeLockModal()">取消</button></div>
             <p id="lockError" style="color:#c33;font-size:0.8rem;margin-top:8px;"></p>
         </div>
     </div>
@@ -168,11 +128,24 @@
             const RESET_CODE = 'ysqy_reset';
             let pendingLockedModule = null;
             let sortOrder = 'desc';
+            const preloadCache = {};
 
             function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
 
-            // 预加载缓存：避免重复加载同一张图片
-            const preloadCache = {};
+            // 自动缩略图生成：使用 images.weserv.nl 免费服务，宽度600px
+            function getThumbUrl(originalUrl) {
+                if (!originalUrl) return '';
+                // 如果已经是绝对http链接，直接使用；否则补全当前域名的路径
+                let fullUrl = originalUrl;
+                if (!/^https?:\/\//i.test(originalUrl)) {
+                    fullUrl = location.origin + (originalUrl.startsWith('/') ? '' : '/') + originalUrl;
+                }
+                // 已经经过 weserv 处理的不要再嵌套
+                if (fullUrl.includes('images.weserv.nl')) return fullUrl;
+                return `https://images.weserv.nl/?url=${encodeURIComponent(fullUrl)}&w=600`;
+            }
+
+            // 预加载原图（用于灯箱）
             window.preloadImage = function(url) {
                 if (!url || preloadCache[url]) return;
                 preloadCache[url] = true;
@@ -186,15 +159,11 @@
                 let raw;
                 if (USE_CLOUD) {
                     try {
-                        const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                            headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                        });
+                        const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, { headers: { 'X-Master-Key': JSONBIN_API_KEY } });
                         if (res.ok) { const json = await res.json(); raw = json.record; } else raw = null;
                     } catch(e) { raw = null; }
                 }
-                if (!raw) {
-                    raw = JSON.parse(localStorage.getItem(DATA_KEY) || 'null');
-                }
+                if (!raw) raw = JSON.parse(localStorage.getItem(DATA_KEY) || 'null');
                 processData(raw || {});
             }
 
@@ -204,40 +173,21 @@
                 const pyqModule = _modules.find(m => m.id === 'pyq') || {};
                 const angles = pyqModule.categories || ['数字冲击','对话还原','情绪唤醒'];
                 const contents = (data.contents || []).map(c => {
-                    if (!c.module) {
-                        const mod = _modules.find(m => m.id === c.moduleId);
-                        c.module = mod ? mod.name : '';
-                    }
+                    if (!c.module) { const mod = _modules.find(m => m.id === c.moduleId); c.module = mod ? mod.name : ''; }
                     return c;
                 });
-                db = {
-                    modules: moduleNames.length ? moduleNames : ['朋友圈','客户见证','课程卖点'],
-                    angles: angles,
-                    contents: contents,
-                    _modules: _modules
-                };
+                db = { modules: moduleNames.length ? moduleNames : ['朋友圈','客户见证','课程卖点'], angles, contents, _modules };
                 localStorage.setItem(DATA_KEY, JSON.stringify({ modules: _modules, contents }));
             }
 
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
 
-            function toast(msg) {
-                const t = document.getElementById('toast');
-                t.textContent = msg; t.classList.add('show');
-                clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 1500);
-            }
-
+            function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1500); }
             window.handleCopy = function(btn) {
                 const text = btn.getAttribute('data-copy');
                 if (!text) return;
                 navigator.clipboard.writeText(text).then(() => toast('已复制 ✓')).catch(() => {
-                    const textarea = document.createElement('textarea');
-                    textarea.value = text;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    toast('已复制 ✓');
+                    const textarea = document.createElement('textarea'); textarea.value = text; document.body.appendChild(textarea); textarea.select(); document.execCommand('copy'); document.body.removeChild(textarea); toast('已复制 ✓');
                 });
             };
 
@@ -247,12 +197,7 @@
                 grid.innerHTML = db.modules.map(m => {
                     const mod = db._modules.find(md => md.name === m);
                     const locked = mod?.locked || false;
-                    return `<div class="module-card ${locked ? 'locked' : ''}" onclick="${locked ? `showLockModal('${m}')` : `openModule('${m}')`}">
-                        <div class="module-card-icon"><i class="fa-solid ${icons[m] || 'fa-folder'}"></i></div>
-                        <div class="module-card-title">${m}</div>
-                        <div class="module-card-desc">点击查看内容</div>
-                        <div class="module-card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                    </div>`;
+                    return `<div class="module-card ${locked ? 'locked' : ''}" onclick="${locked ? `showLockModal('${m}')` : `openModule('${m}')`}"><div class="module-card-icon"><i class="fa-solid ${icons[m] || 'fa-folder'}"></i></div><div class="module-card-title">${m}</div><div class="module-card-desc">点击查看内容</div><div class="module-card-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>`;
                 }).join('');
             }
 
@@ -263,62 +208,36 @@
                 document.getElementById('lockModal').style.display = 'flex';
                 document.getElementById('lockPwdInput').focus();
             };
-            window.closeLockModal = function() {
-                document.getElementById('lockModal').style.display = 'none';
-                pendingLockedModule = null;
-            };
+            window.closeLockModal = function() { document.getElementById('lockModal').style.display = 'none'; pendingLockedModule = null; };
             window.verifyLockPwd = function() {
-                const pwd = document.getElementById('lockPwdInput').value;
-                if (pwd === getLockPwd()) {
-                    const targetModule = pendingLockedModule;
+                if (document.getElementById('lockPwdInput').value === getLockPwd()) {
+                    const target = pendingLockedModule;
                     closeLockModal();
-                    if (targetModule) openModule(targetModule);
-                } else {
-                    document.getElementById('lockError').textContent = '密码错误';
-                }
+                    if (target) openModule(target);
+                } else document.getElementById('lockError').textContent = '密码错误';
             };
             window.showForgotLockPwd = function() {
                 const code = prompt('请输入重置暗号');
-                if (code === RESET_CODE) {
-                    localStorage.removeItem(LOCK_PWD_KEY);
-                    toast('模块密码已重置为默认密码 zheshimima');
-                    closeLockModal();
-                } else if (code !== null) {
-                    alert('暗号错误');
-                }
+                if (code === RESET_CODE) { localStorage.removeItem(LOCK_PWD_KEY); toast('模块密码已重置为默认密码'); closeLockModal(); }
+                else if (code !== null) alert('暗号错误');
             };
 
-            window.openModule = function(m) {
-                currentModule = m; currentAngle = '全部'; currentCategory = '全部'; searchQuery = '';
-                document.getElementById('searchInput').value = '';
-                document.getElementById('searchInputWrap').classList.remove('open');
-                document.getElementById('homeView').style.display = 'none';
-                document.getElementById('subView').style.display = 'block';
-                document.getElementById('subTitle').textContent = m;
-                renderSubPage(); window.scrollTo(0,0);
-            };
-            window.goHome = function() {
-                document.getElementById('subView').style.display = 'none';
-                document.getElementById('homeView').style.display = 'block';
-            };
+            window.openModule = function(m) { currentModule = m; currentAngle = '全部'; currentCategory = '全部'; searchQuery = ''; document.getElementById('searchInput').value=''; document.getElementById('homeView').style.display='none'; document.getElementById('subView').style.display='block'; document.getElementById('subTitle').textContent=m; renderSubPage(); };
+            window.goHome = function() { document.getElementById('subView').style.display='none'; document.getElementById('homeView').style.display='block'; };
 
-            window.toggleSortOrder = function() {
-                sortOrder = sortOrder === 'desc' ? 'asc' : 'desc';
-                document.getElementById('sortBtn').textContent = sortOrder === 'desc' ? '↓' : '↑';
-                renderSubPage();
-            };
+            window.toggleSortOrder = function() { sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'; document.getElementById('sortBtn').textContent = sortOrder === 'desc' ? '↓' : '↑'; renderSubPage(); };
 
             function renderSubPage() {
                 if (!currentModule) return;
-                document.getElementById('angleBar').style.display = 'none';
-                document.getElementById('catTabs').style.display = 'none';
-                document.getElementById('cardGrid').style.display = 'none';
-                document.getElementById('mediaCardGrid').style.display = 'none';
+                document.getElementById('angleBar').style.display='none';
+                document.getElementById('catTabs').style.display='none';
+                document.getElementById('cardGrid').style.display='none';
+                document.getElementById('mediaCardGrid').style.display='none';
                 const mod = db._modules.find(m => m.name === currentModule);
                 const cats = mod?.categories || [];
                 if (currentModule === '朋友圈') {
-                    document.getElementById('angleBar').style.display = 'flex';
-                    document.getElementById('cardGrid').style.display = 'grid';
+                    document.getElementById('angleBar').style.display='flex';
+                    document.getElementById('cardGrid').style.display='grid';
                     document.getElementById('angleBar').innerHTML = ['全部', ...db.angles].map(a => `<span class="angle-pill ${currentAngle===a?'active':''}" onclick="setAngle('${a}')">${a}</span>`).join('');
                     let items = db.contents.filter(c => c.module === '朋友圈' && c.angle);
                     if (currentAngle !== '全部') items = items.filter(c => c.angle === currentAngle);
@@ -327,10 +246,10 @@
                     renderMoments(items);
                 } else {
                     if (cats.length > 0) {
-                        document.getElementById('catTabs').style.display = 'flex';
+                        document.getElementById('catTabs').style.display='flex';
                         document.getElementById('catTabs').innerHTML = ['全部', ...cats].map(c => `<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
                     }
-                    document.getElementById('mediaCardGrid').style.display = 'grid';
+                    document.getElementById('mediaCardGrid').style.display='grid';
                     let items = db.contents.filter(c => c.module === currentModule);
                     if (currentCategory !== '全部') items = items.filter(c => c.category === currentCategory);
                     if (searchQuery) items = items.filter(c => (c.title||'').includes(searchQuery) || (c.description||c.text||'').includes(searchQuery));
@@ -339,70 +258,53 @@
                 }
             }
 
-            function sortContents(items) {
-                return items.sort((a, b) => {
-                    const timeA = a.time || a.id || 0;
-                    const timeB = b.time || b.id || 0;
-                    return sortOrder === 'desc' ? timeB - timeA : timeA - timeB;
-                });
-            }
+            function sortContents(items) { return items.sort((a,b) => { const tA = a.time || a.id || 0, tB = b.time || b.id || 0; return sortOrder === 'desc' ? tB - tA : tA - tB; }); }
 
             function renderMoments(items) {
                 const grid = document.getElementById('cardGrid');
                 if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
                 grid.innerHTML = items.map(p => {
-                    const cleanText = (p.text || '').split('\n').map(l => l.trim()).join('\n');
-                    const lines = cleanText.split('\n');
-                    const truncated = lines.length > 6;
-                    const displayText = truncated ? lines.slice(0,6).join('\n') : cleanText;
-                    const copyText = cleanText.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                    return `<div class="copy-card">
-                        <div class="copy-text ${truncated ? '' : 'expanded'}" id="txt-${p.id}">${displayText.replace(/\n/g,'<br>')}${truncated ? `<span class="expand-btn" onclick="event.stopPropagation();toggleExpand('${p.id}')"> 展开全文</span>` : ''}</div>
-                        <div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span></div>
-                    </div>`;
+                    const text = (p.text||'').split('\n').map(l=>l.trim()).join('\n');
+                    const truncated = text.split('\n').length > 6;
+                    const display = truncated ? text.split('\n').slice(0,6).join('<br>') + '<span class="expand-btn" onclick="this.parentElement.classList.toggle(\'expanded\')"> 展开全文</span>' : text.replace(/\n/g,'<br>');
+                    return `<div class="copy-card"><div class="copy-text ${truncated?'':'expanded'}">${display}</div><div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" data-copy="${text.replace(/"/g,'&quot;')}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
                 }).join('');
-                window.toggleExpand = function(id) { const el = document.getElementById('txt-'+id); el.classList.toggle('expanded'); const btn = el.querySelector('.expand-btn'); if (btn) btn.textContent = el.classList.contains('expanded') ? '收起' : '展开全文'; };
             }
 
             function renderMediaCards(items) {
                 const grid = document.getElementById('mediaCardGrid');
                 if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
-                let cardsHtml = '';
+                let html = '';
                 items.forEach(item => {
                     const copyText = ((item.title||'') + '\n' + (item.description||item.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                    const imageUrls = item.imageUrl ? item.imageUrl.split(',').map(u => u.trim()).filter(u => u) : [];
-                    if (imageUrls.length === 0 && !item.videoUrl) {
-                        cardsHtml += buildCard(item, null, copyText);
-                    } else if (item.videoUrl) {
-                        cardsHtml += buildCard(item, 'video', copyText);
+                    const images = (item.imageUrl||'').split(',').map(u=>u.trim()).filter(u=>u);
+                    const jumpLink = item.jumpUrl || '';
+                    const clickAction = jumpLink ? `window.open('${jumpLink}', '_blank')` : `openLightbox('${images[0]||''}','')`;
+
+                    if (images.length) {
+                        images.forEach(img => {
+                            const thumbUrl = getThumbUrl(img);  // 自动生成缩略图
+                            const originalImg = img;           // 灯箱/预加载使用原图
+                            html += `<div class="media-card">
+                                <div class="media-card-image" onclick="event.stopPropagation();${clickAction}" ${!jumpLink ? `onmouseenter="preloadImage('${originalImg.replace(/'/g, "\\'")}')"` : ''}>
+                                    <img src="${thumbUrl}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'">
+                                </div>
+                                <div class="media-card-body">
+                                    <h3>${item.title||''}</h3>
+                                    <div class="desc">${item.description||item.text||''}</div>
+                                    <div class="media-card-footer">
+                                        ${item.category ? `<span class="category-badge">${item.category}</span>` : ''}
+                                        <span>${item.date||''} ${item.clientName ? '· '+item.clientName : ''}</span>
+                                    </div>
+                                    <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span>
+                                </div>
+                            </div>`;
+                        });
                     } else {
-                        imageUrls.forEach(imgUrl => cardsHtml += buildCard(item, imgUrl, copyText));
+                        html += `<div class="media-card"><div class="media-card-image" onclick="event.stopPropagation();${jumpLink ? `window.open('${jumpLink}', '_blank')` : ''}"><i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i></div><div class="media-card-body"><h3>${item.title||''}</h3><div class="desc">${item.description||item.text||''}</div><div class="media-card-footer"><span>${item.date||''}</span></div></div></div>`;
                     }
                 });
-                grid.innerHTML = cardsHtml;
-            }
-
-            function buildCard(item, media, copyText) {
-                const isVideo = media === 'video';
-                // 预加载钩子：对有图片的卡片，鼠标滑过时开始预加载这张大图
-                const preloadAttr = (!isVideo && media) ? ` onmouseenter="preloadImage('${media.replace(/'/g, "\\'")}')"` : '';
-                const imgHtml = isVideo 
-                    ? `<iframe src="${item.videoUrl}" allowfullscreen loading="lazy"></iframe>` 
-                    : media 
-                        ? `<img src="${media}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'">` 
-                        : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>';
-                return `<div class="media-card"${preloadAttr} onclick="openDetail('${item.id}', '${item.module}')">
-                    <div class="media-card-image" onclick="event.stopPropagation();openLightbox('${media === 'video' ? '' : media}', '${media === 'video' ? item.videoUrl : ''}')">${imgHtml}</div>
-                    <div class="media-card-body">
-                        <h3>${item.title||''}</h3>
-                        <div class="desc">${item.description||item.text||''}</div>
-                        <div class="media-card-footer">
-                            ${item.category ? `<span class="category-badge">${item.category}</span>` : ''}
-                            <span>${item.date||''} ${item.clientName ? '· ' + item.clientName : ''}</span>
-                        </div>
-                        <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
-                    </div>
-                </div>`;
+                grid.innerHTML = html;
             }
 
             window.setAngle = function(a) { currentAngle = a; renderSubPage(); };
@@ -419,28 +321,10 @@
             };
             window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
 
-            window.openDetail = function(id, moduleName) {
-                const item = db.contents.find(c => c.id === id);
-                if (!item) return;
-                const copyText = ((item.title||'') + '\n' + (item.description||item.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                document.getElementById('detailContent').innerHTML = `
-                    ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen style="width:100%;height:300px;"></iframe>` : (item.imageUrl ? `<div style="display:flex;overflow-x:auto;gap:8px;">${item.imageUrl.split(',').map(u => `<img src="${u.trim()}" style="height:200px;cursor:pointer;" onclick="openLightbox('${u.trim()}','')">`).join('')}</div>` : '')}
-                    <h3 style="margin:16px 0 8px;">${item.title||''}</h3>
-                    <p style="color:#888;">${item.category||''} · ${item.date||''} · ${item.clientName||''}</p>
-                    <p style="white-space:pre-wrap;line-height:1.8;">${item.description||item.text||''}</p>
-                    <button class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制文案</button>
-                `;
-                document.getElementById('detailOverlay').classList.add('open');
-                document.body.style.overflow = 'hidden';
-            };
-            window.closeDetail = function(e) { if (e && e.target !== document.getElementById('detailOverlay')) return; document.getElementById('detailOverlay').classList.remove('open'); document.body.style.overflow = ''; };
-
             window.addEventListener('storage', (e) => { if (e.key === DATA_KEY && e.newValue) location.reload(); });
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetail(); closeLightbox(); } });
 
-            loadData().then(() => {
-                renderHome();
-            });
+            loadData().then(() => renderHome());
         })();
     </script>
 </body>
