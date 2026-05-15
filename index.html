@@ -111,10 +111,8 @@
             const DATA_KEY = 'ysqy_data_v3';
             const DEFAULT_MODULES = ['朋友圈','客户见证','课程卖点'];
             const DEFAULT_ANGLES = ['数字冲击','对话还原','情绪唤醒','场景反差','旁观者视角','预言式','时间轴','选择题','内幕揭秘','反常识','学员故事','身体感知','追问式','画面描写'];
-            const DEFAULT_TESTIMONIAL_CATS = ['文昌','沙龙','成交','夫妻关系','身体健康','知识成长','见识提升'];
-            const DEFAULT_COURSE_CATS = ['核心价值','课程亮点','学员反馈'];
 
-            let db = { modules: DEFAULT_MODULES.slice(), angles: DEFAULT_ANGLES.slice(), testimonialCategories: DEFAULT_TESTIMONIAL_CATS.slice(), courseCategories: DEFAULT_COURSE_CATS.slice(), posts: [], testimonials: [], courses: [], _modules: [] };
+            let db = { modules: [], angles: [], contents: [], _modules: [] };
 
             async function loadData() {
                 if (USE_CLOUD) {
@@ -128,44 +126,29 @@
 
             function normalizeData(data) {
                 if (!data || !data.modules) return createDefaultData();
-                // 保存原始模块对象，供自定义模块使用
+                // 保留原始模块对象
                 const _modules = data.modules;
-                if (data.modules.length && typeof data.modules[0] === 'object') {
-                    const modules = _modules.filter(m => m && m.id && m.name).map(m => m.name);
-                    const angles = [], testCats = [], courseCats = [], posts = [], testimonials = [], courses = [];
-                    (data.contents || []).forEach(c => {
-                        const mod = _modules.find(m => m.id === c.moduleId);
-                        if (!mod) return;
-                        if (mod.type === 'moments') {
-                            posts.push({ id: c.id, module: mod.name, angle: c.angle || '', text: (c.text||'').split('\n').map(l=>l.trim()).join('\n'), time: c.time || Date.now() });
-                            if (c.angle && !angles.includes(c.angle)) angles.push(c.angle);
-                        } else if (mod.type === 'testimonial') {
-                            testimonials.push({ id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '', clientName: c.clientName || '', date: c.date || '' });
-                            if (c.category && !testCats.includes(c.category)) testCats.push(c.category);
-                        } else if (mod.type === 'course') {
-                            courses.push({ id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '', date: c.date || '' });
-                            if (c.category && !courseCats.includes(c.category)) courseCats.push(c.category);
-                        } else {
-                            const item = { id: c.id, module: mod.name, category: c.category || '', imageUrl: c.imageUrl || '', videoUrl: c.videoUrl || '', title: c.title || '', description: c.description || '', date: c.date || '' };
-                            if (mod.type === 'testimonial') testimonials.push(item);
-                            else courses.push(item);
-                        }
-                    });
-                    return { modules, angles, testimonialCategories: testCats, courseCategories: courseCats, posts, testimonials, courses, _modules };
+                let modules = [];
+                if (_modules.length && typeof _modules[0] === 'object') {
+                    modules = _modules.filter(m => m && m.id && m.name).map(m => m.name);
+                } else if (_modules.length && typeof _modules[0] === 'string') {
+                    modules = _modules.filter(m => typeof m === 'string');
                 }
-                data.modules = data.modules.filter(m => typeof m === 'string');
-                if (!data.angles) data.angles = DEFAULT_ANGLES.slice();
-                if (!data.testimonialCategories) data.testimonialCategories = DEFAULT_TESTIMONIAL_CATS.slice();
-                if (!data.courseCategories) data.courseCategories = DEFAULT_COURSE_CATS.slice();
-                data.posts = (data.posts || []).map(p => ({ ...p, text: (p.text||'').split('\n').map(l=>l.trim()).join('\n') }));
-                data.testimonials = data.testimonials || [];
-                data.courses = data.courses || [];
-                data._modules = _modules || [];
-                return data;
+                if (modules.length === 0) modules = DEFAULT_MODULES.slice();
+                const angles = data.angles || DEFAULT_ANGLES.slice();
+                const contents = (data.contents || []).map(c => {
+                    // 补全 module 字段（用模块名）
+                    if (!c.module) {
+                        const mod = _modules.find(m => m.id === c.moduleId);
+                        c.module = mod ? mod.name : '';
+                    }
+                    return c;
+                });
+                return { modules, angles, contents, _modules };
             }
 
             function createDefaultData() {
-                return { modules: DEFAULT_MODULES.slice(), angles: DEFAULT_ANGLES.slice(), testimonialCategories: DEFAULT_TESTIMONIAL_CATS.slice(), courseCategories: DEFAULT_COURSE_CATS.slice(), posts: [], testimonials: [], courses: [], _modules: [] };
+                return { modules: DEFAULT_MODULES.slice(), angles: DEFAULT_ANGLES.slice(), contents: [], _modules: [] };
             }
 
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
@@ -194,113 +177,86 @@
                 document.getElementById('catTabs').style.display='none';
                 document.getElementById('cardGrid').style.display='none';
                 document.getElementById('mediaCardGrid').style.display='none';
-                if (currentModule === '朋友圈') { document.getElementById('angleBar').style.display='flex'; document.getElementById('cardGrid').style.display='grid'; renderMoments(); }
-                else if (currentModule === '客户见证') { document.getElementById('catTabs').style.display='flex'; document.getElementById('mediaCardGrid').style.display='grid'; renderMediaCards('客户见证'); }
-                else if (currentModule === '课程卖点') { document.getElementById('catTabs').style.display='flex'; document.getElementById('mediaCardGrid').style.display='grid'; renderMediaCards('课程卖点'); }
-                else { renderCustomModule(); }
-            }
-
-            function renderCustomModule() {
                 const mod = (db._modules || []).find(m => m.name === currentModule);
                 const cats = mod?.categories || [];
-                if (cats.length > 0) {
-                    document.getElementById('catTabs').style.display = 'flex';
-                    document.getElementById('catTabs').innerHTML = ['全部', ...cats].map(c => `<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
-                }
-                document.getElementById('mediaCardGrid').style.display = 'grid';
-                const allContent = [...db.posts.filter(p=>p.module===currentModule), ...db.testimonials.filter(t=>t.module===currentModule), ...db.courses.filter(c=>c.module===currentModule)];
-                if (currentCategory !== '全部') {
-                    // 过滤分类（假设自定义模块的内容中有category字段）
-                    const filtered = allContent.filter(c => c.category === currentCategory);
-                    renderGenericCards(filtered);
+                if (currentModule === '朋友圈') {
+                    document.getElementById('angleBar').style.display='flex';
+                    document.getElementById('cardGrid').style.display='grid';
+                    renderMoments();
                 } else {
-                    renderGenericCards(allContent);
-                }
-            }
-
-            function renderGenericCards(contents) {
-                const grid = document.getElementById('mediaCardGrid');
-                if (!contents.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
-                let cardsHtml = '';
-                contents.forEach(c => {
-                    const copyText = ((c.title||'') + '\n' + (c.description||c.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                    const imageUrls = c.imageUrl ? c.imageUrl.split(',').map(u => u.trim()).filter(u => u) : [];
-                    if (imageUrls.length === 0) {
-                        cardsHtml += `<div class="media-card">
-                            <div class="media-card-image"><i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i></div>
-                            <div class="media-card-body">
-                                <h4>${c.title||''}</h4>
-                                <p>${c.description||c.text||''}</p>
-                                <div class="media-card-footer">
-                                    ${c.category ? `<span class="category-badge">${c.category}</span>` : ''}
-                                    <span>${c.date||''}</span>
-                                </div>
-                                <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
-                            </div>
-                        </div>`;
-                    } else {
-                        imageUrls.forEach(imgUrl => {
-                            cardsHtml += `<div class="media-card" onclick="openLightbox('${imgUrl}','')">
-                                <div class="media-card-image" onclick="event.stopPropagation(); openLightbox('${imgUrl}','')"><img src="${imgUrl}" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'"></div>
-                                <div class="media-card-body">
-                                    <h4>${c.title||''}</h4>
-                                    <p>${c.description||c.text||''}</p>
-                                    <div class="media-card-footer">
-                                        ${c.category ? `<span class="category-badge">${c.category}</span>` : ''}
-                                        <span>${c.date||''}</span>
-                                    </div>
-                                    <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
-                                </div>
-                            </div>`;
-                        });
+                    // 显示分类筛选（如果有）
+                    if (cats.length > 0) {
+                        document.getElementById('catTabs').style.display='flex';
+                        document.getElementById('catTabs').innerHTML = ['全部', ...cats].map(c => `<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
                     }
-                });
-                grid.innerHTML = cardsHtml;
+                    document.getElementById('mediaCardGrid').style.display='grid';
+                    // 获取该模块的所有内容（按module字段过滤）
+                    let items = db.contents.filter(c => c.module === currentModule);
+                    // 如果模块类型是朋友圈，不在这里处理，但朋友圈已经独立渲染
+                    if (currentCategory !== '全部') {
+                        items = items.filter(c => c.category === currentCategory);
+                    }
+                    if (searchQuery) {
+                        items = items.filter(c => (c.title||'').includes(searchQuery) || (c.description||c.text||'').includes(searchQuery));
+                    }
+                    renderMediaCards(items, mod);
+                }
             }
 
             function renderMoments() {
                 document.getElementById('angleBar').innerHTML = ['全部', ...db.angles].map(a => `<span class="angle-pill ${currentAngle===a?'active':''}" onclick="setAngle('${a}')">${a}</span>`).join('');
-                let filtered = db.posts.filter(p => p.module === '朋友圈');
-                if (currentAngle !== '全部') filtered = filtered.filter(p => p.angle === currentAngle);
-                if (searchQuery) filtered = filtered.filter(p => p.text.includes(searchQuery));
+                let items = db.contents.filter(c => c.module === '朋友圈' && c.angle);
+                if (currentAngle !== '全部') items = items.filter(c => c.angle === currentAngle);
+                if (searchQuery) items = items.filter(c => (c.text||'').includes(searchQuery));
                 const grid = document.getElementById('cardGrid');
-                if (!filtered.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
-                grid.innerHTML = filtered.map(p => {
-                    const lines = p.text.split('\n').map(l => l.trim());
+                if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
+                grid.innerHTML = items.map(p => {
+                    const cleanText = (p.text || '').split('\n').map(l => l.trim()).join('\n');
+                    const lines = cleanText.split('\n');
                     const truncated = lines.length > 6;
-                    const displayLines = truncated ? lines.slice(0,6) : lines;
-                    let textHtml = displayLines.join('<br>');
-                    if (truncated) textHtml += `<span class="expand-btn" onclick="event.stopPropagation();toggleExpand('${p.id}')"> 展开全文</span>`;
-                    const copyText = p.text.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                    return `<div class="copy-card"><div class="copy-text ${truncated ? '' : 'expanded'}" id="txt-${p.id}">${textHtml}</div><div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
+                    const displayText = truncated ? lines.slice(0,6).join('\n') : cleanText;
+                    const copyText = cleanText.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    return `<div class="copy-card">
+                        <div class="copy-text ${truncated ? '' : 'expanded'}" id="txt-${p.id}">${displayText.replace(/\n/g,'<br>')}${truncated ? `<span class="expand-btn" onclick="event.stopPropagation();toggleExpand('${p.id}')"> 展开全文</span>` : ''}</div>
+                        <div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span></div>
+                    </div>`;
                 }).join('');
                 window.toggleExpand = function(id) { const el = document.getElementById('txt-'+id); el.classList.toggle('expanded'); const btn = el.querySelector('.expand-btn'); if (btn) btn.textContent = el.classList.contains('expanded') ? '收起' : '展开全文'; };
             }
 
-            function renderMediaCards(moduleName) {
-                const isTestimonial = moduleName === '客户见证';
-                const cats = isTestimonial ? db.testimonialCategories : db.courseCategories;
-                document.getElementById('catTabs').innerHTML = ['全部', ...cats].map(c => `<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
-                let items = isTestimonial ? db.testimonials : db.courses;
-                if (currentCategory !== '全部') items = items.filter(i => i.category === currentCategory);
-                if (searchQuery) items = items.filter(i => (i.title||'').includes(searchQuery) || (i.description||'').includes(searchQuery));
+            function renderMediaCards(items, mod) {
                 const grid = document.getElementById('mediaCardGrid');
                 if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
                 let cardsHtml = '';
-                items.forEach(i => {
-                    const copyText = ((i.title||'') + '\n' + (i.description||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                    const imageUrls = i.imageUrl ? i.imageUrl.split(',').map(u => u.trim()).filter(u => u) : [];
-                    if (imageUrls.length === 0 && !i.videoUrl) {
-                        cardsHtml += `<div class="media-card" onclick="openDetail('${isTestimonial?'testimonial':'course'}',${i.id})"><div class="media-card-image"><i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i></div><div class="media-card-body"><h3>${i.title||''}</h3><div class="desc">${i.description||''}</div><div class="media-card-footer"><span class="category-badge">${i.category||''}</span><span>${i.date||''} ${i.clientName ? '· '+i.clientName : ''}</span></div><span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
-                    } else if (i.videoUrl) {
-                        cardsHtml += `<div class="media-card" onclick="openDetail('${isTestimonial?'testimonial':'course'}',${i.id})"><div class="media-card-image" onclick="event.stopPropagation();openLightbox('','${i.videoUrl}')"><iframe src="${i.videoUrl}" allowfullscreen></iframe></div><div class="media-card-body"><h3>${i.title||''}</h3><div class="desc">${i.description||''}</div><div class="media-card-footer"><span class="category-badge">${i.category||''}</span><span>${i.date||''} ${i.clientName ? '· '+i.clientName : ''}</span></div><span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
+                items.forEach(item => {
+                    const copyText = ((item.title||'') + '\n' + (item.description||item.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+                    const imageUrls = item.imageUrl ? item.imageUrl.split(',').map(u => u.trim()).filter(u => u) : [];
+                    if (imageUrls.length === 0 && !item.videoUrl) {
+                        cardsHtml += buildCard(item, null, copyText);
+                    } else if (item.videoUrl) {
+                        cardsHtml += buildCard(item, 'video', copyText);
                     } else {
-                        imageUrls.forEach(imgUrl => {
-                            cardsHtml += `<div class="media-card" onclick="openDetail('${isTestimonial?'testimonial':'course'}',${i.id})"><div class="media-card-image" onclick="event.stopPropagation();openLightbox('${imgUrl}','')"><img src="${imgUrl}" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'"></div><div class="media-card-body"><h3>${i.title||''}</h3><div class="desc">${i.description||''}</div><div class="media-card-footer"><span class="category-badge">${i.category||''}</span><span>${i.date||''} ${i.clientName ? '· '+i.clientName : ''}</span></div><span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
-                        });
+                        imageUrls.forEach(imgUrl => cardsHtml += buildCard(item, imgUrl, copyText));
                     }
                 });
                 grid.innerHTML = cardsHtml;
+            }
+
+            function buildCard(item, media, copyText) {
+                const isVideo = media === 'video';
+                const imgHtml = isVideo ? `<iframe src="${item.videoUrl}" allowfullscreen></iframe>` : media ? `<img src="${media}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'">` : '<i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i>';
+                return `<div class="media-card" onclick="openDetail('${item.id}', '${item.module}')">
+                    <div class="media-card-image" onclick="event.stopPropagation();openLightbox('${media === 'video' ? '' : media}', '${media === 'video' ? item.videoUrl : ''}')">${imgHtml}</div>
+                    <div class="media-card-body">
+                        <h3>${item.title||''}</h3>
+                        <div class="desc">${item.description||item.text||''}</div>
+                        <div class="media-card-footer">
+                            ${item.category ? `<span class="category-badge">${item.category}</span>` : ''}
+                            <span>${item.date||''} ${item.clientName ? '· ' + item.clientName : ''}</span>
+                        </div>
+                        <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制</span>
+                    </div>
+                </div>`;
             }
 
             window.setAngle = function(a) { currentAngle = a; renderSubPage(); };
@@ -316,17 +272,16 @@
                 lb.classList.add('open');
             };
             window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
-            window.openDetail = function(type, id) {
-                let item;
-                if (type === 'testimonial') item = db.testimonials.find(t => t.id === id);
-                else item = db.courses.find(c => c.id === id);
+
+            window.openDetail = function(id, moduleName) {
+                const item = db.contents.find(c => c.id === id);
                 if (!item) return;
-                const copyText = ((item.title||'') + '\n' + (item.description||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+                const copyText = ((item.title||'') + '\n' + (item.description||item.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
                 document.getElementById('detailContent').innerHTML = `
                     ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen style="width:100%;height:300px;"></iframe>` : (item.imageUrl ? `<div style="display:flex;overflow-x:auto;gap:8px;">${item.imageUrl.split(',').map(u => `<img src="${u.trim()}" style="height:200px;cursor:pointer;" onclick="openLightbox('${u.trim()}','')">`).join('')}</div>` : '')}
                     <h3 style="margin:16px 0 8px;">${item.title||''}</h3>
                     <p style="color:#888;">${item.category||''} · ${item.date||''} · ${item.clientName||''}</p>
-                    <p style="white-space:pre-wrap;line-height:1.8;">${item.description||''}</p>
+                    <p style="white-space:pre-wrap;line-height:1.8;">${item.description||item.text||''}</p>
                     <button class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制文案</button>
                 `;
                 document.getElementById('detailOverlay').classList.add('open');
