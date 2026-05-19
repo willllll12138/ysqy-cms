@@ -11,192 +11,103 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --bg: #F9F7F2;
-            --card-bg: #FFFFFF;
-            --ink: #1a1815;
-            --ink-light: #5c574f;
-            --gold: #b8832a;
-            --gold-pale: #f7f0e0;
-            --border: rgba(0,0,0,0.06);
-            --border-strong: rgba(0,0,0,0.12);
-            --radius-sm: 10px;
-            --radius-md: 18px;
-            --radius-lg: 24px;
-            --radius-full: 50px;
-            --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
-            --shadow-md: 0 8px 30px rgba(0,0,0,0.07);
-            --transition: 0.2s cubic-bezier(0.23,1,0.32,1);
-            --font-serif: 'Noto Serif SC', 'Songti SC', serif;
-            --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            --bg: #F9F7F2; --card-bg: #FFFFFF; --ink: #1a1815; --ink-light: #5c574f;
+            --gold: #b8832a; --gold-pale: #f7f0e0; --border: rgba(0,0,0,0.06);
+            --radius-lg: 24px; --radius-full: 50px; --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { background:var(--bg); font-family:var(--font-sans); color:var(--ink); line-height:1.6; min-height:100vh; }
-        body::before { content:''; position:fixed; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--gold),#8b3a3a,#5a6b4d); z-index:1000; }
+        body { background:var(--bg); font-family:'Noto Sans SC',sans-serif; color:var(--ink); }
         .container { max-width:960px; margin:0 auto; padding:0 24px; }
-        .hero { text-align:center; padding:72px 0 48px; }
-        .hero-tag { display:inline-block; font-size:0.7rem; letter-spacing:0.35em; color:var(--gold); background:var(--gold-pale); padding:6px 18px; border-radius:var(--radius-full); margin-bottom:16px; font-weight:500; }
-        .hero-title { font-family:var(--font-serif); font-size:2.8rem; font-weight:900; letter-spacing:0.06em; color:var(--ink); margin-bottom:8px; line-height:1.2; }
-        .hero-subtitle { font-size:0.9rem; color:var(--ink-light); font-weight:300; letter-spacing:0.15em; }
-        .hero-line { width:50px; height:2px; background:var(--gold); margin:20px auto 0; border-radius:2px; }
-        .module-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; padding-bottom:60px; }
-        .module-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:32px 26px 26px; cursor:pointer; transition: var(--transition); border:1px solid var(--border); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px; box-shadow:var(--shadow-sm); position:relative; }
-        .module-card:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(0,0,0,0.06); border-color:var(--border-strong); }
-        .module-card.locked::after { content:'🔒'; position:absolute; top:12px; right:16px; font-size:1.2rem; opacity:0.6; }
-        .module-card-icon { font-size:1.8rem; color:var(--gold); }
-        .module-card-title { font-family:var(--font-serif); font-size:1.3rem; font-weight:700; letter-spacing:0.04em; }
-        .module-card-desc { font-size:0.8rem; color:var(--ink-light); }
-        .module-card-arrow { align-self:flex-end; color:#ccc; }
-        .sub-header { display:flex; align-items:center; justify-content:space-between; padding:24px 0 16px; gap:12px; flex-wrap:wrap; position:sticky; top:3px; background:var(--bg); z-index:90; border-bottom:1px solid var(--border); }
-        .sub-title-area { display:flex; align-items:center; gap:12px; }
-        .sub-title { font-family:var(--font-serif); font-size:1.6rem; font-weight:700; }
-        .btn-back { display:inline-flex; align-items:center; gap:6px; background:#eae6dc; color:var(--ink-light); padding:7px 14px; border-radius:var(--radius-full); font-size:0.73rem; letter-spacing:0.06em; cursor:pointer; text-decoration:none; transition:var(--transition); white-space:nowrap; border:none; font-family:inherit; }
-        .btn-back:hover { background:#ddd8cc; color:var(--ink); }
-        .search-wrap { position:relative; display:flex; align-items:center; gap:8px; }
-        .sort-btn { width:38px; height:38px; border-radius:50%; background:var(--card-bg); border:1px solid var(--border); cursor:pointer; font-size:0.9rem; color:var(--ink-light); display:flex; align-items:center; justify-content:center; transition:var(--transition); }
-        .sort-btn:hover { color:var(--gold); border-color:var(--gold); }
-        .search-toggle { width:38px; height:38px; border-radius:50%; background:var(--card-bg); border:1px solid var(--border); cursor:pointer; font-size:1rem; color:var(--ink-light); display:flex; align-items:center; justify-content:center; transition:var(--transition); }
-        .search-toggle:hover { color:var(--gold); border-color:var(--gold); }
-        .search-input-wrap { position:absolute; right:0; top:50%; transform:translateY(-50%); width:0; overflow:hidden; transition:var(--transition); background:var(--card-bg); border-radius:var(--radius-full); display:flex; align-items:center; }
-        .search-input-wrap.open { width:240px; border:1px solid var(--border-strong); box-shadow:var(--shadow-md); }
-        .search-input-wrap input { width:100%; padding:9px 38px 9px 16px; border:none; background:transparent; font-size:0.82rem; font-family:inherit; outline:none; }
-        .search-input-wrap .search-close { position:absolute; right:6px; cursor:pointer; color:#aaa; padding:6px; }
-        .angle-bar, .cat-tabs { display:flex; gap:8px; padding:16px 0; flex-wrap:wrap; }
-        .angle-pill, .cat-tab { padding:7px 18px; border-radius:var(--radius-full); background:var(--card-bg); border:1.5px solid var(--border); cursor:pointer; font-size:0.8rem; transition:var(--transition); color:var(--ink-light); }
-        .angle-pill.active, .cat-tab.active { background:var(--ink); color:#fff; border-color:var(--ink); font-weight:500; }
-        .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; padding:10px 0 50px; }
-        .copy-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:28px 24px; transition:var(--transition); border:1px solid var(--border); display:flex; flex-direction:column; gap:16px; box-shadow:var(--shadow-sm); }
-        .copy-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.08); }
-        .copy-text { font-size:0.92rem; font-weight:300; line-height:1.9; white-space:pre-wrap; max-height: 11.4em; overflow: hidden; position: relative; text-indent: 0 !important; padding-left: 0 !important; }
-        .copy-text.expanded { max-height: none; }
-        .copy-text .expand-btn { color:var(--gold); cursor:pointer; font-size:0.8rem; margin-top:4px; display:inline-block; }
-        .card-meta { display:flex; justify-content:space-between; align-items:center; font-size:0.7rem; color:#aaa; }
-        .copy-btn { cursor:pointer; color:#888; transition:var(--transition); padding:4px 8px; border-radius:6px; }
-        .copy-btn:hover { color:var(--gold); background:var(--gold-pale); }
-        .media-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; padding:10px 0 50px; }
-        .media-card { background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition); cursor: pointer; display: flex; flex-direction: column; }
-        .media-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
-        .media-card-image { width: 100%; height: 240px; background: #f0ede5; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: pointer; }
-        .media-card-image img { width: 100%; height: 100%; object-fit: cover; }
-        .media-card-image iframe { width: 100%; height: 100%; border: 0; }
-        .media-card-body { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .media-card-body h3 { font-size: 1.15rem; font-weight: 700; color: var(--ink); }
-        .media-card-body .desc { font-size: 0.85rem; color: var(--ink-light); line-height: 1.7; white-space: pre-wrap; }
-        .media-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.7rem; color: #999; }
-        .media-card-footer .category-badge { background: var(--gold-pale); color: var(--gold); padding: 2px 10px; border-radius: 20px; font-size: 0.65rem; }
-        .admin-float { position:fixed; bottom:28px; right:28px; width:56px; height:56px; background:var(--ink); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:998; box-shadow:0 8px 28px rgba(0,0,0,0.25); font-size:1.3rem; transition:0.2s; text-decoration:none; }
-        .admin-float:hover { background:#2b2b2b; }
-        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(14px); background:var(--ink); color:#fff; padding:10px 24px; border-radius:var(--radius-full); font-size:0.8rem; letter-spacing:0.06em; opacity:0; transition:0.3s; pointer-events:none; z-index:999; }
-        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-        .lightbox { position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:0.3s; }
-        .lightbox.open { opacity:1; pointer-events:auto; }
-        .lightbox img, .lightbox video { max-width:90%; max-height:85vh; border-radius:12px; }
-        .lightbox .close-lightbox { position:absolute; top:20px; right:30px; color:#fff; font-size:2rem; cursor:pointer; }
-        .detail-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:1500; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:0.3s; }
-        .detail-modal-overlay.open { opacity:1; pointer-events:auto; }
-        .detail-modal { background:#fff; border-radius:var(--radius-lg); padding:32px 28px; max-width:600px; width:90%; max-height:85vh; overflow-y:auto; position:relative; }
-        .detail-modal .close-btn { position:absolute; top:16px; right:16px; font-size:1.2rem; cursor:pointer; }
-        .empty-state { text-align:center; padding:60px 20px; color:#ccc; }
-        .unified-input { width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px; font-family:var(--font-sans); font-size:0.9rem; outline:none; margin:8px 0; background: #fdfdfb; transition: border-color 0.2s; }
-        .unified-input:focus { border-color: var(--gold); }
-        @media (max-width:680px) { .hero-title { font-size:2rem; } }
+        .hero { text-align:center; padding:60px 0 40px; }
+        .hero-title { font-family:'Noto Serif SC',serif; font-size:2.5rem; }
+        .module-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; padding-bottom:40px; }
+        .module-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:28px 20px; cursor:pointer; border:1px solid var(--border); box-shadow:var(--shadow-sm); position:relative; }
+        .module-card:hover { transform:translateY(-2px); }
+        .module-card.locked::after { content:'🔒'; position:absolute; top:8px; right:12px; font-size:1rem; }
+        .sub-header { display:flex; justify-content:space-between; padding:20px 0; border-bottom:1px solid var(--border); }
+        .angle-bar,.cat-tabs { display:flex; gap:8px; padding:16px 0; }
+        .angle-pill,.cat-tab { padding:6px 16px; border-radius:20px; background:var(--card-bg); border:1px solid var(--border); cursor:pointer; font-size:0.8rem; }
+        .angle-pill.active,.cat-tab.active { background:var(--ink); color:#fff; }
+        .card-grid,.media-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; padding:20px 0; }
+        .copy-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:20px; border:1px solid var(--border); }
+        .copy-text { font-size:0.9rem; line-height:1.8; white-space:pre-wrap; max-height:10em; overflow:hidden; }
+        .copy-text.expanded { max-height:none; }
+        .media-card { background:var(--card-bg); border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--border); cursor:pointer; }
+        .media-card-image { height:200px; background:#f0ede5; display:flex; align-items:center; justify-content:center; }
+        .media-card-image img { width:100%; height:100%; object-fit:cover; }
+        .media-card-body { padding:16px; }
+        .copy-btn { cursor:pointer; color:#888; }
+        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:8px 20px; border-radius:20px; font-size:0.8rem; opacity:0; z-index:999; }
+        .toast.show { opacity:1; }
+        .empty-state { text-align:center; color:#ccc; padding:40px; }
     </style>
 </head>
 <body>
-    <div id="homeView"><div class="container"><header class="hero"><div class="hero-tag">YISHI QIANYUAN</div><h1 class="hero-title">易饰乾园素材库</h1><p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p><div class="hero-line"></div></header><nav class="module-grid" id="moduleGrid"></nav></div></div>
-    <div id="subView" style="display:none;"><div class="container"><div class="sub-header"><div class="sub-title-area"><button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> 返回首页</button><h2 class="sub-title" id="subTitle">朋友圈</h2></div><div class="search-wrap"><button class="sort-btn" id="sortBtn" onclick="toggleSortOrder()" title="切换排序">↓</button><button class="search-toggle" onclick="toggleSearch()"><i class="fa-solid fa-magnifying-glass"></i></button><div class="search-input-wrap" id="searchInputWrap"><input type="text" id="searchInput" placeholder="搜索内容…" oninput="doSearch()"><span class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></span></div></div></div><div class="angle-bar" id="angleBar"></div><div class="cat-tabs" id="catTabs"></div><div class="card-grid" id="cardGrid"></div><div class="media-card-grid" id="mediaCardGrid"></div><div class="empty-state" id="emptyState">暂无内容</div></div></div>
-    <a href="admin.html" class="admin-float" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
-    <div class="lightbox" id="lightbox" onclick="closeLightbox()"><span class="close-lightbox" onclick="closeLightbox()">&times;</span><div id="lightboxContent"></div></div>
-    <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)"><div class="detail-modal" id="detailModal" onclick="event.stopPropagation()"><span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span><div id="detailContent"></div></div></div>
+    <div id="homeView"><div class="container"><header class="hero"><h1 class="hero-title">易饰乾园素材库</h1></header>
+        <nav class="module-grid" id="moduleGrid"></nav>
+    </div></div>
+    <div id="subView" style="display:none;"><div class="container">
+        <div class="sub-header"><button onclick="goHome()">← 返回</button><h2 id="subTitle"></h2><input type="text" id="searchInput" placeholder="搜索…" oninput="doSearch()"></div>
+        <div class="angle-bar" id="angleBar"></div>
+        <div class="cat-tabs" id="catTabs"></div>
+        <div class="card-grid" id="cardGrid"></div>
+        <div class="media-card-grid" id="mediaCardGrid"></div>
+        <div class="empty-state">暂无内容</div>
+    </div></div>
+    <a href="admin.html" style="position:fixed;bottom:20px;right:20px;width:48px;height:48px;background:var(--ink);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;">⚙</a>
     <div class="toast" id="toast"></div>
-    <div id="lockModal" class="modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:2500;">
-        <div class="modal-box" style="background:#fff;border-radius:24px;padding:32px;max-width:380px;width:90%;text-align:center;">
-            <h3>🔒 此模块已锁定</h3>
-            <input type="password" id="lockPwdInput" placeholder="请输入访问密码" class="unified-input" onkeydown="if(event.key==='Enter')verifyLockPwd()">
-            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn" onclick="verifyLockPwd()">解锁</button><button class="btn-outline" onclick="showForgotLockPwd()">忘记密码？</button><button class="btn-outline" onclick="closeLockModal()">取消</button></div>
-            <p id="lockError" style="color:#c33;font-size:0.8rem;margin-top:8px;"></p>
-        </div>
-    </div>
 
     <script>
         (function() {
-            const JSONBIN_BIN_ID = '6a02eef4250b1311c33a8e0d';
-            const JSONBIN_API_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
-            const USE_CLOUD = true;
-            const DATA_KEY = 'ysqy_data_v3';
+            // ========== OSS 数据源 ==========
+            const DATA_URL = 'https://qiyue111.oss-cn-beijing.aliyuncs.com/ysqysck/ysqy_data.json';
+
+            const CACHE_KEY = 'ysqy_data_cache';
+            const VERSION_KEY = 'ysqy_data_version';
+            const DEFAULT_ANGLES = ['数字冲击','对话还原','情绪唤醒','场景反差','旁观者视角','预言式','时间轴','选择题','内幕揭秘','反常识','学员故事','身体感知','追问式','画面描写'];
             const LOCK_PWD_KEY = 'ysqy_module_pwd';
             const DEFAULT_LOCK_PWD = 'zheshimima';
             const RESET_CODE = 'ysqy_reset';
             let pendingLockedModule = null;
             let sortOrder = 'desc';
-            const preloadCache = {};
-
-            // GitHub 仓库信息（用于将相对路径转为 raw 直链）
-            const GITHUB_USER = 'willllll12138';
-            const GITHUB_REPO = 'ysqy-cms';
-            const GITHUB_BRANCH = 'main';
-
-            function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
-
-            // 缩略图生成：相对路径 → raw 直链 → 缩略图服务
-            function getThumbUrl(originalUrl) {
-                if (!originalUrl) return '';
-                let rawUrl = originalUrl;
-                // 如果已是绝对链接，直接使用
-                if (/^https?:\/\//i.test(originalUrl)) {
-                    rawUrl = originalUrl;
-                } else {
-                    // 相对路径 → raw.githubusercontent.com 直链
-                    const cleanPath = originalUrl.replace(/^\/+/, '');
-                    rawUrl = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${cleanPath}`;
-                }
-                return `https://images.weserv.nl/?url=${encodeURIComponent(rawUrl)}&w=400`;
-            }
-
-            // 预加载原图（用于灯箱）
-            window.preloadImage = function(url) {
-                if (!url || preloadCache[url]) return;
-                preloadCache[url] = true;
-                const img = new Image();
-                img.src = url;
-            };
 
             let db = { modules: [], angles: [], contents: [], _modules: [] };
 
-            async function loadData() {
-                let raw;
-                if (USE_CLOUD) {
-                    try {
-                        const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, { headers: { 'X-Master-Key': JSONBIN_API_KEY } });
-                        if (res.ok) { const json = await res.json(); raw = json.record; } else raw = null;
-                    } catch(e) { raw = null; }
-                }
-                if (!raw) raw = JSON.parse(localStorage.getItem(DATA_KEY) || 'null');
-                processData(raw || {});
+            function getLocalVersion() { return parseInt(localStorage.getItem(VERSION_KEY) || '0'); }
+            function getLocalCache() { const cache = localStorage.getItem(CACHE_KEY); if(cache) { try { return JSON.parse(cache); } catch(e) {} } return null; }
+            function setLocalCache(data) { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); }
+            function setLocalVersion(ver) { localStorage.setItem(VERSION_KEY, ver.toString()); }
+
+            async function loadRemoteData() {
+                const res = await fetch(DATA_URL, { cache: 'no-cache' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return await res.json();
             }
 
-            function processData(data) {
-                const _modules = data.modules || [];
-                const moduleNames = _modules.filter(m => m && m.id && m.name).map(m => m.name);
-                const pyqModule = _modules.find(m => m.id === 'pyq') || {};
-                const angles = pyqModule.categories || ['数字冲击','对话还原','情绪唤醒'];
-                const contents = (data.contents || []).map(c => {
-                    if (!c.module) { const mod = _modules.find(m => m.id === c.moduleId); c.module = mod ? mod.name : ''; }
-                    return c;
-                });
-                db = { modules: moduleNames.length ? moduleNames : ['朋友圈','客户见证','课程卖点'], angles, contents, _modules };
-                localStorage.setItem(DATA_KEY, JSON.stringify({ modules: _modules, contents }));
+            function normalizeData(data) {
+                if (!data || !data.modules) return createDefaultData();
+                const _modules = data.modules;
+                let modules = [];
+                if (_modules.length && typeof _modules[0] === 'object') modules = _modules.filter(m => m && m.id && m.name).map(m => m.name);
+                else if (_modules.length && typeof _modules[0] === 'string') modules = _modules.filter(m => typeof m === 'string');
+                if (modules.length === 0) modules = ['朋友圈','客户见证','课程卖点'];
+                const angles = data.angles || DEFAULT_ANGLES;
+                const contents = (data.contents || []).map(c => { if (!c.module) { const mod = _modules.find(m => m.id === c.moduleId); c.module = mod ? mod.name : ''; } return c; });
+                return { modules, angles, contents, _modules };
+            }
+
+            function createDefaultData() {
+                return { modules: ['朋友圈','客户见证','课程卖点'], angles: DEFAULT_ANGLES, contents: [], _modules: [
+                    { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原','情绪唤醒'], locked: false },
+                    { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙','成交'], locked: false },
+                    { id:'course', name:'课程卖点', type:'course', categories:['核心价值','课程亮点'], locked: false }
+                ]};
             }
 
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
 
-            function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1500); }
-            window.handleCopy = function(btn) {
-                const text = btn.getAttribute('data-copy');
-                if (!text) return;
-                navigator.clipboard.writeText(text).then(() => toast('已复制 ✓')).catch(() => {
-                    const textarea = document.createElement('textarea'); textarea.value = text; document.body.appendChild(textarea); textarea.select(); document.execCommand('copy'); document.body.removeChild(textarea); toast('已复制 ✓');
-                });
-            };
+            function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1500); }
+            window.handleCopy = function(btn) { const text=btn.getAttribute('data-copy'); if(!text)return; navigator.clipboard.writeText(text).then(()=>toast('已复制 ✓')); };
 
             function renderHome() {
                 const grid = document.getElementById('moduleGrid');
@@ -204,7 +115,7 @@
                 grid.innerHTML = db.modules.map(m => {
                     const mod = db._modules.find(md => md.name === m);
                     const locked = mod?.locked || false;
-                    return `<div class="module-card ${locked ? 'locked' : ''}" onclick="${locked ? `showLockModal('${m}')` : `openModule('${m}')`}"><div class="module-card-icon"><i class="fa-solid ${icons[m] || 'fa-folder'}"></i></div><div class="module-card-title">${m}</div><div class="module-card-desc">点击查看内容</div><div class="module-card-arrow"><i class="fa-solid fa-arrow-right"></i></div></div>`;
+                    return `<div class="module-card ${locked ? 'locked' : ''}" onclick="${locked ? `showLockModal('${m}')` : `openModule('${m}')`}"><div class="module-card-icon"><i class="fa-solid ${icons[m] || 'fa-folder'}"></i></div><div class="module-card-title">${m}</div></div>`;
                 }).join('');
             }
 
@@ -217,7 +128,7 @@
             };
             window.closeLockModal = function() { document.getElementById('lockModal').style.display = 'none'; pendingLockedModule = null; };
             window.verifyLockPwd = function() {
-                if (document.getElementById('lockPwdInput').value === getLockPwd()) {
+                if (document.getElementById('lockPwdInput').value === (localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD)) {
                     const target = pendingLockedModule;
                     closeLockModal();
                     if (target) openModule(target);
@@ -225,14 +136,14 @@
             };
             window.showForgotLockPwd = function() {
                 const code = prompt('请输入重置暗号');
-                if (code === RESET_CODE) { localStorage.removeItem(LOCK_PWD_KEY); toast('模块密码已重置为默认密码'); closeLockModal(); }
+                if (code === RESET_CODE) { localStorage.removeItem(LOCK_PWD_KEY); toast('密码已重置为默认密码'); closeLockModal(); }
                 else if (code !== null) alert('暗号错误');
             };
 
-            window.openModule = function(m) { currentModule = m; currentAngle = '全部'; currentCategory = '全部'; searchQuery = ''; document.getElementById('searchInput').value=''; document.getElementById('homeView').style.display='none'; document.getElementById('subView').style.display='block'; document.getElementById('subTitle').textContent=m; renderSubPage(); };
+            window.openModule = function(m) { currentModule=m; currentAngle='全部'; currentCategory='全部'; searchQuery=''; document.getElementById('homeView').style.display='none'; document.getElementById('subView').style.display='block'; document.getElementById('subTitle').textContent=m; renderSubPage(); };
             window.goHome = function() { document.getElementById('subView').style.display='none'; document.getElementById('homeView').style.display='block'; };
 
-            window.toggleSortOrder = function() { sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'; document.getElementById('sortBtn').textContent = sortOrder === 'desc' ? '↓' : '↑'; renderSubPage(); };
+            window.toggleSortOrder = function() { sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'; renderSubPage(); };
 
             function renderSubPage() {
                 if (!currentModule) return;
@@ -252,10 +163,7 @@
                     items = sortContents(items);
                     renderMoments(items);
                 } else {
-                    if (cats.length > 0) {
-                        document.getElementById('catTabs').style.display='flex';
-                        document.getElementById('catTabs').innerHTML = ['全部', ...cats].map(c => `<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join('');
-                    }
+                    if (cats.length > 0) { document.getElementById('catTabs').style.display='flex'; document.getElementById('catTabs').innerHTML = ['全部', ...cats].map(c => `<span class="cat-tab ${currentCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</span>`).join(''); }
                     document.getElementById('mediaCardGrid').style.display='grid';
                     let items = db.contents.filter(c => c.module === currentModule);
                     if (currentCategory !== '全部') items = items.filter(c => c.category === currentCategory);
@@ -266,7 +174,6 @@
             }
 
             function sortContents(items) { return items.sort((a,b) => { const tA = a.time || a.id || 0, tB = b.time || b.id || 0; return sortOrder === 'desc' ? tB - tA : tA - tB; }); }
-
             function renderMoments(items) {
                 const grid = document.getElementById('cardGrid');
                 if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
@@ -277,7 +184,6 @@
                     return `<div class="copy-card"><div class="copy-text ${truncated?'':'expanded'}">${display}</div><div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" data-copy="${text.replace(/"/g,'&quot;')}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
                 }).join('');
             }
-
             function renderMediaCards(items) {
                 const grid = document.getElementById('mediaCardGrid');
                 if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
@@ -287,53 +193,37 @@
                     const images = (item.imageUrl||'').split(',').map(u=>u.trim()).filter(u=>u);
                     const jumpLink = item.jumpUrl || '';
                     const clickAction = jumpLink ? `window.open('${jumpLink}', '_blank')` : `openLightbox('${images[0]||''}','')`;
-
-                    if (images.length) {
-                        images.forEach(img => {
-                            const thumbUrl = getThumbUrl(img);
-                            const originalImg = img;
-                            // 缩略图加载失败时回退显示原图（通过 onerror）
-                            const imgTag = `<img src="${thumbUrl}" loading="lazy" onerror="if(this.src!=='${originalImg}'){this.src='${originalImg}';}">`;
-                            html += `<div class="media-card">
-                                <div class="media-card-image" onclick="event.stopPropagation();${clickAction}" ${!jumpLink ? `onmouseenter="preloadImage('${originalImg.replace(/'/g, "\\'")}')"` : ''}>
-                                    ${imgTag}
-                                </div>
-                                <div class="media-card-body">
-                                    <h3>${item.title||''}</h3>
-                                    <div class="desc">${item.description||item.text||''}</div>
-                                    <div class="media-card-footer">
-                                        ${item.category ? `<span class="category-badge">${item.category}</span>` : ''}
-                                        <span>${item.date||''} ${item.clientName ? '· '+item.clientName : ''}</span>
-                                    </div>
-                                    <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span>
-                                </div>
-                            </div>`;
-                        });
-                    } else {
-                        html += `<div class="media-card"><div class="media-card-image" onclick="event.stopPropagation();${jumpLink ? `window.open('${jumpLink}', '_blank')` : ''}"><i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i></div><div class="media-card-body"><h3>${item.title||''}</h3><div class="desc">${item.description||item.text||''}</div><div class="media-card-footer"><span>${item.date||''}</span></div></div></div>`;
-                    }
+                    if (images.length) images.forEach(img => { html += `<div class="media-card"><div class="media-card-image" onclick="event.stopPropagation();${clickAction}"><img src="${img}" loading="lazy"></div><div class="media-card-body"><h3>${item.title||''}</h3><div class="desc">${item.description||''}</div><span>${item.date||''}</span></div></div>`; });
+                    else html += `<div class="media-card"><div class="media-card-image" onclick="event.stopPropagation();${jumpLink ? `window.open('${jumpLink}', '_blank')` : ''}"><i class="fa-solid fa-image"></i></div><div class="media-card-body"><h3>${item.title||''}</h3><div class="desc">${item.description||''}</div><span>${item.date||''}</span></div></div>`;
                 });
                 grid.innerHTML = html;
             }
 
-            window.setAngle = function(a) { currentAngle = a; renderSubPage(); };
-            window.setCategory = function(c) { currentCategory = c; renderSubPage(); };
-            window.toggleSearch = function() { const wrap=document.getElementById('searchInputWrap'); if(wrap.classList.contains('open')){closeSearch();}else{wrap.classList.add('open');setTimeout(()=>document.getElementById('searchInput').focus(),200);} };
-            window.closeSearch = function() { document.getElementById('searchInputWrap').classList.remove('open'); document.getElementById('searchInput').value=''; searchQuery=''; renderSubPage(); };
-            window.doSearch = function() { searchQuery = document.getElementById('searchInput').value.trim(); renderSubPage(); };
-            window.openLightbox = function(img, video) {
-                const lb = document.getElementById('lightbox');
-                if (video) { document.getElementById('lightboxContent').innerHTML = `<iframe src="${video}" allowfullscreen style="width:80vw;height:60vh;"></iframe>`; }
-                else if (img) { document.getElementById('lightboxContent').innerHTML = `<img src="${img}" onerror="this.parentElement.innerHTML='<p style=color:#fff>图片加载失败</p>'">`; }
-                else return;
-                lb.classList.add('open');
-            };
-            window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
+            window.setAngle = function(a) { currentAngle=a; renderSubPage(); };
+            window.setCategory = function(c) { currentCategory=c; renderSubPage(); };
+            window.doSearch = function() { searchQuery=document.getElementById('searchInput').value.trim(); renderSubPage(); };
 
-            window.addEventListener('storage', (e) => { if (e.key === DATA_KEY && e.newValue) location.reload(); });
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetail(); closeLightbox(); } });
+            async function loadData() {
+                const localCache = getLocalCache();
+                if (localCache) { db = localCache; renderHome(); }
+                try {
+                    const remoteData = await loadRemoteData();
+                    const remoteVersion = remoteData.version || 0;
+                    const localVersion = getLocalVersion();
+                    if (remoteVersion > localVersion || !localCache) {
+                        db = normalizeData(remoteData);
+                        setLocalCache(db);
+                        setLocalVersion(remoteVersion);
+                        renderHome();
+                        if (currentModule) renderSubPage();
+                    }
+                } catch (e) {
+                    console.error('OSS 加载失败:', e);
+                    if (!localCache) { db = createDefaultData(); renderHome(); }
+                }
+            }
 
-            loadData().then(() => renderHome());
+            loadData();
         })();
     </script>
 </body>
