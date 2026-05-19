@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>易饰乾园 · 后台管理</title>
@@ -25,15 +22,16 @@
         .login-card h1{font-family:'Noto Serif SC',serif;font-size:1.8rem;margin-bottom:12px;}
         .login-card .sub{font-size:0.8rem;color:var(--ink-light);margin-bottom:24px;}
         .login-card input{width:100%;padding:14px 18px;border:1.5px solid var(--border);border-radius:var(--radius-full);text-align:center;font-size:1rem;outline:none;margin-bottom:16px;background:var(--bg);}
-        .btn{background:var(--ink);color:#fff;border:none;padding:12px 24px;border-radius:var(--radius-full);cursor:pointer;font-weight:500;font-family:inherit;}
+        .btn{background:var(--ink);color:#fff;border:none;padding:12px 24px;border-radius:var(--radius-full);cursor:pointer;font-weight:500;font-family:inherit;transition:0.2s;}
+        .btn:hover{background:#2b2b2b;}
         .btn-full{width:100%;}
-        .btn-outline{background:transparent;color:var(--ink);border:1.5px solid #ccc;padding:10px 20px;border-radius:var(--radius-full);cursor:pointer;font-weight:600;font-size:0.8rem;display:inline-flex;align-items:center;gap:6px;text-decoration:none;margin:0 4px;}
-        .btn-outline:hover{background:#f5f5f5;}
+        .btn-outline{background:transparent;color:var(--ink);border:1.5px solid #ccc;padding:10px 20px;border-radius:var(--radius-full);cursor:pointer;font-weight:600;font-size:0.8rem;display:inline-flex;align-items:center;gap:6px;text-decoration:none;margin:0 4px;transition:0.2s;}
+        .btn-outline:hover{background:#f5f5f5;border-color:#aaa;}
         .login-links{margin-top:16px;display:flex;justify-content:center;gap:20px;}
         .login-links a{color:var(--ink-light);font-size:0.8rem;text-decoration:none;cursor:pointer;}
         .login-links a:hover{color:var(--gold);}
         .admin-header{display:flex;justify-content:space-between;align-items:center;padding:32px 0 24px;flex-wrap:wrap;gap:12px;}
-        .header-actions{display:flex;align-items:center;gap:8px;}
+        .header-actions{display:flex;align-items:center;gap:10px;}
         .panel-grid{display:grid;grid-template-columns:240px 1fr;gap:20px;}
         .module-sidebar{background:var(--card-bg);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);}
         .module-item{display:flex;justify-content:space-between;padding:12px;border-radius:var(--radius-md);cursor:pointer;font-size:0.9rem;}
@@ -47,12 +45,12 @@
         .admin-card{background:#fff;border-radius:var(--radius-lg);padding:18px;border:1px solid var(--border);}
         .admin-card .preview-title{font-weight:600;margin-bottom:6px;}
         .admin-card .preview-text{font-size:0.85rem;color:#555;min-height:6em;max-height:10em;overflow-y:auto;white-space:pre-wrap;}
-        .admin-card .card-image { width:100%; height:120px; background:#f0ede5; border-radius:12px; display:flex; align-items:center; justify-content:center; overflow:hidden; margin-bottom:8px; }
-        .admin-card .card-image img { width:100%; height:100%; object-fit:cover; }
+        .admin-card .card-image{width:100%;height:120px;background:#f0ede5;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:8px;}
+        .admin-card .card-image img{width:100%;height:100%;object-fit:cover;}
         .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000;}
         .modal-box{background:#fff;border-radius:var(--radius-lg);padding:32px;max-width:500px;width:90%;}
-        .unified-input { width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px; font-family:'Noto Sans SC',sans-serif; font-size:0.9rem; outline:none; margin:8px 0; background: #fdfdfb; transition: border-color 0.2s; }
-        .unified-input:focus { border-color: var(--gold); }
+        .unified-input{width:100%;padding:12px 18px;border:1.5px solid #ddd;border-radius:30px;font-family:'Noto Sans SC',sans-serif;font-size:0.9rem;outline:none;margin:8px 0;background:#fdfdfb;transition:border-color 0.2s;}
+        .unified-input:focus{border-color:var(--gold);}
         .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 24px;border-radius:30px;font-size:0.8rem;opacity:0;transition:0.3s;z-index:3000;}
         .toast.show{opacity:1;}
     </style>
@@ -65,10 +63,7 @@
         <p class="sub">文案资产管理系统</p>
         <input type="password" id="pwdInput" placeholder="请输入管理密码" class="unified-input" style="text-align:center;margin-bottom:16px;" onkeydown="if(event.key==='Enter')login()">
         <button class="btn btn-full" onclick="login()">进入后台</button>
-        <div class="login-links">
-            <a onclick="showChangePwdModal()">修改密码</a>
-            <a onclick="showForgotPwdModal()">忘记密码？</a>
-        </div>
+        <div class="login-links"><a onclick="showChangePwdModal()">修改密码</a><a onclick="showForgotPwdModal()">忘记密码？</a></div>
         <a href="index.html" class="btn-outline" style="margin-top:16px;display:inline-flex;justify-content:center;">← 返回前台</a>
     </div>
 </div>
@@ -81,6 +76,7 @@
                 <a href="index.html" class="btn-outline">← 前台</a>
                 <button class="btn-outline" onclick="exportData()">📤 导出</button>
                 <label class="btn-outline" style="cursor:pointer;">📥 导入<input type="file" hidden onchange="importData(this)"></label>
+                <button class="btn" id="saveBtn" onclick="commitChanges()">💾 保存更改</button>
             </div>
         </div>
         <div class="panel-grid">
@@ -97,16 +93,23 @@
 
 <script>
 (function() {
-    const JSONBIN_BIN_ID = '6a02eef4250b1311c33a8e0d';
-    const JSONBIN_API_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
-    const USE_CLOUD = true;
-    const DATA_KEY = 'ysqy_data_v3';
+    // ========== 配置 ==========
+    const DATA_URL = 'https://qiyue111.oss-cn-beijing.aliyuncs.com/ysqysck/ysqy_data.json';
+    const FC_SAVE_URL = 'https://xxxxxxxx.cn-beijing.fc.aliyuncs.com/...'; // ⚠️ 替换为您的 FC 地址
+    const ADMIN_PWD = 'ysqy798';
     const DEFAULT_PWD = 'ysqy798';
+    const RESET_CODE = 'ysqy_reset';
     const DEFAULT_MODULES = [
         { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原'], locked: false },
         { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙'], locked: false },
         { id:'course', name:'课程卖点', type:'course', categories:['核心价值'], locked: false }
     ];
+
+    let siteData = null;
+    let hasChanges = false;
+
+    function markChanged() { hasChanges = true; document.getElementById('saveBtn').classList.add('has-changes'); }
+    function clearChanged() { hasChanges = false; document.getElementById('saveBtn').classList.remove('has-changes'); }
 
     function cleanModules(data) {
         if (!data || !data.modules || !Array.isArray(data.modules)) {
@@ -120,23 +123,33 @@
         return data;
     }
 
-    let db = null;
     async function loadData() {
-        if (USE_CLOUD) {
-            try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, { headers: { 'X-Master-Key': JSONBIN_API_KEY } });
-                if (res.ok) { const json = await res.json(); db = cleanModules(json.record); localStorage.setItem(DATA_KEY, JSON.stringify(db)); return; }
-            } catch(e) { console.warn('云端加载失败'); }
+        try {
+            const res = await fetch(DATA_URL, { cache: 'no-cache' });
+            if (res.ok) { siteData = cleanModules(await res.json()); }
+            else { siteData = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] }; }
+        } catch(e) {
+            siteData = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
         }
-        let raw = localStorage.getItem(DATA_KEY);
-        try { db = raw ? JSON.parse(raw) : null; } catch(e) { db = null; }
-        db = cleanModules(db || {});
-        saveLocal();
+        clearChanged();
     }
 
-    function saveLocal() { localStorage.setItem(DATA_KEY, JSON.stringify(db)); }
-    async function saveCloud() { if (!USE_CLOUD) return; try { await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, { method:'PUT', headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_API_KEY}, body:JSON.stringify(db) }); } catch(e) {} }
-    function save() { saveLocal(); saveCloud(); }
+    async function commitChanges() {
+        if (!hasChanges) return toast('没有未保存的更改');
+        if (!siteData.version) siteData.version = 1;
+        else siteData.version++;
+        const payload = JSON.stringify(siteData);
+        try {
+            const res = await fetch(FC_SAVE_URL, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Admin-Password': ADMIN_PWD },
+                body: payload
+            });
+            if (res.ok) { clearChanged(); toast('✅ 已保存'); }
+            else toast('保存失败');
+        } catch(e) { toast('网络错误'); }
+    }
+
     function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
     function getPwd() { return localStorage.getItem('ysqy_admin_pwd') || DEFAULT_PWD; }
 
@@ -144,11 +157,7 @@
 
     window.showChangePwdModal = function() {
         const modal = document.createElement('div'); modal.className = 'modal';
-        modal.innerHTML = `<div class="modal-box"><h3>修改管理密码</h3>
-            <input type="password" id="oldPwdChg" placeholder="当前密码" class="unified-input">
-            <input type="password" id="newPwd1" placeholder="新密码" class="unified-input">
-            <input type="password" id="newPwd2" placeholder="确认新密码" class="unified-input">
-            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="confirmChangePwd">确认修改</button></div></div>`;
+        modal.innerHTML = `<div class="modal-box"><h3>修改管理密码</h3><input type="password" id="oldPwdChg" placeholder="当前密码" class="unified-input"><input type="password" id="newPwd1" placeholder="新密码" class="unified-input"><input type="password" id="newPwd2" placeholder="确认新密码" class="unified-input"><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="confirmChangePwd">确认修改</button></div></div>`;
         document.body.appendChild(modal);
         document.getElementById('confirmChangePwd').onclick = function() {
             const o = document.getElementById('oldPwdChg').value, n1 = document.getElementById('newPwd1').value, n2 = document.getElementById('newPwd2').value;
@@ -159,46 +168,40 @@
     };
     window.showForgotPwdModal = function() {
         const modal = document.createElement('div'); modal.className = 'modal';
-        modal.innerHTML = `<div class="modal-box"><h3>重置密码</h3>
-            <input type="text" id="forgotCode" placeholder="重置暗号" class="unified-input">
-            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="confirmResetPwd">重置密码</button></div></div>`;
+        modal.innerHTML = `<div class="modal-box"><h3>重置密码</h3><input type="text" id="forgotCode" placeholder="重置暗号" class="unified-input"><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="confirmResetPwd">重置密码</button></div></div>`;
         document.body.appendChild(modal);
-        document.getElementById('confirmResetPwd').onclick = function() { if (document.getElementById('forgotCode').value === 'ysqy_reset') { localStorage.removeItem('ysqy_admin_pwd'); modal.remove(); toast('密码已重置为默认密码'); } else toast('暗号错误'); };
+        document.getElementById('confirmResetPwd').onclick = function() { if (document.getElementById('forgotCode').value === RESET_CODE) { localStorage.removeItem('ysqy_admin_pwd'); modal.remove(); toast('密码已重置为默认密码'); } else toast('暗号错误'); };
         modal.onclick = e => { if (e.target === modal) modal.remove(); };
     };
 
     let currentModuleId = null;
     function renderSidebar() {
         const list = document.getElementById('moduleList');
-        list.innerHTML = db.modules.map(m => `<div class="module-item ${currentModuleId===m.id?'active':''}" onclick="selectModule('${m.id}')">
-            <span>${m.name || '(未命名)'}</span>
-            <div onclick="event.stopPropagation()">
-                <i class="fa-solid ${m.locked ? 'fa-lock' : 'fa-unlock'}" style="cursor:pointer; margin-right:4px;" onclick="toggleLock('${m.id}')" title="${m.locked ? '解锁' : '锁定'}"></i>
-                <i class="fa-solid fa-pen" onclick="renameModule('${m.id}')"></i>
-                <i class="fa-solid fa-trash" onclick="deleteModule('${m.id}')"></i>
-            </div>
-        </div>`).join('');
+        list.innerHTML = siteData.modules.map(m => `<div class="module-item ${currentModuleId===m.id?'active':''}" onclick="selectModule('${m.id}')"><span>${m.name || '(未命名)'}</span><div onclick="event.stopPropagation()"><i class="fa-solid ${m.locked ? 'fa-lock' : 'fa-unlock'}" style="cursor:pointer; margin-right:4px;" onclick="toggleLock('${m.id}')" title="${m.locked ? '解锁' : '锁定'}"></i><i class="fa-solid fa-pen" onclick="renameModule('${m.id}')"></i><i class="fa-solid fa-trash" onclick="deleteModule('${m.id}')"></i></div></div>`).join('');
         if (currentModuleId) renderContent();
     }
 
-    window.toggleLock = function(id) { const mod = db.modules.find(m => m.id === id); if (mod) { mod.locked = !mod.locked; save(); renderSidebar(); toast(mod.locked ? '模块已锁定' : '模块已解锁'); } };
+    window.toggleLock = function(id) { const mod = siteData.modules.find(m => m.id === id); if (mod) { mod.locked = !mod.locked; markChanged(); renderSidebar(); } };
     window.selectModule = function(id) { currentModuleId = id; renderSidebar(); };
 
     function renderContent() {
-        const mod = db.modules.find(m => m.id === currentModuleId);
+        const mod = siteData.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
-        // 按id降序排列内容
-        const contents = db.contents.filter(c => c.moduleId === currentModuleId).sort((a, b) => b.id - a.id);
+        const contents = siteData.contents.filter(c => c.moduleId === currentModuleId).sort((a,b) => b.id - a.id);
         let html = `<h3>${mod.name} (${mod.type})</h3>`;
         html += `<div class="tag-list">${(mod.categories||[]).map(c => `<span class="tag-item">${c} <i class="fa-solid fa-xmark" onclick="deleteCategory('${c}')"></i></span>`).join('')}</div>
         <input type="text" id="newCatInput" placeholder="新分类" class="unified-input"><button class="btn" onclick="addCategory()">添加</button>`;
 
         if (mod.type === 'moments') {
-            html += `<select id="pubAngle">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select><textarea id="pubText" placeholder="文案内容..."></textarea><button class="btn" onclick="publish()">发布</button>`;
+            html += `<select id="pubAngle">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select><textarea id="pubText" placeholder="文案内容..."></textarea><button class="btn" onclick="publish()">加入暂存</button>`;
         } else {
             html += `<select id="pubCategory">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select>
-            <input type="text" id="pubTitle" placeholder="标题（可选）" class="unified-input"><input type="text" id="pubImage" placeholder="图片URL（多图用英文逗号分隔）" class="unified-input"><input type="text" id="pubVideo" placeholder="视频URL" class="unified-input">
-            <textarea id="pubDesc" placeholder="描述（可选）"></textarea><input type="text" id="pubDate" placeholder="日期（可选）" class="unified-input"><button class="btn" onclick="publish()">保存</button>`;
+            <input type="text" id="pubTitle" placeholder="标题（可选）" class="unified-input">
+            <input type="text" id="pubImage" placeholder="图片URL（多图用英文逗号分隔）" class="unified-input">
+            <input type="text" id="pubJump" placeholder="跳转链接（可选）" class="unified-input">
+            <input type="text" id="pubVideo" placeholder="视频URL" class="unified-input">
+            <textarea id="pubDesc" placeholder="描述（可选）"></textarea>
+            <input type="text" id="pubDate" placeholder="日期（可选）" class="unified-input"><button class="btn" onclick="publish()">加入暂存</button>`;
         }
 
         html += `<h4>已发布内容</h4>`;
@@ -206,13 +209,10 @@
         else {
             html += `<div class="admin-card-grid">`;
             contents.forEach(c => {
-                const idx = db.contents.indexOf(c);
+                const idx = siteData.contents.indexOf(c);
                 const imageUrls = c.imageUrl ? c.imageUrl.split(',').map(u => u.trim()).filter(u => u) : [];
-                if (imageUrls.length === 0) {
-                    html += generateAdminCard(c, idx, null);
-                } else {
-                    imageUrls.forEach(imgUrl => { html += generateAdminCard(c, idx, imgUrl); });
-                }
+                if (imageUrls.length === 0) html += generateAdminCard(c, idx, null);
+                else imageUrls.forEach(img => html += generateAdminCard(c, idx, img));
             });
             html += `</div>`;
         }
@@ -234,7 +234,7 @@
     }
 
     window.publish = function() {
-        const mod = db.modules.find(m => m.id === currentModuleId);
+        const mod = siteData.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
         const item = { id: Date.now(), moduleId: currentModuleId };
         if (mod.type === 'moments') {
@@ -247,30 +247,34 @@
             item.title = document.getElementById('pubTitle').value.trim();
             item.description = document.getElementById('pubDesc').value.trim();
             item.imageUrl = document.getElementById('pubImage').value.trim();
+            item.jumpUrl = document.getElementById('pubJump').value.trim();
             item.videoUrl = document.getElementById('pubVideo').value.trim();
             item.date = document.getElementById('pubDate').value.trim();
         }
-        db.contents.unshift(item);
-        save(); renderContent(); toast('已发布');
+        siteData.contents.unshift(item);
+        markChanged();
+        renderContent();
+        toast('已暂存，点击右上角保存更改');
     };
 
     window.editContent = function(idx) {
-        const c = db.contents[idx];
-        const mod = db.modules.find(m => m.id === c.moduleId);
+        const c = siteData.contents[idx];
+        const mod = siteData.modules.find(m => m.id === c.moduleId);
         let form = '';
         if (mod.type === 'moments') {
-            form = `<select id="editAngle">${(mod.categories||[]).map(cat => `<option ${cat===c.angle?'selected':''}>${cat}</option>`).join('')}</select><textarea id="editText" style="min-height:150px;">${c.text}</textarea>`;
+            form = `<select id="editAngle">${(mod.categories||[]).map(cat => `<option ${cat===c.angle?'selected':''}>${cat}</option>`).join('')}</select><textarea id="editText">${c.text}</textarea>`;
         } else {
             form = `<select id="editCat">${(mod.categories||[]).map(cat => `<option ${cat===c.category?'selected':''}>${cat}</option>`).join('')}</select>
             <input type="text" id="editTitle" value="${c.title||''}" placeholder="标题（可选）" class="unified-input">
-            <input type="text" id="editImage" value="${c.imageUrl||''}" placeholder="图片URL（多图用逗号分隔）" class="unified-input">
+            <input type="text" id="editImage" value="${c.imageUrl||''}" placeholder="图片URL" class="unified-input">
+            <input type="text" id="editJump" value="${c.jumpUrl||''}" placeholder="跳转链接" class="unified-input">
             <input type="text" id="editVideo" value="${c.videoUrl||''}" placeholder="视频URL" class="unified-input">
-            <textarea id="editDesc" style="min-height:150px;">${c.description||''}</textarea>
+            <textarea id="editDesc">${c.description||''}</textarea>
             ${mod.type === 'testimonial' ? `<input type="text" id="editClient" value="${c.clientName||''}" placeholder="客户名称" class="unified-input">` : ''}
             <input type="text" id="editDate" value="${c.date||''}" placeholder="日期" class="unified-input">`;
         }
         const overlay = document.createElement('div'); overlay.className = 'modal';
-        overlay.innerHTML = `<div class="modal-box"><h3>编辑内容</h3>${form}<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="saveEditBtn">保存</button></div></div>`;
+        overlay.innerHTML = `<div class="modal-box"><h3>编辑内容</h3>${form}<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="saveEditBtn">确认修改（暂存）</button></div></div>`;
         document.body.appendChild(overlay);
         document.getElementById('saveEditBtn').onclick = function() {
             if (mod.type === 'moments') { c.angle = document.getElementById('editAngle').value; c.text = document.getElementById('editText').value.trim(); }
@@ -279,42 +283,45 @@
                 c.title = document.getElementById('editTitle').value.trim();
                 c.description = document.getElementById('editDesc').value.trim();
                 c.imageUrl = document.getElementById('editImage').value.trim();
+                c.jumpUrl = document.getElementById('editJump').value.trim();
                 c.videoUrl = document.getElementById('editVideo').value.trim();
                 c.date = document.getElementById('editDate').value.trim();
                 if (mod.type === 'testimonial') c.clientName = document.getElementById('editClient').value.trim();
             }
-            save(); renderContent(); overlay.remove(); toast('已更新');
+            markChanged();
+            renderContent();
+            overlay.remove();
+            toast('已暂存');
         };
         overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
     };
 
-    window.addCategory = function() { const val=document.getElementById('newCatInput').value.trim(); if(val){ const mod=db.modules.find(m=>m.id===currentModuleId); if(!mod.categories) mod.categories=[]; if(mod.categories.includes(val)) return toast('已存在'); mod.categories.push(val); save(); renderContent(); } };
-    window.deleteCategory = function(val) { const mod=db.modules.find(m=>m.id===currentModuleId); mod.categories = mod.categories.filter(c=>c!==val); save(); renderContent(); };
-    window.moveContent = function(idx, dir) { const newIdx = idx + dir; if (newIdx < 0 || newIdx >= db.contents.length) return; [db.contents[idx], db.contents[newIdx]] = [db.contents[newIdx], db.contents[idx]]; save(); renderContent(); };
-    window.deleteContent = function(idx) { if (confirm('确认删除？')) { db.contents.splice(idx, 1); save(); renderContent(); } };
+    window.addCategory = function() { const val=document.getElementById('newCatInput').value.trim(); if(val){ const mod=siteData.modules.find(m=>m.id===currentModuleId); if(!mod.categories) mod.categories=[]; if(mod.categories.includes(val)) return toast('已存在'); mod.categories.push(val); markChanged(); renderContent(); } };
+    window.deleteCategory = function(val) { const mod=siteData.modules.find(m=>m.id===currentModuleId); mod.categories = mod.categories.filter(c=>c!==val); markChanged(); renderContent(); };
+    window.moveContent = function(idx, dir) { const newIdx = idx + dir; if (newIdx < 0 || newIdx >= siteData.contents.length) return; [siteData.contents[idx], siteData.contents[newIdx]] = [siteData.contents[newIdx], siteData.contents[idx]]; markChanged(); renderContent(); };
+    window.deleteContent = function(idx) { if (confirm('确认删除？')) { siteData.contents.splice(idx, 1); markChanged(); renderContent(); } };
 
-    window.addModule = function() { const name = prompt('模块名称'); if (name) { const type = prompt('类型 (moments / testimonial / course)', 'moments') || 'moments'; db.modules.push({ id: 'mod_' + Date.now(), name, type, categories: [], locked: false }); save(); renderSidebar(); } };
-    window.renameModule = function(id) { const mod = db.modules.find(m => m.id === id); const newName = prompt('新名称', mod.name); if (newName) { mod.name = newName; save(); renderSidebar(); if (currentModuleId === id) renderContent(); } };
-    window.deleteModule = function(id) { if (confirm('删除模块将清空其所有内容')) { db.modules = db.modules.filter(m => m.id !== id); db.contents = db.contents.filter(c => c.moduleId !== id); if (currentModuleId === id) { currentModuleId = null; document.getElementById('contentPanel').innerHTML = '← 选择模块'; } save(); renderSidebar(); } };
+    window.addModule = function() { const name = prompt('模块名称'); if (name) { const type = prompt('类型 (moments / testimonial / course)', 'moments') || 'moments'; siteData.modules.push({ id: 'mod_' + Date.now(), name, type, categories: [], locked: false }); markChanged(); renderSidebar(); } };
+    window.renameModule = function(id) { const mod = siteData.modules.find(m => m.id === id); const newName = prompt('新名称', mod.name); if (newName) { mod.name = newName; markChanged(); renderSidebar(); if (currentModuleId === id) renderContent(); } };
+    window.deleteModule = function(id) { if (confirm('删除模块将清空其所有内容')) { siteData.modules = siteData.modules.filter(m => m.id !== id); siteData.contents = siteData.contents.filter(c => c.moduleId !== id); if (currentModuleId === id) { currentModuleId = null; document.getElementById('contentPanel').innerHTML = '← 选择模块'; } markChanged(); renderSidebar(); } };
 
-    window.exportData = function() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(db)], { type: 'application/json' })); a.download = 'backup.json'; a.click(); };
+    window.exportData = function() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(siteData)], { type: 'application/json' })); a.download = 'backup.json'; a.click(); };
     window.importData = function(input) {
         const file = input.files[0]; if (!file) return;
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
                 const data = JSON.parse(e.target.result);
-                if (data.modules && data.contents) {
-                    if (confirm('导入将覆盖当前数据，继续？')) {
-                        db = cleanModules(data);
-                        save(); currentModuleId = null; renderSidebar();
-                        document.getElementById('contentPanel').innerHTML = '← 选择模块'; toast('导入成功');
-                    }
-                } else toast('格式不正确');
+                if (data.modules && data.contents) { siteData = cleanModules(data); markChanged(); renderSidebar(); document.getElementById('contentPanel').innerHTML = '← 选择模块'; toast('导入成功，记得保存'); }
+                else toast('格式不正确');
             } catch (err) { toast('解析失败'); }
         };
         reader.readAsText(file); input.value = '';
     };
+
+    window.addEventListener('beforeunload', function(e) {
+        if (hasChanges) { e.preventDefault(); e.returnValue = '您有未保存的更改，确定离开吗？'; }
+    });
 
     loadData();
 })();
