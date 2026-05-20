@@ -93,10 +93,10 @@
 
 <script>
 (function() {
-    // ========== 配置 ==========
-    const DATA_URL = 'https://qiyue111.oss-cn-beijing.aliyuncs.com/ysqysck/ysqy_data.json';
-    const FC_SAVE_URL = 'https://xxxxxxxx.cn-beijing.fc.aliyuncs.com/...'; // ⚠️ 替换为您的 FC 地址
-    const ADMIN_PWD = 'ysqy798';
+    // ========== JSONBin 配置 ==========
+    const DATA_BIN_ID = '6a02eef4250b1311c33a8e0d';
+    const VERSION_BIN_ID = '6a082a01c0954111d82fd32b';
+    const MASTER_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
     const DEFAULT_PWD = 'ysqy798';
     const RESET_CODE = 'ysqy_reset';
     const DEFAULT_MODULES = [
@@ -125,9 +125,15 @@
 
     async function loadData() {
         try {
-            const res = await fetch(DATA_URL, { cache: 'no-cache' });
-            if (res.ok) { siteData = cleanModules(await res.json()); }
-            else { siteData = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] }; }
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}/latest`, {
+                headers: { 'X-Master-Key': MASTER_KEY }
+            });
+            if (res.ok) {
+                const json = await res.json();
+                siteData = cleanModules(json.record);
+            } else {
+                siteData = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
+            }
         } catch(e) {
             siteData = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
         }
@@ -138,16 +144,31 @@
         if (!hasChanges) return toast('没有未保存的更改');
         if (!siteData.version) siteData.version = 1;
         else siteData.version++;
-        const payload = JSON.stringify(siteData);
+        
         try {
-            const res = await fetch(FC_SAVE_URL, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'X-Admin-Password': ADMIN_PWD },
-                body: payload
-            });
-            if (res.ok) { clearChanged(); toast('✅ 已保存'); }
-            else toast('保存失败');
-        } catch(e) { toast('网络错误'); }
+            await Promise.all([
+                fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': MASTER_KEY
+                    },
+                    body: JSON.stringify(siteData)
+                }),
+                fetch(`https://api.jsonbin.io/v3/b/${VERSION_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': MASTER_KEY
+                    },
+                    body: JSON.stringify({ version: siteData.version })
+                })
+            ]);
+            clearChanged();
+            toast('✅ 所有更改已保存');
+        } catch(e) {
+            toast('保存失败，请重试');
+        }
     }
 
     function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
