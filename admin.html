@@ -149,7 +149,6 @@
             });
             if (resPut.ok) {
                 showDiagnostic(`✅ 读写权限正常。当前版本号：${record.version}`);
-                // 还原版本号
                 record.version = oldVersion;
                 await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}`, {
                     method: 'PUT',
@@ -184,6 +183,7 @@
             if (res.ok) {
                 const json = await res.json();
                 siteData = cleanModules(json.record);
+                document.getElementById('diagnosticPanel').style.display = 'none';
             } else {
                 siteData = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
                 showDiagnostic(`⚠️ 加载数据失败：HTTP ${res.status}`);
@@ -193,11 +193,9 @@
             showDiagnostic(`❌ 网络错误，无法加载数据：${e.message}`);
         }
         clearChanged();
-        // 清除之前的诊断信息（如果有）
-        setTimeout(() => { document.getElementById('diagnosticPanel').style.display = 'none'; }, 5000);
     }
 
-    async function commitChanges() {
+    window.commitChanges = async function() {
         if (!hasChanges) {
             alert('没有未保存的更改');
             return;
@@ -215,7 +213,6 @@
             if (res.ok) {
                 clearChanged();
                 alert('✅ 保存成功！');
-                // 尝试更新版本 Bin（忽略错误）
                 fetch(`https://api.jsonbin.io/v3/b/6a082a01c0954111d82fd32b`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
@@ -227,7 +224,7 @@
         } catch (e) {
             alert(`❌ 网络错误：${e.message}`);
         }
-    }
+    };
 
     function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
     function getPwd() { return localStorage.getItem('ysqy_admin_pwd') || DEFAULT_PWD; }
