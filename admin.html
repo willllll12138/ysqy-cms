@@ -93,10 +93,9 @@
 
 <script>
 (function() {
-    // ========== JSONBin 配置 ==========
     const DATA_BIN_ID = '6a02eef4250b1311c33a8e0d';
     const VERSION_BIN_ID = '6a082a01c0954111d82fd32b';
-    const MASTER_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
+    const MASTER_KEY = '您的MasterKey';   // ⚠️ 必须替换为 Master Key
     const DEFAULT_PWD = 'ysqy798';
     const RESET_CODE = 'ysqy_reset';
     const DEFAULT_MODULES = [
@@ -108,8 +107,16 @@
     let siteData = null;
     let hasChanges = false;
 
-    function markChanged() { hasChanges = true; document.getElementById('saveBtn').classList.add('has-changes'); }
-    function clearChanged() { hasChanges = false; document.getElementById('saveBtn').classList.remove('has-changes'); }
+    function markChanged() { 
+        hasChanges = true; 
+        const btn = document.getElementById('saveBtn');
+        if (btn) btn.style.background = '#c0392b'; 
+    }
+    function clearChanged() { 
+        hasChanges = false; 
+        const btn = document.getElementById('saveBtn');
+        if (btn) btn.style.background = ''; 
+    }
 
     function cleanModules(data) {
         if (!data || !data.modules || !Array.isArray(data.modules)) {
@@ -146,7 +153,6 @@
         else siteData.version++;
 
         try {
-            // 保存主数据
             const res = await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}`, {
                 method: 'PUT',
                 headers: {
@@ -160,7 +166,6 @@
                 clearChanged();
                 toast('✅ 保存成功！版本已更新');
                 
-                // 更新版本 Bin（使用同一个 version）
                 fetch(`https://api.jsonbin.io/v3/b/${VERSION_BIN_ID}`, {
                     method: 'PUT',
                     headers: {
