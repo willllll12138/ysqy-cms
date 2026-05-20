@@ -208,21 +208,32 @@
 
             function normalizeData(data) {
                 if (!data || !data.modules) return createDefaultData();
-                const _modules = data.modules;
-                let moduleNames = [];
-                if (_modules.length && typeof _modules[0] === 'object') {
-                    moduleNames = _modules.filter(m => m && m.id && m.name).map(m => m.name);
-                } else if (_modules.length && typeof _modules[0] === 'string') {
-                    moduleNames = _modules.filter(m => typeof m === 'string');
-                }
+
+                const _modules = Array.isArray(data.modules) ? data.modules : [];
+                let moduleNames = _modules.filter(m => m && m.name).map(m => m.name);
+
                 if (moduleNames.length === 0) moduleNames = ['朋友圈','客户见证','课程卖点'];
-                const pyqModule = _modules.find(m => m.id === 'pyq') || {};
-                const angles = pyqModule.categories || ['数字冲击','对话还原','情绪唤醒'];
+
+                // 正确读取朋友圈的最新分类
+                const pyqModule = _modules.find(m => m.id === 'pyq' || m.name === '朋友圈') || {};
+                const angles = Array.isArray(pyqModule.categories) && pyqModule.categories.length > 0 
+                               ? pyqModule.categories 
+                               : ['数字冲击','对话还原','情绪唤醒'];
+
                 const contents = (data.contents || []).map(c => {
-                    if (!c.module) { const mod = _modules.find(m => m.id === c.moduleId); c.module = mod ? mod.name : ''; }
+                    if (!c.module && c.moduleId) {
+                        const mod = _modules.find(m => m.id === c.moduleId);
+                        c.module = mod ? mod.name : '';
+                    }
                     return c;
                 });
-                return { modules: moduleNames, angles, contents, _modules };
+
+                return { 
+                    modules: moduleNames, 
+                    angles: angles, 
+                    contents, 
+                    _modules 
+                };
             }
 
             function createDefaultData() {
@@ -420,21 +431,31 @@
 
             async function loadData() {
                 const localCache = getLocalCache();
-                if (localCache) { db = localCache; renderHome(); }
+                
+                // 有缓存：直接用缓存渲染，不发起请求
+                if (localCache) {
+                    db = localCache;
+                    renderHome();
+                    // 静默检查版本，有更新则显示小红点
+                    checkRemoteVersion().then(remoteVersion => {
+                        if (remoteVersion > getLocalVersion()) {
+                            showUpdateBadge(true);
+                        }
+                    }).catch(() => {});
+                    return;
+                }
+                
+                // 无缓存：首次访问，拉取一次数据
                 try {
                     const remoteData = await loadRemoteData();
                     const remoteVersion = remoteData.version || 0;
-                    const localVersion = getLocalVersion();
-                    if (remoteVersion > localVersion || !localCache) {
-                        db = normalizeData(remoteData);
-                        setLocalCache(db);
-                        setLocalVersion(remoteVersion);
-                        renderHome();
-                        if (currentModule) renderSubPage();
-                        showUpdateBadge(remoteVersion > localVersion);
-                    }
+                    db = normalizeData(remoteData);
+                    setLocalCache(db);
+                    setLocalVersion(remoteVersion);
+                    renderHome();
                 } catch (e) {
-                    if (!localCache) { db = createDefaultData(); renderHome(); }
+                    db = createDefaultData();
+                    renderHome();
                 }
             }
 
@@ -444,20 +465,16 @@
                 try {
                     const remoteData = await loadRemoteData();
                     const remoteVersion = remoteData.version || 0;
-                    const localVersion = getLocalVersion();
-                    if (remoteVersion > localVersion) {
-                        db = normalizeData(remoteData);
-                        setLocalCache(db);
-                        setLocalVersion(remoteVersion);
-                        renderHome();
-                        if (currentModule) renderSubPage();
-                        showUpdateBadge(false);
-                        toast('✅ 已更新');
-                    } else {
-                        toast('✅ 已是最新版本');
-                        showUpdateBadge(false);
-                    }
-                } catch (e) { toast('更新失败'); }
+                    db = normalizeData(remoteData);
+                    setLocalCache(db);
+                    setLocalVersion(remoteVersion);
+                    renderHome();
+                    if (currentModule) renderSubPage();
+                    showUpdateBadge(false);
+                    toast('✅ 已更新');
+                } catch (e) {
+                    toast('更新失败，请检查网络');
+                }
                 if (btn) btn.disabled = false;
             };
 
