@@ -144,29 +144,32 @@
         if (!hasChanges) return toast('没有未保存的更改');
         if (!siteData.version) siteData.version = 1;
         else siteData.version++;
-        
+
         try {
-            await Promise.all([
-                fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': MASTER_KEY
-                    },
-                    body: JSON.stringify(siteData)
-                }),
-                fetch(`https://api.jsonbin.io/v3/b/${VERSION_BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': MASTER_KEY
-                    },
-                    body: JSON.stringify({ version: siteData.version })
-                })
-            ]);
+            // 1. 强制保存数据 Bin
+            await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': MASTER_KEY
+                },
+                body: JSON.stringify(siteData)
+            });
             clearChanged();
-            toast('✅ 所有更改已保存');
-        } catch(e) {
+            toast('✅ 保存成功');
+
+            // 2. 尝试更新版本 Bin（失败也不影响已保存的数据）
+            fetch(`https://api.jsonbin.io/v3/b/${VERSION_BIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': MASTER_KEY
+                },
+                body: JSON.stringify({ version: siteData.version })
+            }).catch(() => {
+                // 版本 Bin 更新失败，但无关紧要，下次前台会自动拉完整数据
+            });
+        } catch (e) {
             toast('保存失败，请重试');
         }
     }
