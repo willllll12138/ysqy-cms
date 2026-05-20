@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>易饰乾园 · 后台管理</title>
+    <title>易饰乾园 · 后台管理（诊断版）</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -53,6 +53,8 @@
         .unified-input:focus{border-color:var(--gold);}
         .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 24px;border-radius:30px;font-size:0.8rem;opacity:0;transition:0.3s;z-index:3000;}
         .toast.show{opacity:1;}
+        .diagnostic-panel{background:#fff3cd;border:1px solid #ffc107;border-radius:12px;padding:16px;margin-bottom:16px;font-size:0.85rem;display:none;}
+        .diagnostic-panel pre{white-space:pre-wrap;word-break:break-all;}
     </style>
 </head>
 <body>
@@ -74,10 +76,15 @@
             <h1>⚙️ 库管理中心</h1>
             <div class="header-actions">
                 <a href="index.html" class="btn-outline">← 前台</a>
+                <button class="btn-outline" onclick="testConnection()">🔌 测试连接</button>
                 <button class="btn-outline" onclick="exportData()">📤 导出</button>
                 <label class="btn-outline" style="cursor:pointer;">📥 导入<input type="file" hidden onchange="importData(this)"></label>
                 <button class="btn" id="saveBtn" onclick="commitChanges()">💾 保存更改</button>
             </div>
+        </div>
+        <div class="diagnostic-panel" id="diagnosticPanel">
+            <strong>🔍 诊断信息：</strong>
+            <pre id="diagnosticText"></pre>
         </div>
         <div class="panel-grid">
             <div class="module-sidebar">
@@ -106,16 +113,56 @@
     let siteData = null;
     let hasChanges = false;
 
-    function markChanged() { 
-        hasChanges = true; 
-        const btn = document.getElementById('saveBtn');
-        if (btn) btn.style.background = '#c0392b'; 
+    function markChanged() {
+        hasChanges = true;
+        document.getElementById('saveBtn').style.background = '#c0392b';
     }
-    function clearChanged() { 
-        hasChanges = false; 
-        const btn = document.getElementById('saveBtn');
-        if (btn) btn.style.background = ''; 
+    function clearChanged() {
+        hasChanges = false;
+        document.getElementById('saveBtn').style.background = '';
     }
+
+    function showDiagnostic(msg) {
+        const panel = document.getElementById('diagnosticPanel');
+        panel.style.display = 'block';
+        document.getElementById('diagnosticText').textContent = msg;
+    }
+
+    window.testConnection = async function() {
+        showDiagnostic('正在测试与 JSONBin 的连接...');
+        try {
+            const resGet = await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}/latest`, {
+                headers: { 'X-Master-Key': MASTER_KEY }
+            });
+            if (!resGet.ok) {
+                showDiagnostic(`❌ 读取失败：HTTP ${resGet.status}\n可能原因：Master Key 无效或 Bin ID 错误。`);
+                return;
+            }
+            const json = await resGet.json();
+            const record = json.record;
+            const oldVersion = record.version || 0;
+            record.version = oldVersion + 1;
+            const resPut = await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+                body: JSON.stringify(record)
+            });
+            if (resPut.ok) {
+                showDiagnostic(`✅ 读写权限正常。当前版本号：${record.version}`);
+                // 还原版本号
+                record.version = oldVersion;
+                await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+                    body: JSON.stringify(record)
+                });
+            } else {
+                showDiagnostic(`❌ 写入失败：HTTP ${resPut.status}\n可能原因：Master Key 没有写入权限。`);
+            }
+        } catch (e) {
+            showDiagnostic(`❌ 网络错误：${e.message}`);
+        }
+    };
 
     function cleanModules(data) {
         if (!data || !data.modules || !Array.isArray(data.modules)) {
@@ -139,37 +186,46 @@
                 siteData = cleanModules(json.record);
             } else {
                 siteData = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
+                showDiagnostic(`⚠️ 加载数据失败：HTTP ${res.status}`);
             }
         } catch(e) {
             siteData = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
+            showDiagnostic(`❌ 网络错误，无法加载数据：${e.message}`);
         }
         clearChanged();
+        // 清除之前的诊断信息（如果有）
+        setTimeout(() => { document.getElementById('diagnosticPanel').style.display = 'none'; }, 5000);
     }
 
     async function commitChanges() {
-        if (!hasChanges) return toast('没有未保存的更改');
+        if (!hasChanges) {
+            alert('没有未保存的更改');
+            return;
+        }
         if (!siteData.version) siteData.version = 1;
         else siteData.version++;
 
         try {
             const res = await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': MASTER_KEY
-                },
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
                 body: JSON.stringify(siteData)
             });
 
             if (res.ok) {
                 clearChanged();
-                toast('✅ 保存成功！版本已更新');
+                alert('✅ 保存成功！');
+                // 尝试更新版本 Bin（忽略错误）
+                fetch(`https://api.jsonbin.io/v3/b/6a082a01c0954111d82fd32b`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+                    body: JSON.stringify({ version: siteData.version })
+                }).catch(() => {});
             } else {
-                toast('保存失败：' + res.status);
+                alert(`❌ 保存失败：HTTP ${res.status}\n${res.status === 401 ? 'Master Key 无效' : res.status === 403 ? '无写入权限' : '请检查 Bin 是否存在'}`);
             }
         } catch (e) {
-            console.error(e);
-            toast('网络错误，保存失败');
+            alert(`❌ 网络错误：${e.message}`);
         }
     }
 
