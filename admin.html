@@ -53,7 +53,7 @@
         .unified-input:focus{border-color:var(--gold);}
         .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 24px;border-radius:30px;font-size:0.8rem;opacity:0;transition:0.3s;z-index:3000;}
         .toast.show{opacity:1;}
-        .filter-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+        .filter-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
         .filter-row select{flex:1;}
     </style>
 </head>
@@ -107,7 +107,7 @@
 
     let siteData = null;
     let hasChanges = false;
-    let currentFilter = '全部'; // 当前筛选分类
+    let currentFilter = '全部';
 
     function markChanged() { hasChanges = true; document.getElementById('saveBtn').style.background = '#c0392b'; }
     function clearChanged() { hasChanges = false; document.getElementById('saveBtn').style.background = ''; }
@@ -207,30 +207,20 @@
         if (!mod) return;
         let contents = siteData.contents.filter(c => c.moduleId === currentModuleId).sort((a,b) => b.id - a.id);
         
-        // 根据当前筛选过滤
         if (currentFilter !== '全部') {
             contents = contents.filter(c => {
-                if (mod.type === 'moments') return c.angle === currentFilter;
-                else return c.category === currentFilter;
+                return mod.type === 'moments' ? c.angle === currentFilter : c.category === currentFilter;
             });
         }
 
         let html = `<h3>${mod.name} (${mod.type})</h3>`;
-        // 分类管理（含修改分类名称功能）
+        // 分类管理
         html += `<div class="tag-list">`;
         (mod.categories||[]).forEach(c => {
             html += `<span class="tag-item">${c} <i class="fa-solid fa-pen" style="cursor:pointer;color:var(--gold);" onclick="renameCategory('${c}')" title="修改分类名称"></i> <i class="fa-solid fa-xmark" onclick="deleteCategory('${c}')"></i></span>`;
         });
         html += `</div>
         <input type="text" id="newCatInput" placeholder="新分类" class="unified-input"><button class="btn" onclick="addCategory()">添加</button>`;
-
-        // 筛选下拉
-        html += `<div class="filter-row">
-            <select id="filterSelect" onchange="applyFilter(this.value)">
-                <option value="全部" ${currentFilter==='全部'?'selected':''}>全部</option>
-                ${(mod.categories||[]).map(c => `<option value="${c}" ${currentFilter===c?'selected':''}>${c}</option>`).join('')}
-            </select>
-        </div>`;
 
         // 发布表单
         if (mod.type === 'moments') {
@@ -245,7 +235,15 @@
             <input type="text" id="pubDate" placeholder="日期（可选）" class="unified-input"><button class="btn" onclick="publish()">加入暂存</button>`;
         }
 
-        html += `<h4>已发布内容</h4>`;
+        // 筛选下拉（放在已发布内容标题旁）
+        html += `<div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;">
+            <h4>已发布内容</h4>
+            <select id="filterSelect" onchange="applyFilter(this.value)" style="width:auto;min-width:120px;margin-bottom:0;">
+                <option value="全部" ${currentFilter==='全部'?'selected':''}>全部</option>
+                ${(mod.categories||[]).map(c => `<option value="${c}" ${currentFilter===c?'selected':''}>${c}</option>`).join('')}
+            </select>
+        </div>`;
+
         if (contents.length === 0) html += '<p style="color:#aaa;">暂无内容</p>';
         else {
             html += `<div class="admin-card-grid">`;
@@ -277,25 +275,20 @@
         renderContent();
     };
 
-    // 重命名分类：同步更新模块的categories以及所有内容的category/angle字段
     window.renameCategory = function(oldName) {
         const newName = prompt('将分类名称修改为：', oldName);
         if (!newName || newName === oldName) return;
         const mod = siteData.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
-        // 更新模块的categories数组
         const idx = mod.categories.indexOf(oldName);
         if (idx !== -1) mod.categories[idx] = newName;
-        // 更新所有使用该分类的内容
         siteData.contents.forEach(c => {
             if (c.moduleId === currentModuleId) {
-                if (mod.type === 'moments' && c.angle === oldName) {
-                    c.angle = newName;
-                } else if (c.category === oldName) {
-                    c.category = newName;
-                }
+                if (mod.type === 'moments' && c.angle === oldName) c.angle = newName;
+                else if (c.category === oldName) c.category = newName;
             }
         });
+        if (currentFilter === oldName) currentFilter = newName;
         markChanged();
         renderContent();
         toast(`分类已从“${oldName}”更新为“${newName}”`);
