@@ -214,7 +214,6 @@
 
                 if (moduleNames.length === 0) moduleNames = ['朋友圈','客户见证','课程卖点'];
 
-                // 正确读取朋友圈的最新分类
                 const pyqModule = _modules.find(m => m.id === 'pyq' || m.name === '朋友圈') || {};
                 const angles = Array.isArray(pyqModule.categories) && pyqModule.categories.length > 0 
                                ? pyqModule.categories 
