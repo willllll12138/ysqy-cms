@@ -94,8 +94,7 @@
 <script>
 (function() {
     const DATA_BIN_ID = '6a02eef4250b1311c33a8e0d';
-    const VERSION_BIN_ID = '6a082a01c0954111d82fd32b';
-    const MASTER_KEY = '您的MasterKey';   // ⚠️ 必须替换为 Master Key
+    const MASTER_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
     const DEFAULT_PWD = 'ysqy798';
     const RESET_CODE = 'ysqy_reset';
     const DEFAULT_MODULES = [
@@ -165,15 +164,6 @@
             if (res.ok) {
                 clearChanged();
                 toast('✅ 保存成功！版本已更新');
-                
-                fetch(`https://api.jsonbin.io/v3/b/${VERSION_BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': MASTER_KEY
-                    },
-                    body: JSON.stringify({ version: siteData.version })
-                }).catch(() => {});
             } else {
                 toast('保存失败：' + res.status);
             }
