@@ -167,7 +167,7 @@
                 },
                 body: JSON.stringify({ version: siteData.version })
             }).catch(() => {
-                // 版本 Bin 更新失败，但无关紧要，下次前台会自动拉完整数据
+                // 版本 Bin 更新失败，但无关紧要
             });
         } catch (e) {
             toast('保存失败，请重试');
