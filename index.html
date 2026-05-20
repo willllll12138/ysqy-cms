@@ -102,7 +102,7 @@
         .refresh-btn:hover { background:#f0ede5; }
         .unified-input { width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px; font-family:var(--font-sans); font-size:0.9rem; outline:none; margin:8px 0; background:#fdfdfb; }
         .unified-input:focus { border-color:var(--gold); }
-        @media (max-width:680px) { .hero-title { font-size:2rem; } }
+        @media (max-width:680px) { .hero-title{font-size:2rem} }
     </style>
 </head>
 <body>
@@ -165,8 +165,12 @@
 
     <script>
         (function() {
-            // ========== 阿里云 OSS 数据源 ==========
-            const DATA_URL = 'https://qiyue111.oss-cn-beijing.aliyuncs.com/ysqysck/ysqy_data.json';
+            // ========== JSONBin 配置 ==========
+            const DATA_BIN_ID = '6a02eef4250b1311c33a8e0d';
+            const VERSION_BIN_ID = '6a082a01c0954111d82fd32b';
+            const ACCESS_KEY = '$2a$10$byuLg90GXwHLTkabTfftfedRg87sbBfGZ4WXp.NBSRCqJIpp7CmSW';
+            const USE_CLOUD = true;
+
             const CACHE_KEY = 'ysqy_data_cache';
             const VERSION_KEY = 'ysqy_data_version';
             const LOCK_PWD_KEY = 'ysqy_module_pwd';
@@ -182,10 +186,24 @@
             function setLocalCache(data) { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); }
             function setLocalVersion(v) { localStorage.setItem(VERSION_KEY, v.toString()); }
 
+            async function checkRemoteVersion() {
+                if (!USE_CLOUD) return 0;
+                try {
+                    const res = await fetch(`https://api.jsonbin.io/v3/b/${VERSION_BIN_ID}/latest`, {
+                        headers: { 'X-Access-Key': ACCESS_KEY }
+                    });
+                    if (res.ok) { const json = await res.json(); return json.record.version || 0; }
+                } catch(e) {}
+                return 0;
+            }
+
             async function loadRemoteData() {
-                const res = await fetch(DATA_URL, { cache: 'no-cache' });
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return await res.json();
+                if (!USE_CLOUD) return null;
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}/latest`, {
+                    headers: { 'X-Access-Key': ACCESS_KEY }
+                });
+                if (res.ok) { const json = await res.json(); return json.record; }
+                throw new Error('Failed to load data');
             }
 
             function normalizeData(data) {
