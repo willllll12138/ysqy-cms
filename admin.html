@@ -146,8 +146,8 @@
         else siteData.version++;
 
         try {
-            // 1. 强制保存数据 Bin
-            await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}`, {
+            // 保存主数据
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -155,22 +155,26 @@
                 },
                 body: JSON.stringify(siteData)
             });
-            clearChanged();
-            toast('✅ 保存成功');
 
-            // 2. 尝试更新版本 Bin（失败也不影响已保存的数据）
-            fetch(`https://api.jsonbin.io/v3/b/${VERSION_BIN_ID}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': MASTER_KEY
-                },
-                body: JSON.stringify({ version: siteData.version })
-            }).catch(() => {
-                // 版本 Bin 更新失败，但无关紧要
-            });
+            if (res.ok) {
+                clearChanged();
+                toast('✅ 保存成功！版本已更新');
+                
+                // 更新版本 Bin（使用同一个 version）
+                fetch(`https://api.jsonbin.io/v3/b/${VERSION_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': MASTER_KEY
+                    },
+                    body: JSON.stringify({ version: siteData.version })
+                }).catch(() => {});
+            } else {
+                toast('保存失败：' + res.status);
+            }
         } catch (e) {
-            toast('保存失败，请重试');
+            console.error(e);
+            toast('网络错误，保存失败');
         }
     }
 
