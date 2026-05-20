@@ -11,23 +11,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --bg: #F9F7F2;
-            --card-bg: #FFFFFF;
-            --ink: #1a1815;
-            --ink-light: #5c574f;
-            --gold: #b8832a;
-            --gold-pale: #f7f0e0;
-            --border: rgba(0,0,0,0.06);
-            --border-strong: rgba(0,0,0,0.12);
-            --radius-sm: 10px;
-            --radius-md: 18px;
-            --radius-lg: 24px;
-            --radius-full: 50px;
-            --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
-            --shadow-md: 0 8px 30px rgba(0,0,0,0.07);
-            --transition: 0.2s cubic-bezier(0.23,1,0.32,1);
-            --font-serif: 'Noto Serif SC', 'Songti SC', serif;
-            --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            --bg: #F9F7F2; --card-bg: #FFFFFF; --ink: #1a1815; --ink-light: #5c574f;
+            --gold: #b8832a; --gold-pale: #f7f0e0; --border: rgba(0,0,0,0.06);
+            --border-strong: rgba(0,0,0,0.12); --radius-sm: 10px; --radius-md: 18px;
+            --radius-lg: 24px; --radius-full: 50px; --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 30px rgba(0,0,0,0.07); --transition: 0.2s ease;
+            --font-serif: 'Noto Serif SC', 'Songti SC', serif; --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { background:var(--bg); font-family:var(--font-sans); color:var(--ink); line-height:1.6; min-height:100vh; }
@@ -165,6 +154,7 @@
 
     <script>
         (function() {
+            // ========== JSONBin 配置 ==========
             const DATA_BIN_ID = '6a02eef4250b1311c33a8e0d';
             const ACCESS_KEY = '$2a$10$byuLg90GXwHLTkabTfftfedRg87sbBfGZ4WXp.NBSRCqJIpp7CmSW';
             const USE_CLOUD = true;
@@ -181,10 +171,32 @@
             let db = { modules: [], angles: [], contents: [], _modules: [] };
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
 
+            // 预加载缓存
+            const preloadCache = {};
+
             function getLocalVersion() { return parseInt(localStorage.getItem(VERSION_KEY) || '0'); }
             function getLocalCache() { const c = localStorage.getItem(CACHE_KEY); return c ? JSON.parse(c) : null; }
             function setLocalCache(data) { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); }
             function setLocalVersion(v) { localStorage.setItem(VERSION_KEY, v.toString()); }
+
+            // 自动缩略图生成（使用 wsrv.nl 免费服务）
+            function getThumbUrl(originalUrl) {
+                if (!originalUrl) return '';
+                let fullUrl = originalUrl;
+                // 相对路径补全为 GitHub raw 直链
+                if (!/^https?:\/\//i.test(originalUrl)) {
+                    fullUrl = `https://raw.githubusercontent.com/willllll12138/ysqy-cms/main/${originalUrl}`;
+                }
+                return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}&w=400`;
+            }
+
+            // 预加载原图（用于灯箱）
+            window.preloadImage = function(url) {
+                if (!url || preloadCache[url]) return;
+                preloadCache[url] = true;
+                const img = new Image();
+                img.src = url;
+            };
 
             async function loadRemoteData() {
                 if (!USE_CLOUD) return null;
@@ -332,8 +344,13 @@
                     const clickAction = jumpLink ? `window.open('${jumpLink}', '_blank')` : `openLightbox('${images[0]||''}','')`;
                     if (images.length) {
                         images.forEach(img => {
-                            html += `<div class="media-card">
-                                <div class="media-card-image" onclick="event.stopPropagation();${clickAction}"><img src="${img}" loading="lazy"></div>
+                            const thumbUrl = getThumbUrl(img);
+                            const originalImg = img;
+                            const imgTag = `<img src="${thumbUrl}" loading="lazy" onerror="if(this.src!=='${originalImg}'){this.src='${originalImg}';}">`;
+                            html += `<div class="media-card" onmouseenter="preloadImage('${originalImg.replace(/'/g, "\\'")}')">
+                                <div class="media-card-image" onclick="event.stopPropagation();${clickAction}">
+                                    ${imgTag}
+                                </div>
                                 <div class="media-card-body">
                                     <h3>${item.title||''}</h3>
                                     <div class="desc">${item.description||''}</div>
@@ -411,7 +428,6 @@
                     }).catch(() => {});
                     return;
                 }
-                // 首次访问才拉取
                 try {
                     const remoteData = await loadRemoteData();
                     db = normalizeData(remoteData);
