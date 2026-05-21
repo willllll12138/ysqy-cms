@@ -91,8 +91,13 @@
         .refresh-btn:hover { background:#f0ede5; }
         .unified-input { width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px; font-family:var(--font-sans); font-size:0.9rem; outline:none; margin:8px 0; background:#fdfdfb; }
         .unified-input:focus { border-color:var(--gold); }
-        .load-more { text-align:center; padding:16px; color:var(--ink-light); cursor:pointer; font-size:0.9rem; background:var(--card-bg); border-radius:12px; margin:10px 0; }
-        .load-more:hover { color:var(--gold); background:var(--gold-pale); }
+        /* 分页样式 */
+        .pagination { display:flex; justify-content:center; align-items:center; gap:8px; padding:20px 0; flex-wrap:wrap; }
+        .pagination button { background:var(--card-bg); border:1px solid var(--border); padding:6px 12px; border-radius:8px; cursor:pointer; font-size:0.8rem; color:var(--ink); transition:0.2s; }
+        .pagination button:hover { background:var(--gold-pale); border-color:var(--gold); }
+        .pagination button.active { background:var(--ink); color:#fff; border-color:var(--ink); }
+        .pagination select { padding:6px 10px; border-radius:8px; border:1px solid var(--border); font-size:0.8rem; }
+        .pagination input { width:50px; padding:6px; border-radius:8px; border:1px solid var(--border); text-align:center; font-size:0.8rem; }
         @media (max-width:680px) { .hero-title{font-size:2rem} }
     </style>
 </head>
@@ -132,7 +137,7 @@
             <div class="card-grid" id="cardGrid"></div>
             <div class="media-card-grid" id="mediaCardGrid"></div>
             <div class="empty-state">暂无内容</div>
-            <div class="load-more" id="loadMoreBtn" style="display:none;" onclick="loadMoreFront()">加载更多</div>
+            <div class="pagination" id="pagination"></div>
         </div>
     </div>
 
@@ -166,15 +171,14 @@
             const DEFAULT_LOCK_PWD = 'zheshimima';
             const RESET_CODE = 'ysqy_reset';
             const DEFAULT_ANGLES = ['数字冲击','对话还原','情绪唤醒','场景反差','旁观者视角','预言式','时间轴','选择题','内幕揭秘','反常识','学员故事','身体感知','追问式','画面描写'];
-            const PAGE_SIZE = 12;
 
             let pendingLockedModule = null;
             let sortOrder = 'desc';
             let db = { modules: [], angles: [], contents: [], _modules: [] };
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
             let currentPage = 1;
-            let isLoadingMore = false;
-            let filteredItems = []; // 缓存筛选后的全部结果
+            let pageSize = 18; // 默认每页18张
+            let filteredItems = [];
 
             const preloadCache = {};
 
@@ -183,13 +187,14 @@
             function setLocalCache(data) { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); }
             function setLocalVersion(v) { localStorage.setItem(VERSION_KEY, v.toString()); }
 
+            // 缩略图宽度降至150px，进一步减少体积
             function getThumbUrl(originalUrl) {
                 if (!originalUrl) return '';
                 let fullUrl = originalUrl;
                 if (!/^https?:\/\//i.test(originalUrl)) {
                     fullUrl = `https://raw.githubusercontent.com/willllll12138/ysqy-cms/main/${originalUrl}`;
                 }
-                return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}&w=200`;
+                return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}&w=150`;
             }
 
             window.preloadImage = function(url) {
@@ -274,7 +279,7 @@
 
             window.openModule = function(m) {
                 currentModule = m; currentAngle = '全部'; currentCategory = '全部'; searchQuery = '';
-                currentPage = 1; isLoadingMore = false;
+                currentPage = 1;
                 document.getElementById('homeView').style.display = 'none';
                 document.getElementById('subView').style.display = 'block';
                 document.getElementById('subTitle').textContent = m;
@@ -298,7 +303,7 @@
                 document.getElementById('catTabs').style.display = 'none';
                 document.getElementById('cardGrid').style.display = 'none';
                 document.getElementById('mediaCardGrid').style.display = 'none';
-                document.getElementById('loadMoreBtn').style.display = 'none';
+                document.getElementById('pagination').innerHTML = '';
                 const mod = db._modules.find(m => m.name === currentModule);
                 const cats = mod?.categories || [];
                 if (currentModule === '朋友圈') {
@@ -324,14 +329,15 @@
                     filteredItems = items;
                     renderMediaCards(items);
                 }
+                renderPagination();
             }
 
             function sortContents(items) { return items.sort((a,b) => { const tA = a.time || a.id || 0, tB = b.time || b.id || 0; return sortOrder === 'desc' ? tB - tA : tA - tB; }); }
 
             function renderMoments(items) {
                 const grid = document.getElementById('cardGrid');
-                const totalPages = Math.ceil(items.length / PAGE_SIZE);
-                const pageItems = items.slice(0, currentPage * PAGE_SIZE);
+                const totalPages = Math.ceil(items.length / pageSize);
+                const pageItems = items.slice((currentPage - 1) * pageSize, currentPage * pageSize);
                 if (!pageItems.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
                 grid.innerHTML = pageItems.map(p => {
                     const text = (p.text||'').split('\n').map(l=>l.trim()).join('\n');
@@ -339,13 +345,12 @@
                     const display = truncated ? text.split('\n').slice(0,6).join('<br>') + '<span class="expand-btn" onclick="this.parentElement.classList.toggle(\'expanded\')"> 展开全文</span>' : text.replace(/\n/g,'<br>');
                     return `<div class="copy-card"><div class="copy-text ${truncated?'':'expanded'}">${display}</div><div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" data-copy="${text.replace(/"/g,'&quot;')}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
                 }).join('');
-                handleLoadMoreBtn(totalPages, items.length);
             }
 
             function renderMediaCards(items) {
                 const grid = document.getElementById('mediaCardGrid');
-                const totalPages = Math.ceil(items.length / PAGE_SIZE);
-                const pageItems = items.slice(0, currentPage * PAGE_SIZE);
+                const totalPages = Math.ceil(items.length / pageSize);
+                const pageItems = items.slice((currentPage - 1) * pageSize, currentPage * pageSize);
                 if (!pageItems.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
                 let html = '';
                 pageItems.forEach(item => {
@@ -380,72 +385,71 @@
                     }
                 });
                 grid.innerHTML = html;
-                handleLoadMoreBtn(totalPages, items.length);
             }
 
-            function handleLoadMoreBtn(totalPages, totalItems) {
-                const btn = document.getElementById('loadMoreBtn');
-                if (currentPage < totalPages) {
-                    btn.style.display = 'block';
-                    btn.textContent = `加载更多（剩余 ${totalItems - currentPage * PAGE_SIZE} 条）`;
-                } else {
-                    btn.style.display = 'none';
+            function renderPagination() {
+                const container = document.getElementById('pagination');
+                const totalPages = Math.ceil(filteredItems.length / pageSize);
+                if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+                let html = `<button onclick="changePage(1)" ${currentPage===1?'disabled':''}>首页</button>`;
+                html += `<button onclick="changePage(${currentPage-1})" ${currentPage===1?'disabled':''}>上一页</button>`;
+
+                // 页码
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                        html += `<button class="${i===currentPage?'active':''}" onclick="changePage(${i})">${i}</button>`;
+                    } else if (i === currentPage - 3 || i === currentPage + 3) {
+                        html += `<span>...</span>`;
+                    }
                 }
+
+                html += `<button onclick="changePage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>下一页</button>`;
+                html += `<button onclick="changePage(${totalPages})" ${currentPage===totalPages?'disabled':''}>末页</button>`;
+
+                // 每页条数选择
+                html += `<select onchange="changePageSize(this.value)">
+                    <option value="12" ${pageSize===12?'selected':''}>12条/页</option>
+                    <option value="18" ${pageSize===18?'selected':''}>18条/页</option>
+                    <option value="24" ${pageSize===24?'selected':''}>24条/页</option>
+                </select>`;
+
+                // 跳转
+                html += `<span>跳至</span><input type="number" id="jumpPage" min="1" max="${totalPages}" value="${currentPage}" onkeydown="if(event.key==='Enter')jumpToPage()">`;
+                html += `<button onclick="jumpToPage()">GO</button>`;
+
+                container.innerHTML = html;
             }
 
-            window.loadMoreFront = function() {
-                if (isLoadingMore) return;
-                isLoadingMore = true;
-                currentPage++;
+            window.changePage = function(page) {
+                if (page < 1 || page > Math.ceil(filteredItems.length / pageSize)) return;
+                currentPage = page;
                 if (currentModule === '朋友圈') {
-                    const grid = document.getElementById('cardGrid');
-                    const pageItems = filteredItems.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-                    pageItems.forEach(p => {
-                        const text = (p.text||'').split('\n').map(l=>l.trim()).join('\n');
-                        const truncated = text.split('\n').length > 6;
-                        const display = truncated ? text.split('\n').slice(0,6).join('<br>') + '<span class="expand-btn" onclick="this.parentElement.classList.toggle(\'expanded\')"> 展开全文</span>' : text.replace(/\n/g,'<br>');
-                        grid.insertAdjacentHTML('beforeend', `<div class="copy-card"><div class="copy-text ${truncated?'':'expanded'}">${display}</div><div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" data-copy="${text.replace(/"/g,'&quot;')}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`);
-                    });
+                    renderMoments(filteredItems);
                 } else {
-                    const grid = document.getElementById('mediaCardGrid');
-                    const pageItems = filteredItems.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-                    let html = '';
-                    pageItems.forEach(item => {
-                        const copyText = ((item.title||'') + '\n' + (item.description||item.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                        const images = (item.imageUrl||'').split(',').map(u=>u.trim()).filter(u=>u);
-                        const jumpLink = item.jumpUrl || '';
-                        const clickAction = jumpLink ? `window.open('${jumpLink}', '_blank')` : `openLightbox('${images[0]||''}','')`;
-                        if (images.length) {
-                            images.forEach(img => {
-                                const thumbUrl = getThumbUrl(img);
-                                const originalImg = img;
-                                html += `<div class="media-card" onmouseenter="preloadImage('${originalImg.replace(/'/g, "\\'")}')">
-                                    <div class="media-card-image" onclick="event.stopPropagation();${clickAction}">
-                                        <img src="${thumbUrl}" loading="lazy" onerror="if(this.src!=='${originalImg}'){this.src='${originalImg}';}">
-                                    </div>
-                                    <div class="media-card-body">
-                                        <h3>${item.title||''}</h3>
-                                        <div class="desc">${item.description||''}</div>
-                                        <div class="media-card-footer">
-                                            ${item.category ? `<span class="category-badge">${item.category}</span>` : ''}
-                                            <span>${item.date||''} ${item.clientName ? '· '+item.clientName : ''}</span>
-                                        </div>
-                                        <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span>
-                                    </div>
-                                </div>`;
-                            });
-                        } else {
-                            html += `<div class="media-card">
-                                <div class="media-card-image" onclick="event.stopPropagation();${jumpLink ? `window.open('${jumpLink}', '_blank')` : ''}"><i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i></div>
-                                <div class="media-card-body"><h3>${item.title||''}</h3><div class="desc">${item.description||''}</div><span>${item.date||''}</span></div>
-                            </div>`;
-                        }
-                    });
-                    grid.insertAdjacentHTML('beforeend', html);
+                    renderMediaCards(filteredItems);
                 }
-                const totalPages = Math.ceil(filteredItems.length / PAGE_SIZE);
-                handleLoadMoreBtn(totalPages, filteredItems.length);
-                isLoadingMore = false;
+                renderPagination();
+                window.scrollTo(0, 0);
+            };
+
+            window.changePageSize = function(size) {
+                pageSize = parseInt(size);
+                currentPage = 1;
+                if (currentModule === '朋友圈') {
+                    renderMoments(filteredItems);
+                } else {
+                    renderMediaCards(filteredItems);
+                }
+                renderPagination();
+            };
+
+            window.jumpToPage = function() {
+                const input = document.getElementById('jumpPage');
+                const page = parseInt(input.value);
+                if (page && page > 0 && page <= Math.ceil(filteredItems.length / pageSize)) {
+                    changePage(page);
+                }
             };
 
             window.setAngle = function(a) { currentAngle = a; currentPage = 1; renderSubPage(); };
