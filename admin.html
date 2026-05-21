@@ -207,15 +207,6 @@
     window.toggleLock = function(id) { const mod = siteData.modules.find(m => m.id === id); if (mod) { mod.locked = !mod.locked; markChanged(); renderSidebar(); } };
     window.selectModule = function(id) { currentModuleId = id; currentFilter = '全部'; currentPage = 1; isLoadingMore = false; renderSidebar(); };
 
-    function getThumbUrl(originalUrl) {
-        if (!originalUrl) return '';
-        let fullUrl = originalUrl;
-        if (!/^https?:\/\//i.test(originalUrl)) {
-            fullUrl = `https://raw.githubusercontent.com/willllll12138/ysqy-cms/main/${originalUrl}`;
-        }
-        return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}&w=400`;
-    }
-
     function renderContent() {
         const mod = siteData.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
@@ -253,7 +244,6 @@
             </select>
         </div>`;
 
-        // 分页渲染
         const totalPages = Math.ceil(contents.length / PAGE_SIZE);
         const pageContents = contents.slice(0, currentPage * PAGE_SIZE);
         
@@ -273,13 +263,11 @@
         }
         
         document.getElementById('contentPanel').innerHTML = html;
-        currentPage = 1;
     }
 
     function generateAdminCard(content, globalIdx) {
-        const thumbUrl = content.imageUrl ? getThumbUrl(content.imageUrl) : '';
         return `<div class="admin-card">
-            ${content.imageUrl ? `<div class="card-image"><img src="${thumbUrl}" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'"></div>` : '<div class="card-image"><i class="fa-solid fa-image" style="font-size:2rem;color:#ccc;"></i></div>'}
+            ${content.imageUrl ? `<div class="card-image"><img src="${content.imageUrl}" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'"></div>` : '<div class="card-image"><i class="fa-solid fa-image" style="font-size:2rem;color:#ccc;"></i></div>'}
             ${content.title ? `<div class="preview-title">${content.title}</div>` : ''}
             <div class="preview-text">${content.text || content.description || ''}</div>
             <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:8px;">
