@@ -55,6 +55,8 @@
         .toast.show{opacity:1;}
         .filter-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
         .filter-row select{flex:1;}
+        .load-more{text-align:center;padding:20px;color:var(--ink-light);cursor:pointer;font-size:0.9rem;}
+        .load-more:hover{color:var(--gold);}
     </style>
 </head>
 <body>
@@ -108,6 +110,9 @@
     let siteData = null;
     let hasChanges = false;
     let currentFilter = '全部';
+    let currentPage = 1;
+    const PAGE_SIZE = 12;
+    let isLoadingMore = false;
 
     function markChanged() { hasChanges = true; document.getElementById('saveBtn').style.background = '#c0392b'; }
     function clearChanged() { hasChanges = false; document.getElementById('saveBtn').style.background = ''; }
@@ -200,7 +205,16 @@
     }
 
     window.toggleLock = function(id) { const mod = siteData.modules.find(m => m.id === id); if (mod) { mod.locked = !mod.locked; markChanged(); renderSidebar(); } };
-    window.selectModule = function(id) { currentModuleId = id; currentFilter = '全部'; renderSidebar(); };
+    window.selectModule = function(id) { currentModuleId = id; currentFilter = '全部'; currentPage = 1; isLoadingMore = false; renderSidebar(); };
+
+    function getThumbUrl(originalUrl) {
+        if (!originalUrl) return '';
+        let fullUrl = originalUrl;
+        if (!/^https?:\/\//i.test(originalUrl)) {
+            fullUrl = `https://raw.githubusercontent.com/willllll12138/ysqy-cms/main/${originalUrl}`;
+        }
+        return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}&w=400`;
+    }
 
     function renderContent() {
         const mod = siteData.modules.find(m => m.id === currentModuleId);
@@ -208,13 +222,10 @@
         let contents = siteData.contents.filter(c => c.moduleId === currentModuleId).sort((a,b) => b.id - a.id);
         
         if (currentFilter !== '全部') {
-            contents = contents.filter(c => {
-                return mod.type === 'moments' ? c.angle === currentFilter : c.category === currentFilter;
-            });
+            contents = contents.filter(c => mod.type === 'moments' ? c.angle === currentFilter : c.category === currentFilter);
         }
 
         let html = `<h3>${mod.name} (${mod.type})</h3>`;
-        // 分类管理
         html += `<div class="tag-list">`;
         (mod.categories||[]).forEach(c => {
             html += `<span class="tag-item">${c} <i class="fa-solid fa-pen" style="cursor:pointer;color:var(--gold);" onclick="renameCategory('${c}')" title="修改分类名称"></i> <i class="fa-solid fa-xmark" onclick="deleteCategory('${c}')"></i></span>`;
@@ -222,7 +233,6 @@
         html += `</div>
         <input type="text" id="newCatInput" placeholder="新分类" class="unified-input"><button class="btn" onclick="addCategory()">添加</button>`;
 
-        // 发布表单
         if (mod.type === 'moments') {
             html += `<select id="pubAngle">${mod.categories.map(c=>`<option>${c}</option>`).join('')}</select><textarea id="pubText" placeholder="文案内容..."></textarea><button class="btn" onclick="publish()">加入暂存</button>`;
         } else {
@@ -235,7 +245,6 @@
             <input type="text" id="pubDate" placeholder="日期（可选）" class="unified-input"><button class="btn" onclick="publish()">加入暂存</button>`;
         }
 
-        // 筛选下拉（放在已发布内容标题旁）
         html += `<div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;">
             <h4>已发布内容</h4>
             <select id="filterSelect" onchange="applyFilter(this.value)" style="width:auto;min-width:120px;margin-bottom:0;">
@@ -244,21 +253,33 @@
             </select>
         </div>`;
 
-        if (contents.length === 0) html += '<p style="color:#aaa;">暂无内容</p>';
-        else {
-            html += `<div class="admin-card-grid">`;
-            contents.forEach(c => {
+        // 分页渲染
+        const totalPages = Math.ceil(contents.length / PAGE_SIZE);
+        const pageContents = contents.slice(0, currentPage * PAGE_SIZE);
+        
+        if (pageContents.length === 0) {
+            html += '<p style="color:#aaa;">暂无内容</p>';
+        } else {
+            html += `<div class="admin-card-grid" id="adminCardGrid">`;
+            pageContents.forEach(c => {
                 const idx = siteData.contents.indexOf(c);
                 html += generateAdminCard(c, idx);
             });
             html += `</div>`;
+            
+            if (currentPage < totalPages) {
+                html += `<div class="load-more" id="loadMoreBtn" onclick="loadMore()">加载更多（剩余 ${contents.length - pageContents.length} 条）</div>`;
+            }
         }
+        
         document.getElementById('contentPanel').innerHTML = html;
+        currentPage = 1;
     }
 
     function generateAdminCard(content, globalIdx) {
+        const thumbUrl = content.imageUrl ? getThumbUrl(content.imageUrl) : '';
         return `<div class="admin-card">
-            ${content.imageUrl ? `<div class="card-image"><img src="${content.imageUrl}" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'"></div>` : '<div class="card-image"><i class="fa-solid fa-image" style="font-size:2rem;color:#ccc;"></i></div>'}
+            ${content.imageUrl ? `<div class="card-image"><img src="${thumbUrl}" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'"></div>` : '<div class="card-image"><i class="fa-solid fa-image" style="font-size:2rem;color:#ccc;"></i></div>'}
             ${content.title ? `<div class="preview-title">${content.title}</div>` : ''}
             <div class="preview-text">${content.text || content.description || ''}</div>
             <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:8px;">
@@ -270,8 +291,45 @@
         </div>`;
     }
 
+    window.loadMore = function() {
+        if (isLoadingMore) return;
+        isLoadingMore = true;
+        currentPage++;
+        
+        const mod = siteData.modules.find(m => m.id === currentModuleId);
+        if (!mod) return;
+        let contents = siteData.contents.filter(c => c.moduleId === currentModuleId).sort((a,b) => b.id - a.id);
+        if (currentFilter !== '全部') {
+            contents = contents.filter(c => mod.type === 'moments' ? c.angle === currentFilter : c.category === currentFilter);
+        }
+        
+        const pageContents = contents.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+        const grid = document.getElementById('adminCardGrid');
+        if (grid) {
+            pageContents.forEach(c => {
+                const idx = siteData.contents.indexOf(c);
+                grid.insertAdjacentHTML('beforeend', generateAdminCard(c, idx));
+            });
+        }
+        
+        const totalPages = Math.ceil(contents.length / PAGE_SIZE);
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (loadMoreBtn) {
+            if (currentPage >= totalPages) {
+                loadMoreBtn.remove();
+            } else {
+                const remaining = contents.length - currentPage * PAGE_SIZE;
+                loadMoreBtn.textContent = `加载更多（剩余 ${remaining} 条）`;
+            }
+        }
+        
+        isLoadingMore = false;
+    };
+
     window.applyFilter = function(val) {
         currentFilter = val;
+        currentPage = 1;
+        isLoadingMore = false;
         renderContent();
     };
 
@@ -321,6 +379,8 @@
             }
         }
         markChanged();
+        currentPage = 1;
+        isLoadingMore = false;
         renderContent();
         toast('已暂存，点击右上角保存更改');
     };
@@ -357,6 +417,8 @@
                 if (mod.type === 'testimonial') c.clientName = document.getElementById('editClient').value.trim();
             }
             markChanged();
+            currentPage = 1;
+            isLoadingMore = false;
             renderContent();
             overlay.remove();
             toast('已暂存');
@@ -366,8 +428,8 @@
 
     window.addCategory = function() { const val=document.getElementById('newCatInput').value.trim(); if(val){ const mod=siteData.modules.find(m=>m.id===currentModuleId); if(!mod.categories) mod.categories=[]; if(mod.categories.includes(val)) return toast('已存在'); mod.categories.push(val); markChanged(); renderContent(); } };
     window.deleteCategory = function(val) { const mod=siteData.modules.find(m=>m.id===currentModuleId); mod.categories = mod.categories.filter(c=>c!==val); markChanged(); renderContent(); };
-    window.moveContent = function(idx, dir) { const newIdx = idx + dir; if (newIdx < 0 || newIdx >= siteData.contents.length) return; [siteData.contents[idx], siteData.contents[newIdx]] = [siteData.contents[newIdx], siteData.contents[idx]]; markChanged(); renderContent(); };
-    window.deleteContent = function(idx) { if (confirm('确认删除？')) { siteData.contents.splice(idx, 1); markChanged(); renderContent(); } };
+    window.moveContent = function(idx, dir) { const newIdx = idx + dir; if (newIdx < 0 || newIdx >= siteData.contents.length) return; [siteData.contents[idx], siteData.contents[newIdx]] = [siteData.contents[newIdx], siteData.contents[idx]]; markChanged(); currentPage = 1; renderContent(); };
+    window.deleteContent = function(idx) { if (confirm('确认删除？')) { siteData.contents.splice(idx, 1); markChanged(); currentPage = 1; renderContent(); } };
 
     window.addModule = function() { const name = prompt('模块名称'); if (name) { const type = prompt('类型 (moments / testimonial / course)', 'moments') || 'moments'; siteData.modules.push({ id: 'mod_' + Date.now(), name, type, categories: [], locked: false }); markChanged(); renderSidebar(); } };
     window.renameModule = function(id) { const mod = siteData.modules.find(m => m.id === id); const newName = prompt('新名称', mod.name); if (newName) { mod.name = newName; markChanged(); renderSidebar(); if (currentModuleId === id) renderContent(); } };
