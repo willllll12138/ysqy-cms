@@ -53,12 +53,8 @@
         .unified-input:focus{border-color:var(--gold);}
         .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 24px;border-radius:30px;font-size:0.8rem;opacity:0;transition:0.3s;z-index:3000;}
         .toast.show{opacity:1;}
-        .pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:20px;flex-wrap:wrap;}
-        .pagination button,.pagination span{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--card-bg);cursor:pointer;font-size:0.85rem;transition:0.2s;}
-        .pagination button:hover{background:var(--gold-pale);}
-        .pagination button.active{background:var(--ink);color:#fff;border-color:var(--ink);}
-        .pagination button:disabled{opacity:0.3;cursor:not-allowed;}
-        .pagination .page-input{width:50px;text-align:center;padding:6px 8px;border-radius:20px;border:1px solid var(--border);font-size:0.85rem;margin:0 4px;}
+        .load-more{text-align:center;padding:20px;color:var(--ink-light);cursor:pointer;font-size:0.9rem;}
+        .load-more:hover{color:var(--gold);}
     </style>
 </head>
 <body>
@@ -113,7 +109,8 @@
     let hasChanges = false;
     let currentFilter = '全部';
     let currentPage = 1;
-    const PAGE_SIZE = 18;
+    const PAGE_SIZE = 12;
+    let isLoadingMore = false;
 
     function markChanged() { hasChanges = true; document.getElementById('saveBtn').style.background = '#c0392b'; }
     function clearChanged() { hasChanges = false; document.getElementById('saveBtn').style.background = ''; }
@@ -199,6 +196,16 @@
     };
 
     let currentModuleId = null;
+
+    function getThumbUrl(originalUrl) {
+        if (!originalUrl) return '';
+        let fullUrl = originalUrl;
+        if (!/^https?:\/\//i.test(originalUrl)) {
+            fullUrl = `https://raw.githubusercontent.com/willllll12138/ysqy-cms/main/${originalUrl}`;
+        }
+        return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}&w=400`;
+    }
+
     function renderSidebar() {
         const list = document.getElementById('moduleList');
         list.innerHTML = siteData.modules.map(m => `<div class="module-item ${currentModuleId===m.id?'active':''}" onclick="selectModule('${m.id}')"><span>${m.name || '(未命名)'}</span><div onclick="event.stopPropagation()"><i class="fa-solid ${m.locked ? 'fa-lock' : 'fa-unlock'}" style="cursor:pointer; margin-right:4px;" onclick="toggleLock('${m.id}')" title="${m.locked ? '解锁' : '锁定'}"></i><i class="fa-solid fa-pen" onclick="renameModule('${m.id}')"></i><i class="fa-solid fa-trash" onclick="deleteModule('${m.id}')"></i></div></div>`).join('');
@@ -206,7 +213,7 @@
     }
 
     window.toggleLock = function(id) { const mod = siteData.modules.find(m => m.id === id); if (mod) { mod.locked = !mod.locked; markChanged(); renderSidebar(); } };
-    window.selectModule = function(id) { currentModuleId = id; currentFilter = '全部'; currentPage = 1; renderSidebar(); };
+    window.selectModule = function(id) { currentModuleId = id; currentFilter = '全部'; currentPage = 1; isLoadingMore = false; renderSidebar(); };
 
     function renderContent() {
         const mod = siteData.modules.find(m => m.id === currentModuleId);
@@ -246,7 +253,7 @@
         </div>`;
 
         const totalPages = Math.ceil(contents.length / PAGE_SIZE);
-        const pageContents = contents.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+        const pageContents = contents.slice(0, currentPage * PAGE_SIZE);
         
         if (pageContents.length === 0) {
             html += '<p style="color:#aaa;">暂无内容</p>';
@@ -258,26 +265,18 @@
             });
             html += `</div>`;
             
-            // 分页导航
-            html += `<div class="pagination">`;
-            html += `<button onclick="goToPage(1)" ${currentPage===1?'disabled':''}>首页</button>`;
-            html += `<button onclick="goToPage(${currentPage-1})" ${currentPage===1?'disabled':''}>上一页</button>`;
-            for (let i = 1; i <= totalPages; i++) {
-                html += `<button onclick="goToPage(${i})" class="${i===currentPage?'active':''}">${i}</button>`;
+            if (currentPage < totalPages) {
+                html += `<div class="load-more" id="loadMoreBtn" onclick="loadMore()">加载更多（剩余 ${contents.length - pageContents.length} 条）</div>`;
             }
-            html += `<button onclick="goToPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>下一页</button>`;
-            html += `<button onclick="goToPage(${totalPages})" ${currentPage===totalPages?'disabled':''}>末页</button>`;
-            html += `<span>共 ${totalPages} 页 / ${contents.length} 条</span>`;
-            html += `跳转 <input type="number" id="pageInput" class="page-input" min="1" max="${totalPages}" value="${currentPage}" onkeydown="if(event.key==='Enter')goToPage(parseInt(this.value))">`;
-            html += `</div>`;
         }
         
         document.getElementById('contentPanel').innerHTML = html;
     }
 
     function generateAdminCard(content, globalIdx) {
+        const thumbUrl = content.imageUrl ? getThumbUrl(content.imageUrl) : '';
         return `<div class="admin-card">
-            ${content.imageUrl ? `<div class="card-image"><img src="${content.imageUrl}" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'"></div>` : '<div class="card-image"><i class="fa-solid fa-image" style="font-size:2rem;color:#ccc;"></i></div>'}
+            ${content.imageUrl ? `<div class="card-image"><img src="${thumbUrl}" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\' style=\\'font-size:3rem;color:#ccc;\\'></i>'"></div>` : '<div class="card-image"><i class="fa-solid fa-image" style="font-size:2rem;color:#ccc;"></i></div>'}
             ${content.title ? `<div class="preview-title">${content.title}</div>` : ''}
             <div class="preview-text">${content.text || content.description || ''}</div>
             <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:8px;">
@@ -289,23 +288,45 @@
         </div>`;
     }
 
-    window.goToPage = function(page) {
+    window.loadMore = function() {
+        if (isLoadingMore) return;
+        isLoadingMore = true;
+        currentPage++;
+        
         const mod = siteData.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
         let contents = siteData.contents.filter(c => c.moduleId === currentModuleId).sort((a,b) => b.id - a.id);
         if (currentFilter !== '全部') {
             contents = contents.filter(c => mod.type === 'moments' ? c.angle === currentFilter : c.category === currentFilter);
         }
+        
+        const pageContents = contents.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+        const grid = document.getElementById('adminCardGrid');
+        if (grid) {
+            pageContents.forEach(c => {
+                const idx = siteData.contents.indexOf(c);
+                grid.insertAdjacentHTML('beforeend', generateAdminCard(c, idx));
+            });
+        }
+        
         const totalPages = Math.ceil(contents.length / PAGE_SIZE);
-        if (page < 1) page = 1;
-        if (page > totalPages) page = totalPages;
-        currentPage = page;
-        renderContent();
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (loadMoreBtn) {
+            if (currentPage >= totalPages) {
+                loadMoreBtn.remove();
+            } else {
+                const remaining = contents.length - currentPage * PAGE_SIZE;
+                loadMoreBtn.textContent = `加载更多（剩余 ${remaining} 条）`;
+            }
+        }
+        
+        isLoadingMore = false;
     };
 
     window.applyFilter = function(val) {
         currentFilter = val;
         currentPage = 1;
+        isLoadingMore = false;
         renderContent();
     };
 
@@ -356,6 +377,7 @@
         }
         markChanged();
         currentPage = 1;
+        isLoadingMore = false;
         renderContent();
         toast('已暂存，点击右上角保存更改');
     };
@@ -393,6 +415,7 @@
             }
             markChanged();
             currentPage = 1;
+            isLoadingMore = false;
             renderContent();
             overlay.remove();
             toast('已暂存');
