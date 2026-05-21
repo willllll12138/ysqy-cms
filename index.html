@@ -52,7 +52,7 @@
         .angle-bar, .cat-tabs { display:flex; gap:8px; padding:16px 0; flex-wrap:wrap; }
         .angle-pill, .cat-tab { padding:7px 18px; border-radius:var(--radius-full); background:var(--card-bg); border:1.5px solid var(--border); cursor:pointer; font-size:0.8rem; transition:var(--transition); color:var(--ink-light); }
         .angle-pill.active, .cat-tab.active { background:var(--ink); color:#fff; border-color:var(--ink); font-weight:500; }
-        .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; padding:10px 0 50px; }
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; padding:10px 0 30px; }
         .copy-card { background:var(--card-bg); border-radius:var(--radius-lg); padding:28px 24px; transition:var(--transition); border:1px solid var(--border); display:flex; flex-direction:column; gap:16px; box-shadow:var(--shadow-sm); }
         .copy-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.08); }
         .copy-text { font-size:0.92rem; font-weight:300; line-height:1.9; white-space:pre-wrap; max-height:11.4em; overflow:hidden; position:relative; text-indent:0!important; padding-left:0!important; }
@@ -61,7 +61,7 @@
         .card-meta { display:flex; justify-content:space-between; align-items:center; font-size:0.7rem; color:#aaa; }
         .copy-btn { cursor:pointer; color:#888; transition:var(--transition); padding:4px 8px; border-radius:6px; }
         .copy-btn:hover { color:var(--gold); background:var(--gold-pale); }
-        .media-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; padding:10px 0 50px; }
+        .media-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; padding:10px 0 30px; }
         .media-card { background:var(--card-bg); border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--border); box-shadow:var(--shadow-sm); transition:var(--transition); cursor:pointer; display:flex; flex-direction:column; }
         .media-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.08); }
         .media-card-image { width:100%; height:240px; background:#f0ede5; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; cursor:pointer; }
@@ -91,6 +91,8 @@
         .refresh-btn:hover { background:#f0ede5; }
         .unified-input { width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px; font-family:var(--font-sans); font-size:0.9rem; outline:none; margin:8px 0; background:#fdfdfb; }
         .unified-input:focus { border-color:var(--gold); }
+        .load-more { text-align:center; padding:16px; color:var(--ink-light); cursor:pointer; font-size:0.9rem; background:var(--card-bg); border-radius:12px; margin:10px 0; }
+        .load-more:hover { color:var(--gold); background:var(--gold-pale); }
         @media (max-width:680px) { .hero-title{font-size:2rem} }
     </style>
 </head>
@@ -130,6 +132,7 @@
             <div class="card-grid" id="cardGrid"></div>
             <div class="media-card-grid" id="mediaCardGrid"></div>
             <div class="empty-state">暂无内容</div>
+            <div class="load-more" id="loadMoreBtn" style="display:none;" onclick="loadMoreFront()">加载更多</div>
         </div>
     </div>
 
@@ -154,24 +157,25 @@
 
     <script>
         (function() {
-            // ========== JSONBin 配置 ==========
             const DATA_BIN_ID = '6a02eef4250b1311c33a8e0d';
             const ACCESS_KEY = '$2a$10$byuLg90GXwHLTkabTfftfedRg87sbBfGZ4WXp.NBSRCqJIpp7CmSW';
             const USE_CLOUD = true;
-
             const CACHE_KEY = 'ysqy_data_cache';
             const VERSION_KEY = 'ysqy_data_version';
             const LOCK_PWD_KEY = 'ysqy_module_pwd';
             const DEFAULT_LOCK_PWD = 'zheshimima';
             const RESET_CODE = 'ysqy_reset';
             const DEFAULT_ANGLES = ['数字冲击','对话还原','情绪唤醒','场景反差','旁观者视角','预言式','时间轴','选择题','内幕揭秘','反常识','学员故事','身体感知','追问式','画面描写'];
+            const PAGE_SIZE = 12;
 
             let pendingLockedModule = null;
             let sortOrder = 'desc';
             let db = { modules: [], angles: [], contents: [], _modules: [] };
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
+            let currentPage = 1;
+            let isLoadingMore = false;
+            let filteredItems = []; // 缓存筛选后的全部结果
 
-            // 预加载缓存
             const preloadCache = {};
 
             function getLocalVersion() { return parseInt(localStorage.getItem(VERSION_KEY) || '0'); }
@@ -179,18 +183,15 @@
             function setLocalCache(data) { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); }
             function setLocalVersion(v) { localStorage.setItem(VERSION_KEY, v.toString()); }
 
-            // 自动缩略图生成（使用 wsrv.nl 免费服务）
             function getThumbUrl(originalUrl) {
                 if (!originalUrl) return '';
                 let fullUrl = originalUrl;
-                // 相对路径补全为 GitHub raw 直链
                 if (!/^https?:\/\//i.test(originalUrl)) {
                     fullUrl = `https://raw.githubusercontent.com/willllll12138/ysqy-cms/main/${originalUrl}`;
                 }
-                return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}&w=400`;
+                return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}&w=200`;
             }
 
-            // 预加载原图（用于灯箱）
             window.preloadImage = function(url) {
                 if (!url || preloadCache[url]) return;
                 preloadCache[url] = true;
@@ -273,6 +274,7 @@
 
             window.openModule = function(m) {
                 currentModule = m; currentAngle = '全部'; currentCategory = '全部'; searchQuery = '';
+                currentPage = 1; isLoadingMore = false;
                 document.getElementById('homeView').style.display = 'none';
                 document.getElementById('subView').style.display = 'block';
                 document.getElementById('subTitle').textContent = m;
@@ -286,6 +288,7 @@
             window.toggleSortOrder = function() {
                 sortOrder = sortOrder === 'desc' ? 'asc' : 'desc';
                 document.getElementById('sortBtn').textContent = sortOrder === 'desc' ? '↓' : '↑';
+                currentPage = 1;
                 renderSubPage();
             };
 
@@ -295,6 +298,7 @@
                 document.getElementById('catTabs').style.display = 'none';
                 document.getElementById('cardGrid').style.display = 'none';
                 document.getElementById('mediaCardGrid').style.display = 'none';
+                document.getElementById('loadMoreBtn').style.display = 'none';
                 const mod = db._modules.find(m => m.name === currentModule);
                 const cats = mod?.categories || [];
                 if (currentModule === '朋友圈') {
@@ -305,6 +309,7 @@
                     if (currentAngle !== '全部') items = items.filter(c => c.angle === currentAngle);
                     if (searchQuery) items = items.filter(c => c.text.includes(searchQuery));
                     items = sortContents(items);
+                    filteredItems = items;
                     renderMoments(items);
                 } else {
                     if (cats.length > 0) {
@@ -316,6 +321,7 @@
                     if (currentCategory !== '全部') items = items.filter(c => c.category === currentCategory);
                     if (searchQuery) items = items.filter(c => (c.title||'').includes(searchQuery) || (c.description||c.text||'').includes(searchQuery));
                     items = sortContents(items);
+                    filteredItems = items;
                     renderMediaCards(items);
                 }
             }
@@ -324,20 +330,25 @@
 
             function renderMoments(items) {
                 const grid = document.getElementById('cardGrid');
-                if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
-                grid.innerHTML = items.map(p => {
+                const totalPages = Math.ceil(items.length / PAGE_SIZE);
+                const pageItems = items.slice(0, currentPage * PAGE_SIZE);
+                if (!pageItems.length) { grid.innerHTML = '<div class="empty-state">暂无文案</div>'; return; }
+                grid.innerHTML = pageItems.map(p => {
                     const text = (p.text||'').split('\n').map(l=>l.trim()).join('\n');
                     const truncated = text.split('\n').length > 6;
                     const display = truncated ? text.split('\n').slice(0,6).join('<br>') + '<span class="expand-btn" onclick="this.parentElement.classList.toggle(\'expanded\')"> 展开全文</span>' : text.replace(/\n/g,'<br>');
                     return `<div class="copy-card"><div class="copy-text ${truncated?'':'expanded'}">${display}</div><div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" data-copy="${text.replace(/"/g,'&quot;')}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`;
                 }).join('');
+                handleLoadMoreBtn(totalPages, items.length);
             }
 
             function renderMediaCards(items) {
                 const grid = document.getElementById('mediaCardGrid');
-                if (!items.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
+                const totalPages = Math.ceil(items.length / PAGE_SIZE);
+                const pageItems = items.slice(0, currentPage * PAGE_SIZE);
+                if (!pageItems.length) { grid.innerHTML = '<div class="empty-state">暂无内容</div>'; return; }
                 let html = '';
-                items.forEach(item => {
+                pageItems.forEach(item => {
                     const copyText = ((item.title||'') + '\n' + (item.description||item.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
                     const images = (item.imageUrl||'').split(',').map(u=>u.trim()).filter(u=>u);
                     const jumpLink = item.jumpUrl || '';
@@ -346,10 +357,9 @@
                         images.forEach(img => {
                             const thumbUrl = getThumbUrl(img);
                             const originalImg = img;
-                            const imgTag = `<img src="${thumbUrl}" loading="lazy" onerror="if(this.src!=='${originalImg}'){this.src='${originalImg}';}">`;
                             html += `<div class="media-card" onmouseenter="preloadImage('${originalImg.replace(/'/g, "\\'")}')">
                                 <div class="media-card-image" onclick="event.stopPropagation();${clickAction}">
-                                    ${imgTag}
+                                    <img src="${thumbUrl}" loading="lazy" onerror="if(this.src!=='${originalImg}'){this.src='${originalImg}';}">
                                 </div>
                                 <div class="media-card-body">
                                     <h3>${item.title||''}</h3>
@@ -370,11 +380,77 @@
                     }
                 });
                 grid.innerHTML = html;
+                handleLoadMoreBtn(totalPages, items.length);
             }
 
-            window.setAngle = function(a) { currentAngle = a; renderSubPage(); };
-            window.setCategory = function(c) { currentCategory = c; renderSubPage(); };
-            window.doSearch = function() { searchQuery = document.getElementById('searchInput').value.trim(); renderSubPage(); };
+            function handleLoadMoreBtn(totalPages, totalItems) {
+                const btn = document.getElementById('loadMoreBtn');
+                if (currentPage < totalPages) {
+                    btn.style.display = 'block';
+                    btn.textContent = `加载更多（剩余 ${totalItems - currentPage * PAGE_SIZE} 条）`;
+                } else {
+                    btn.style.display = 'none';
+                }
+            }
+
+            window.loadMoreFront = function() {
+                if (isLoadingMore) return;
+                isLoadingMore = true;
+                currentPage++;
+                if (currentModule === '朋友圈') {
+                    const grid = document.getElementById('cardGrid');
+                    const pageItems = filteredItems.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+                    pageItems.forEach(p => {
+                        const text = (p.text||'').split('\n').map(l=>l.trim()).join('\n');
+                        const truncated = text.split('\n').length > 6;
+                        const display = truncated ? text.split('\n').slice(0,6).join('<br>') + '<span class="expand-btn" onclick="this.parentElement.classList.toggle(\'expanded\')"> 展开全文</span>' : text.replace(/\n/g,'<br>');
+                        grid.insertAdjacentHTML('beforeend', `<div class="copy-card"><div class="copy-text ${truncated?'':'expanded'}">${display}</div><div class="card-meta"><span># ${p.angle}</span><span class="copy-btn" data-copy="${text.replace(/"/g,'&quot;')}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span></div></div>`);
+                    });
+                } else {
+                    const grid = document.getElementById('mediaCardGrid');
+                    const pageItems = filteredItems.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+                    let html = '';
+                    pageItems.forEach(item => {
+                        const copyText = ((item.title||'') + '\n' + (item.description||item.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+                        const images = (item.imageUrl||'').split(',').map(u=>u.trim()).filter(u=>u);
+                        const jumpLink = item.jumpUrl || '';
+                        const clickAction = jumpLink ? `window.open('${jumpLink}', '_blank')` : `openLightbox('${images[0]||''}','')`;
+                        if (images.length) {
+                            images.forEach(img => {
+                                const thumbUrl = getThumbUrl(img);
+                                const originalImg = img;
+                                html += `<div class="media-card" onmouseenter="preloadImage('${originalImg.replace(/'/g, "\\'")}')">
+                                    <div class="media-card-image" onclick="event.stopPropagation();${clickAction}">
+                                        <img src="${thumbUrl}" loading="lazy" onerror="if(this.src!=='${originalImg}'){this.src='${originalImg}';}">
+                                    </div>
+                                    <div class="media-card-body">
+                                        <h3>${item.title||''}</h3>
+                                        <div class="desc">${item.description||''}</div>
+                                        <div class="media-card-footer">
+                                            ${item.category ? `<span class="category-badge">${item.category}</span>` : ''}
+                                            <span>${item.date||''} ${item.clientName ? '· '+item.clientName : ''}</span>
+                                        </div>
+                                        <span class="copy-btn" data-copy="${copyText}" onclick="event.stopPropagation();handleCopy(this)"><i class="fa-regular fa-clone"></i> 复制</span>
+                                    </div>
+                                </div>`;
+                            });
+                        } else {
+                            html += `<div class="media-card">
+                                <div class="media-card-image" onclick="event.stopPropagation();${jumpLink ? `window.open('${jumpLink}', '_blank')` : ''}"><i class="fa-solid fa-image" style="font-size:3rem;color:#ccc;"></i></div>
+                                <div class="media-card-body"><h3>${item.title||''}</h3><div class="desc">${item.description||''}</div><span>${item.date||''}</span></div>
+                            </div>`;
+                        }
+                    });
+                    grid.insertAdjacentHTML('beforeend', html);
+                }
+                const totalPages = Math.ceil(filteredItems.length / PAGE_SIZE);
+                handleLoadMoreBtn(totalPages, filteredItems.length);
+                isLoadingMore = false;
+            };
+
+            window.setAngle = function(a) { currentAngle = a; currentPage = 1; renderSubPage(); };
+            window.setCategory = function(c) { currentCategory = c; currentPage = 1; renderSubPage(); };
+            window.doSearch = function() { searchQuery = document.getElementById('searchInput').value.trim(); currentPage = 1; renderSubPage(); };
             window.toggleSearch = function() {
                 const wrap = document.getElementById('searchInputWrap');
                 wrap.classList.toggle('open');
@@ -420,7 +496,6 @@
                 if (localCache) {
                     db = localCache;
                     renderHome();
-                    // 静默检查版本，有更新则显示小红点
                     loadRemoteData().then(remoteData => {
                         if (remoteData && remoteData.version > getLocalVersion()) {
                             showUpdateBadge(true);
@@ -450,7 +525,7 @@
                     setLocalCache(db);
                     setLocalVersion(remoteVersion);
                     renderHome();
-                    if (currentModule) renderSubPage();
+                    if (currentModule) { currentPage = 1; renderSubPage(); }
                     showUpdateBadge(false);
                     toast('✅ 已更新至最新版本');
                 } catch (e) {
