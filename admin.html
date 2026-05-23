@@ -21,23 +21,25 @@
         .login-card .hero-tag{display:inline-block;font-size:0.7rem;letter-spacing:0.35em;color:var(--gold);background:var(--gold-pale);padding:6px 18px;border-radius:var(--radius-full);margin-bottom:16px;}
         .login-card h1{font-family:'Noto Serif SC',serif;font-size:1.8rem;margin-bottom:12px;}
         .login-card .sub{font-size:0.8rem;color:var(--ink-light);margin-bottom:24px;}
-        .login-card input{width:100%;padding:14px 18px;border:1.5px solid var(--border);border-radius:var(--radius-full);text-align:center;font-size:1rem;outline:none;margin-bottom:16px;background:var(--bg);}
+        .login-card input{width:100%;padding:14px 18px;border:1.5px solid var(--border);border-radius:var(--radius-full);text-align:center;font-size:1rem;outline:none;margin-bottom:16px;background:var(--bg);transition:0.2s;}
+        .login-card input:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(184,131,42,0.1);}
         .btn{background:var(--ink);color:#fff;border:none;padding:12px 24px;border-radius:var(--radius-full);cursor:pointer;font-weight:500;font-family:inherit;transition:0.2s;}
-        .btn:hover{background:#2b2b2b;}
+        .btn:hover{background:#2b2b2b;transform:translateY(-1px);}
         .btn-full{width:100%;}
         .btn-outline{background:transparent;color:var(--ink);border:1.5px solid #ccc;padding:10px 20px;border-radius:var(--radius-full);cursor:pointer;font-weight:600;font-size:0.8rem;display:inline-flex;align-items:center;gap:6px;text-decoration:none;margin:0 4px;transition:0.2s;}
-        .btn-outline:hover{background:#f5f5f5;border-color:#aaa;}
+        .btn-outline:hover{background:#f5f5f5;border-color:var(--gold);color:var(--gold);}
         .login-links{margin-top:16px;display:flex;justify-content:center;gap:20px;}
         .login-links a{color:var(--ink-light);font-size:0.8rem;text-decoration:none;cursor:pointer;}
         .login-links a:hover{color:var(--gold);}
         .admin-header{display:flex;justify-content:space-between;align-items:center;padding:32px 0 24px;flex-wrap:wrap;gap:12px;}
-        .header-actions{display:flex;align-items:center;gap:10px;}
+        .header-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
         .panel-grid{display:grid;grid-template-columns:240px 1fr;gap:20px;}
         .module-sidebar{background:var(--card-bg);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);}
-        .module-item{display:flex;justify-content:space-between;padding:12px;border-radius:var(--radius-md);cursor:pointer;font-size:0.9rem;}
+        .module-item{display:flex;justify-content:space-between;padding:12px;border-radius:var(--radius-md);cursor:pointer;font-size:0.9rem;margin-bottom:4px;}
         .module-item.active{background:var(--gold-pale);}
         .content-panel{background:var(--card-bg);border-radius:var(--radius-lg);padding:28px;border:1px solid var(--border);}
-        input[type="text"],input[type="url"],input[type="date"],select{border-radius:30px!important;padding:12px 18px;border:1.5px solid #e0dbd0;width:100%;margin-bottom:10px;font-family:inherit;background:#fdfdfb;}
+        input[type="text"],input[type="url"],input[type="date"],select{border-radius:30px!important;padding:12px 18px;border:1.5px solid #e0dbd0;width:100%;margin-bottom:10px;font-family:inherit;background:#fdfdfb;transition:border 0.2s;}
+        input:focus, select:focus, textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(184,131,42,0.1);outline:none;}
         textarea{border-radius:25px!important;padding:14px 18px;min-height:150px;border:1.5px solid #e0dbd0;width:100%;resize:vertical;font-family:inherit;}
         .tag-list{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;}
         .tag-item{background:#f0ede5;padding:6px 14px;border-radius:20px;font-size:0.8rem;display:flex;align-items:center;gap:6px;}
@@ -47,10 +49,18 @@
         .admin-card .preview-text{font-size:0.85rem;color:#555;min-height:6em;max-height:10em;overflow-y:auto;white-space:pre-wrap;}
         .admin-card .card-image{width:100%;height:120px;background:#f0ede5;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:8px;}
         .admin-card .card-image img{width:100%;height:100%;object-fit:cover;}
-        .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000;}
-        .modal-box{background:#fff;border-radius:var(--radius-lg);padding:32px;max-width:500px;width:90%;}
-        .unified-input{width:100%;padding:12px 18px;border:1.5px solid #ddd;border-radius:30px;font-family:'Noto Sans SC',sans-serif;font-size:0.9rem;outline:none;margin:8px 0;background:#fdfdfb;transition:border-color 0.2s;}
-        .unified-input:focus{border-color:var(--gold);}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:2000;opacity:0;visibility:hidden;transition:0.2s;}
+        .modal-overlay.open{opacity:1;visibility:visible;}
+        .modal-container{background:#fff;border-radius:32px;max-width:420px;width:90%;padding:32px 28px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);position:relative;}
+        .modal-container h3{font-family:'Noto Serif SC',serif;font-size:1.5rem;margin-bottom:16px;color:var(--ink);text-align:center;}
+        .modal-container .modal-desc{font-size:0.85rem;color:var(--ink-light);margin-bottom:20px;text-align:center;}
+        .modal-container input{width:100%;margin-bottom:16px;}
+        .modal-buttons{display:flex;gap:12px;justify-content:center;margin-top:8px;flex-wrap:wrap;}
+        .close-modal-icon{position:absolute;top:20px;right:24px;font-size:1.2rem;cursor:pointer;color:#aaa;}
+        .close-modal-icon:hover{color:var(--ink);}
+        .error-msg{color:#c33;font-size:0.8rem;margin-top:8px;text-align:center;}
+        .unified-input{width:100%;padding:12px 18px;border:1.5px solid #ddd;border-radius:30px;font-family:'Noto Sans SC',sans-serif;font-size:0.9rem;outline:none;margin:8px 0;background:#fdfdfb;transition:border 0.2s;}
+        .unified-input:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(184,131,42,0.1);}
         .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 24px;border-radius:30px;font-size:0.8rem;opacity:0;transition:0.3s;z-index:3000;}
         .toast.show{opacity:1;}
         .load-more{text-align:center;padding:20px;color:var(--ink-light);cursor:pointer;font-size:0.9rem;}
@@ -76,6 +86,7 @@
             <h1>⚙️ 库管理中心</h1>
             <div class="header-actions">
                 <a href="index.html" class="btn-outline">← 前台</a>
+                <button class="btn-outline" onclick="showChangeLockPwdModal()">🔑 修改锁密码</button>
                 <button class="btn-outline" onclick="exportData()">📤 导出</button>
                 <label class="btn-outline" style="cursor:pointer;">📥 导入<input type="file" hidden onchange="importData(this)"></label>
                 <button class="btn" id="saveBtn" onclick="commitChanges()">💾 保存更改</button>
@@ -93,12 +104,61 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- 修改后台密码模态框 -->
+<div id="changeAdminPwdModal" class="modal-overlay">
+    <div class="modal-container">
+        <i class="fa-solid fa-xmark close-modal-icon" onclick="closeModal('changeAdminPwdModal')"></i>
+        <h3>修改管理密码</h3>
+        <input type="password" id="oldAdminPwd" placeholder="当前密码" class="unified-input">
+        <input type="password" id="newAdminPwd1" placeholder="新密码（至少4位）" class="unified-input">
+        <input type="password" id="newAdminPwd2" placeholder="确认新密码" class="unified-input">
+        <div class="modal-buttons">
+            <button class="btn-primary" style="background:var(--ink);color:#fff;padding:10px 24px;border-radius:60px;border:none;cursor:pointer;" onclick="changeAdminPwd()">确认修改</button>
+            <button class="btn-secondary" style="background:transparent;border:1.5px solid #ccc;padding:10px 24px;border-radius:60px;cursor:pointer;" onclick="closeModal('changeAdminPwdModal')">取消</button>
+        </div>
+        <p id="adminPwdError" class="error-msg"></p>
+    </div>
+</div>
+
+<!-- 重置后台密码模态框 -->
+<div id="forgotAdminPwdModal" class="modal-overlay">
+    <div class="modal-container">
+        <i class="fa-solid fa-xmark close-modal-icon" onclick="closeModal('forgotAdminPwdModal')"></i>
+        <h3>重置管理密码</h3>
+        <p class="modal-desc">请输入重置暗号</p>
+        <input type="text" id="adminResetCode" placeholder="重置暗号" class="unified-input">
+        <div class="modal-buttons">
+            <button class="btn-primary" onclick="resetAdminPwd()">重置</button>
+            <button class="btn-secondary" onclick="closeModal('forgotAdminPwdModal')">取消</button>
+        </div>
+        <p id="adminResetError" class="error-msg"></p>
+    </div>
+</div>
+
+<!-- 修改模块锁密码模态框（后台） -->
+<div id="changeLockPwdModalAdmin" class="modal-overlay">
+    <div class="modal-container">
+        <i class="fa-solid fa-xmark close-modal-icon" onclick="closeModal('changeLockPwdModalAdmin')"></i>
+        <h3>修改模块锁密码</h3>
+        <input type="password" id="oldLockPwdAdmin" placeholder="当前锁密码" class="unified-input">
+        <input type="password" id="newLockPwdAdmin1" placeholder="新密码（至少4位）" class="unified-input">
+        <input type="password" id="newLockPwdAdmin2" placeholder="确认新密码" class="unified-input">
+        <div class="modal-buttons">
+            <button class="btn-primary" onclick="changeLockPwdAdmin()">确认修改</button>
+            <button class="btn-secondary" onclick="closeModal('changeLockPwdModalAdmin')">取消</button>
+        </div>
+        <p id="lockPwdAdminError" class="error-msg"></p>
+    </div>
+</div>
+
 <script>
 (function() {
     const DATA_BIN_ID = '6a02eef4250b1311c33a8e0d';
     const MASTER_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
     const DEFAULT_PWD = 'ysqy798';
     const RESET_CODE = 'ysqy_reset';
+    const LOCK_PWD_KEY = 'ysqy_module_pwd';
+    const DEFAULT_LOCK_PWD = 'zheshimima';
     const DEFAULT_MODULES = [
         { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原'], locked: false },
         { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙'], locked: false },
@@ -111,6 +171,11 @@
     let currentPage = 1;
     const PAGE_SIZE = 12;
     let isLoadingMore = false;
+
+    function getAdminPwd() { return localStorage.getItem('ysqy_admin_pwd') || DEFAULT_PWD; }
+    function setAdminPwd(pwd) { localStorage.setItem('ysqy_admin_pwd', pwd); }
+    function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
+    function setLockPwd(pwd) { localStorage.setItem(LOCK_PWD_KEY, pwd); }
 
     function markChanged() { hasChanges = true; document.getElementById('saveBtn').style.background = '#c0392b'; }
     function clearChanged() { hasChanges = false; document.getElementById('saveBtn').style.background = ''; }
@@ -148,7 +213,6 @@
         if (!hasChanges) { alert('没有未保存的更改'); return; }
         if (!siteData.version) siteData.version = 1;
         else siteData.version++;
-
         try {
             const res = await fetch(`https://api.jsonbin.io/v3/b/${DATA_BIN_ID}`, {
                 method: 'PUT',
@@ -172,28 +236,71 @@
     };
 
     function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
-    function getPwd() { return localStorage.getItem('ysqy_admin_pwd') || DEFAULT_PWD; }
 
-    window.login = function() { if (document.getElementById('pwdInput').value === getPwd()) { document.getElementById('loginScreen').style.display='none'; document.getElementById('adminMain').style.display='block'; renderSidebar(); } else toast('密码错误'); };
+    window.login = function() { 
+        if (document.getElementById('pwdInput').value === getAdminPwd()) { 
+            document.getElementById('loginScreen').style.display='none'; 
+            document.getElementById('adminMain').style.display='block'; 
+            renderSidebar(); 
+        } else toast('密码错误'); 
+    };
 
     window.showChangePwdModal = function() {
-        const modal = document.createElement('div'); modal.className = 'modal';
-        modal.innerHTML = `<div class="modal-box"><h3>修改管理密码</h3><input type="password" id="oldPwdChg" placeholder="当前密码" class="unified-input"><input type="password" id="newPwd1" placeholder="新密码" class="unified-input"><input type="password" id="newPwd2" placeholder="确认新密码" class="unified-input"><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="confirmChangePwd">确认修改</button></div></div>`;
-        document.body.appendChild(modal);
-        document.getElementById('confirmChangePwd').onclick = function() {
-            const o = document.getElementById('oldPwdChg').value, n1 = document.getElementById('newPwd1').value, n2 = document.getElementById('newPwd2').value;
-            if (o !== getPwd()) return toast('当前密码错误'); if (n1.length < 4) return toast('密码至少4位'); if (n1 !== n2) return toast('两次输入不一致');
-            localStorage.setItem('ysqy_admin_pwd', n1); modal.remove(); toast('密码已修改');
-        };
-        modal.onclick = e => { if (e.target === modal) modal.remove(); };
+        document.getElementById('oldAdminPwd').value = '';
+        document.getElementById('newAdminPwd1').value = '';
+        document.getElementById('newAdminPwd2').value = '';
+        document.getElementById('adminPwdError').textContent = '';
+        openModal('changeAdminPwdModal');
     };
+    window.changeAdminPwd = function() {
+        const old = document.getElementById('oldAdminPwd').value;
+        const new1 = document.getElementById('newAdminPwd1').value;
+        const new2 = document.getElementById('newAdminPwd2').value;
+        if (old !== getAdminPwd()) { document.getElementById('adminPwdError').textContent = '当前密码错误'; return; }
+        if (new1.length < 4) { document.getElementById('adminPwdError').textContent = '新密码至少4位'; return; }
+        if (new1 !== new2) { document.getElementById('adminPwdError').textContent = '两次输入不一致'; return; }
+        setAdminPwd(new1);
+        toast('管理密码已修改');
+        closeModal('changeAdminPwdModal');
+    };
+
     window.showForgotPwdModal = function() {
-        const modal = document.createElement('div'); modal.className = 'modal';
-        modal.innerHTML = `<div class="modal-box"><h3>重置密码</h3><input type="text" id="forgotCode" placeholder="重置暗号" class="unified-input"><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="confirmResetPwd">重置密码</button></div></div>`;
-        document.body.appendChild(modal);
-        document.getElementById('confirmResetPwd').onclick = function() { if (document.getElementById('forgotCode').value === RESET_CODE) { localStorage.removeItem('ysqy_admin_pwd'); modal.remove(); toast('密码已重置为默认密码'); } else toast('暗号错误'); };
-        modal.onclick = e => { if (e.target === modal) modal.remove(); };
+        document.getElementById('adminResetCode').value = '';
+        document.getElementById('adminResetError').textContent = '';
+        openModal('forgotAdminPwdModal');
     };
+    window.resetAdminPwd = function() {
+        const code = document.getElementById('adminResetCode').value;
+        if (code === RESET_CODE) {
+            setAdminPwd(DEFAULT_PWD);
+            toast('密码已重置为默认值');
+            closeModal('forgotAdminPwdModal');
+        } else {
+            document.getElementById('adminResetError').textContent = '暗号错误，重置失败';
+        }
+    };
+
+    window.showChangeLockPwdModal = function() {
+        document.getElementById('oldLockPwdAdmin').value = '';
+        document.getElementById('newLockPwdAdmin1').value = '';
+        document.getElementById('newLockPwdAdmin2').value = '';
+        document.getElementById('lockPwdAdminError').textContent = '';
+        openModal('changeLockPwdModalAdmin');
+    };
+    window.changeLockPwdAdmin = function() {
+        const old = document.getElementById('oldLockPwdAdmin').value;
+        const new1 = document.getElementById('newLockPwdAdmin1').value;
+        const new2 = document.getElementById('newLockPwdAdmin2').value;
+        if (old !== getLockPwd()) { document.getElementById('lockPwdAdminError').textContent = '当前锁密码错误'; return; }
+        if (new1.length < 4) { document.getElementById('lockPwdAdminError').textContent = '新密码至少4位'; return; }
+        if (new1 !== new2) { document.getElementById('lockPwdAdminError').textContent = '两次输入不一致'; return; }
+        setLockPwd(new1);
+        toast('模块锁密码已修改');
+        closeModal('changeLockPwdModalAdmin');
+    };
+
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
 
     let currentModuleId = null;
 
@@ -292,14 +399,12 @@
         if (isLoadingMore) return;
         isLoadingMore = true;
         currentPage++;
-        
         const mod = siteData.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
         let contents = siteData.contents.filter(c => c.moduleId === currentModuleId).sort((a,b) => b.id - a.id);
         if (currentFilter !== '全部') {
             contents = contents.filter(c => mod.type === 'moments' ? c.angle === currentFilter : c.category === currentFilter);
         }
-        
         const pageContents = contents.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
         const grid = document.getElementById('adminCardGrid');
         if (grid) {
@@ -308,7 +413,6 @@
                 grid.insertAdjacentHTML('beforeend', generateAdminCard(c, idx));
             });
         }
-        
         const totalPages = Math.ceil(contents.length / PAGE_SIZE);
         const loadMoreBtn = document.getElementById('loadMoreBtn');
         if (loadMoreBtn) {
@@ -319,17 +423,10 @@
                 loadMoreBtn.textContent = `加载更多（剩余 ${remaining} 条）`;
             }
         }
-        
         isLoadingMore = false;
     };
 
-    window.applyFilter = function(val) {
-        currentFilter = val;
-        currentPage = 1;
-        isLoadingMore = false;
-        renderContent();
-    };
-
+    window.applyFilter = function(val) { currentFilter = val; currentPage = 1; isLoadingMore = false; renderContent(); };
     window.renameCategory = function(oldName) {
         const newName = prompt('将分类名称修改为：', oldName);
         if (!newName || newName === oldName) return;
@@ -348,7 +445,6 @@
         renderContent();
         toast(`分类已从“${oldName}”更新为“${newName}”`);
     };
-
     window.publish = function() {
         const mod = siteData.modules.find(m => m.id === currentModuleId);
         if (!mod) return;
@@ -381,7 +477,6 @@
         renderContent();
         toast('已暂存，点击右上角保存更改');
     };
-
     window.editContent = function(idx) {
         const c = siteData.contents[idx];
         const mod = siteData.modules.find(m => m.id === c.moduleId);
@@ -398,8 +493,8 @@
             ${mod.type === 'testimonial' ? `<input type="text" id="editClient" value="${c.clientName||''}" placeholder="客户名称" class="unified-input">` : ''}
             <input type="text" id="editDate" value="${c.date||''}" placeholder="日期" class="unified-input">`;
         }
-        const overlay = document.createElement('div'); overlay.className = 'modal';
-        overlay.innerHTML = `<div class="modal-box"><h3>编辑内容</h3>${form}<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;"><button class="btn-outline" onclick="this.closest('.modal').remove()">取消</button><button class="btn" id="saveEditBtn">确认修改（暂存）</button></div></div>`;
+        const overlay = document.createElement('div'); overlay.className = 'modal-overlay open';
+        overlay.innerHTML = `<div class="modal-container"><i class="fa-solid fa-xmark close-modal-icon" onclick="this.closest('.modal-overlay').remove()"></i><h3>编辑内容</h3>${form}<div class="modal-buttons"><button class="btn-secondary" onclick="this.closest('.modal-overlay').remove()">取消</button><button class="btn-primary" id="saveEditBtn" style="background:var(--ink);color:#fff;padding:10px 24px;border-radius:60px;border:none;">确认修改</button></div></div>`;
         document.body.appendChild(overlay);
         document.getElementById('saveEditBtn').onclick = function() {
             if (mod.type === 'moments') { c.angle = document.getElementById('editAngle').value; c.text = document.getElementById('editText').value.trim(); }
@@ -422,16 +517,13 @@
         };
         overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
     };
-
     window.addCategory = function() { const val=document.getElementById('newCatInput').value.trim(); if(val){ const mod=siteData.modules.find(m=>m.id===currentModuleId); if(!mod.categories) mod.categories=[]; if(mod.categories.includes(val)) return toast('已存在'); mod.categories.push(val); markChanged(); renderContent(); } };
     window.deleteCategory = function(val) { const mod=siteData.modules.find(m=>m.id===currentModuleId); mod.categories = mod.categories.filter(c=>c!==val); markChanged(); renderContent(); };
     window.moveContent = function(idx, dir) { const newIdx = idx + dir; if (newIdx < 0 || newIdx >= siteData.contents.length) return; [siteData.contents[idx], siteData.contents[newIdx]] = [siteData.contents[newIdx], siteData.contents[idx]]; markChanged(); currentPage = 1; renderContent(); };
     window.deleteContent = function(idx) { if (confirm('确认删除？')) { siteData.contents.splice(idx, 1); markChanged(); currentPage = 1; renderContent(); } };
-
     window.addModule = function() { const name = prompt('模块名称'); if (name) { const type = prompt('类型 (moments / testimonial / course)', 'moments') || 'moments'; siteData.modules.push({ id: 'mod_' + Date.now(), name, type, categories: [], locked: false }); markChanged(); renderSidebar(); } };
     window.renameModule = function(id) { const mod = siteData.modules.find(m => m.id === id); const newName = prompt('新名称', mod.name); if (newName) { mod.name = newName; markChanged(); renderSidebar(); if (currentModuleId === id) renderContent(); } };
     window.deleteModule = function(id) { if (confirm('删除模块将清空其所有内容')) { siteData.modules = siteData.modules.filter(m => m.id !== id); siteData.contents = siteData.contents.filter(c => c.moduleId !== id); if (currentModuleId === id) { currentModuleId = null; document.getElementById('contentPanel').innerHTML = '← 选择模块'; } markChanged(); renderSidebar(); } };
-
     window.exportData = function() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(siteData)], { type: 'application/json' })); a.download = 'backup.json'; a.click(); };
     window.importData = function(input) {
         const file = input.files[0]; if (!file) return;
@@ -445,11 +537,9 @@
         };
         reader.readAsText(file); input.value = '';
     };
-
     window.addEventListener('beforeunload', function(e) {
         if (hasChanges) { e.preventDefault(); e.returnValue = '您有未保存的更改，确定离开吗？'; }
     });
-
     loadData();
 })();
 </script>
