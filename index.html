@@ -89,13 +89,37 @@
         @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,0.4)}50%{box-shadow:0 0 0 6px rgba(192,57,43,0)} }
         .refresh-btn { background:var(--card-bg); border:1px solid var(--border); padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.8rem; display:flex; align-items:center; gap:6px; transition:0.2s; }
         .refresh-btn:hover { background:#f0ede5; }
-        .unified-input { width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px; font-family:var(--font-sans); font-size:0.9rem; outline:none; margin:8px 0; background:#fdfdfb; }
-        .unified-input:focus { border-color:var(--gold); }
+        .unified-input { width:100%; padding:12px 18px; border:1.5px solid #ddd; border-radius:30px; font-family:var(--font-sans); font-size:0.9rem; outline:none; margin:8px 0; background:#fdfdfb; transition:border 0.2s; }
+        .unified-input:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(184,131,42,0.1); }
         .pagination { display:flex; justify-content:center; align-items:center; gap:12px; padding:20px 0; }
         .pagination button { background:var(--card-bg); border:1px solid var(--border); padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem; color:var(--ink); transition:0.2s; }
         .pagination button:hover { background:var(--gold-pale); color:var(--gold); }
         .pagination button:disabled { opacity:0.4; cursor:not-allowed; }
         .pagination select { padding:8px 12px; border:1px solid var(--border); border-radius:20px; font-size:0.85rem; background:var(--card-bg); color:var(--ink); outline:none; }
+
+        /* 美化的模态框样式 */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px);
+            display: flex; align-items: center; justify-content: center; z-index: 2500;
+            opacity: 0; visibility: hidden; transition: 0.2s;
+        }
+        .modal-overlay.open { opacity: 1; visibility: visible; }
+        .modal-container {
+            background: #fff; border-radius: 32px; max-width: 420px; width: 90%; padding: 32px 28px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); text-align: center; position: relative;
+        }
+        .modal-container h3 { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 16px; color: var(--ink); }
+        .modal-container .modal-desc { font-size: 0.85rem; color: var(--ink-light); margin-bottom: 20px; }
+        .modal-container input { width: 100%; margin-bottom: 16px; }
+        .modal-buttons { display: flex; gap: 12px; justify-content: center; margin-top: 8px; flex-wrap: wrap; }
+        .btn-primary { background: var(--ink); color: #fff; border: none; padding: 10px 24px; border-radius: 60px; font-weight: 500; cursor: pointer; transition: 0.2s; font-family: var(--font-sans); }
+        .btn-primary:hover { background: #2b2b2b; transform: translateY(-1px); }
+        .btn-secondary { background: transparent; border: 1.5px solid #ccc; color: var(--ink-light); padding: 10px 24px; border-radius: 60px; cursor: pointer; transition: 0.2s; font-family: var(--font-sans); }
+        .btn-secondary:hover { background: #f5f5f5; border-color: var(--gold); color: var(--gold); }
+        .error-msg { color: #c33; font-size: 0.8rem; margin-top: 8px; }
+        .close-modal-icon { position: absolute; top: 20px; right: 24px; font-size: 1.2rem; cursor: pointer; color: #aaa; }
+        .close-modal-icon:hover { color: var(--ink); }
+
         @media (max-width:680px) { .hero-title{font-size:2rem} .media-card-grid{grid-template-columns:repeat(2,1fr)} }
     </style>
 </head>
@@ -108,8 +132,9 @@
                 <p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p>
                 <div class="hero-line"></div>
             </header>
-            <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+            <div style="display:flex; justify-content:flex-end; margin-bottom:10px; gap:10px;">
                 <button class="refresh-btn" onclick="refreshContent()" id="refreshBtn">🔄 检查更新<span class="update-badge" id="updateBadge">有更新</span></button>
+                <button class="refresh-btn" onclick="showChangeLockPwdModal()">🔐 修改锁密码</button>
             </div>
             <nav class="module-grid" id="moduleGrid"></nav>
         </div>
@@ -138,22 +163,61 @@
         </div>
     </div>
 
-    <a href="admin.html" class="admin-float" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
+    <!-- 浮动按钮组 -->
+    <div style="position:fixed; bottom:28px; right:28px; display:flex; gap:12px; z-index:998;">
+        <a href="admin.html" class="admin-float" style="position:relative; bottom:0; right:0; width:56px; height:56px; display:flex;" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
+        <div class="admin-float" style="background:var(--gold); position:relative; bottom:0; right:0; width:56px; height:56px; cursor:pointer;" onclick="showChangeLockPwdModal()" title="修改模块密码"><i class="fa-solid fa-key"></i></div>
+    </div>
 
     <div class="lightbox" id="lightbox" onclick="closeLightbox()"><span class="close-lightbox">&times;</span><div id="lightboxContent"></div></div>
     <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)"><div class="detail-modal" id="detailModal" onclick="event.stopPropagation()"><span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span><div id="detailContent"></div></div></div>
     <div class="toast" id="toast"></div>
 
-    <div id="lockModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:2500;">
-        <div style="background:#fff;border-radius:24px;padding:32px;max-width:380px;width:90%;text-align:center;">
-            <h3>🔒 此模块已锁定</h3>
+    <!-- 锁密码验证模态框 -->
+    <div id="lockModal" class="modal-overlay">
+        <div class="modal-container">
+            <i class="fa-solid fa-xmark close-modal-icon" onclick="closeLockModal()"></i>
+            <h3>🔒 模块已锁定</h3>
+            <p class="modal-desc">此模块需要密码访问，请输入密码</p>
             <input type="password" id="lockPwdInput" placeholder="请输入访问密码" class="unified-input" onkeydown="if(event.key==='Enter')verifyLockPwd()">
-            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                <button class="btn" onclick="verifyLockPwd()">解锁</button>
-                <button class="btn-outline" onclick="showForgotLockPwd()">忘记密码？</button>
-                <button class="btn-outline" onclick="closeLockModal()">取消</button>
+            <div class="modal-buttons">
+                <button class="btn-primary" onclick="verifyLockPwd()">解锁</button>
+                <button class="btn-secondary" onclick="showForgotLockPwd()">忘记密码？</button>
+                <button class="btn-secondary" onclick="closeLockModal()">取消</button>
             </div>
-            <p id="lockError" style="color:#c33;font-size:0.8rem;margin-top:8px;"></p>
+            <p id="lockError" class="error-msg"></p>
+        </div>
+    </div>
+
+    <!-- 修改模块锁密码模态框（前台） -->
+    <div id="changeLockPwdModal" class="modal-overlay">
+        <div class="modal-container">
+            <i class="fa-solid fa-xmark close-modal-icon" onclick="closeChangeLockPwdModal()"></i>
+            <h3>🔐 修改模块密码</h3>
+            <p class="modal-desc">修改后，所有锁定模块将使用新密码访问</p>
+            <input type="password" id="oldLockPwd" placeholder="当前密码" class="unified-input">
+            <input type="password" id="newLockPwd1" placeholder="新密码（至少4位）" class="unified-input">
+            <input type="password" id="newLockPwd2" placeholder="确认新密码" class="unified-input">
+            <div class="modal-buttons">
+                <button class="btn-primary" onclick="submitChangeLockPwd()">确认修改</button>
+                <button class="btn-secondary" onclick="closeChangeLockPwdModal()">取消</button>
+            </div>
+            <p id="changeLockError" class="error-msg"></p>
+        </div>
+    </div>
+
+    <!-- 忘记密码重置模态框（前台） -->
+    <div id="forgotLockModal" class="modal-overlay">
+        <div class="modal-container">
+            <i class="fa-solid fa-xmark close-modal-icon" onclick="closeForgotLockModal()"></i>
+            <h3>🔄 重置访问密码</h3>
+            <p class="modal-desc">请输入重置暗号，暗号正确后将恢复默认密码</p>
+            <input type="text" id="resetCodeInput" placeholder="重置暗号" class="unified-input" onkeydown="if(event.key==='Enter')submitForgotLockPwd()">
+            <div class="modal-buttons">
+                <button class="btn-primary" onclick="submitForgotLockPwd()">重置</button>
+                <button class="btn-secondary" onclick="closeForgotLockModal()">取消</button>
+            </div>
+            <p id="forgotError" class="error-msg"></p>
         </div>
     </div>
 
@@ -183,6 +247,8 @@
             function getLocalCache() { const c = localStorage.getItem(CACHE_KEY); return c ? JSON.parse(c) : null; }
             function setLocalCache(data) { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); }
             function setLocalVersion(v) { localStorage.setItem(VERSION_KEY, v.toString()); }
+            function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
+            function setLockPwd(pwd) { localStorage.setItem(LOCK_PWD_KEY, pwd); }
 
             function getThumbUrl(originalUrl) {
                 if (!originalUrl) return '';
@@ -256,21 +322,65 @@
                 pendingLockedModule = moduleName;
                 document.getElementById('lockPwdInput').value = '';
                 document.getElementById('lockError').textContent = '';
-                document.getElementById('lockModal').style.display = 'flex';
+                document.getElementById('lockModal').classList.add('open');
                 document.getElementById('lockPwdInput').focus();
             };
-            window.closeLockModal = function() { document.getElementById('lockModal').style.display = 'none'; pendingLockedModule = null; };
+            window.closeLockModal = function() { document.getElementById('lockModal').classList.remove('open'); pendingLockedModule = null; };
             window.verifyLockPwd = function() {
-                if (document.getElementById('lockPwdInput').value === (localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD)) {
+                if (document.getElementById('lockPwdInput').value === getLockPwd()) {
                     const target = pendingLockedModule;
                     closeLockModal();
                     if (target) openModule(target);
                 } else document.getElementById('lockError').textContent = '密码错误';
             };
+
+            // 前台修改锁密码弹窗
+            window.showChangeLockPwdModal = function() {
+                document.getElementById('oldLockPwd').value = '';
+                document.getElementById('newLockPwd1').value = '';
+                document.getElementById('newLockPwd2').value = '';
+                document.getElementById('changeLockError').textContent = '';
+                document.getElementById('changeLockPwdModal').classList.add('open');
+            };
+            window.closeChangeLockPwdModal = function() { document.getElementById('changeLockPwdModal').classList.remove('open'); };
+            window.submitChangeLockPwd = function() {
+                const old = document.getElementById('oldLockPwd').value;
+                const new1 = document.getElementById('newLockPwd1').value;
+                const new2 = document.getElementById('newLockPwd2').value;
+                if (old !== getLockPwd()) {
+                    document.getElementById('changeLockError').textContent = '当前密码错误';
+                    return;
+                }
+                if (new1.length < 4) {
+                    document.getElementById('changeLockError').textContent = '新密码至少4位';
+                    return;
+                }
+                if (new1 !== new2) {
+                    document.getElementById('changeLockError').textContent = '两次输入不一致';
+                    return;
+                }
+                setLockPwd(new1);
+                toast('模块密码已修改');
+                closeChangeLockPwdModal();
+            };
+
+            // 忘记密码模态框
             window.showForgotLockPwd = function() {
-                const code = prompt('请输入重置暗号');
-                if (code === RESET_CODE) { localStorage.removeItem(LOCK_PWD_KEY); toast('密码已重置为默认密码'); closeLockModal(); }
-                else if (code !== null) alert('暗号错误');
+                closeLockModal();
+                document.getElementById('resetCodeInput').value = '';
+                document.getElementById('forgotError').textContent = '';
+                document.getElementById('forgotLockModal').classList.add('open');
+            };
+            window.closeForgotLockModal = function() { document.getElementById('forgotLockModal').classList.remove('open'); };
+            window.submitForgotLockPwd = function() {
+                const code = document.getElementById('resetCodeInput').value;
+                if (code === RESET_CODE) {
+                    setLockPwd(DEFAULT_LOCK_PWD);
+                    toast('密码已重置为默认值');
+                    closeForgotLockModal();
+                } else {
+                    document.getElementById('forgotError').textContent = '暗号错误，重置失败';
+                }
             };
 
             window.openModule = function(m) {
@@ -429,26 +539,6 @@
                 lb.classList.add('open');
             };
             window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
-
-            window.openDetail = function(id, moduleName) {
-                const item = db.contents.find(c => c.id === id);
-                if (!item) return;
-                const copyText = ((item.title||'') + '\n' + (item.description||item.text||'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                document.getElementById('detailContent').innerHTML = `
-                    ${item.videoUrl ? `<iframe src="${item.videoUrl}" allowfullscreen style="width:100%;height:300px;"></iframe>` : (item.imageUrl ? `<div style="display:flex;overflow-x:auto;gap:8px;">${item.imageUrl.split(',').map(u => `<img src="${u.trim()}" style="height:200px;cursor:pointer;" onclick="openLightbox('${u.trim()}','')">`).join('')}</div>` : '')}
-                    <h3>${item.title||''}</h3>
-                    <p style="color:#888;">${item.category||''} · ${item.date||''} · ${item.clientName||''}</p>
-                    <p style="white-space:pre-wrap;line-height:1.8;">${item.description||item.text||''}</p>
-                    <button class="copy-btn" data-copy="${copyText}" onclick="handleCopy(this);"><i class="fa-regular fa-clone"></i> 复制文案</button>
-                `;
-                document.getElementById('detailOverlay').classList.add('open');
-                document.body.style.overflow = 'hidden';
-            };
-            window.closeDetail = function(e) {
-                if (e && e.target !== document.getElementById('detailOverlay')) return;
-                document.getElementById('detailOverlay').classList.remove('open');
-                document.body.style.overflow = '';
-            };
 
             function showUpdateBadge(show) {
                 const badge = document.getElementById('updateBadge');
