@@ -97,7 +97,7 @@
         .pagination button:disabled { opacity:0.4; cursor:not-allowed; }
         .pagination select { padding:8px 12px; border:1px solid var(--border); border-radius:20px; font-size:0.85rem; background:var(--card-bg); color:var(--ink); outline:none; }
 
-        /* 美化的模态框样式 */
+        /* 模态框样式 */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px);
             display: flex; align-items: center; justify-content: center; z-index: 2500;
@@ -119,6 +119,8 @@
         .error-msg { color: #c33; font-size: 0.8rem; margin-top: 8px; }
         .close-modal-icon { position: absolute; top: 20px; right: 24px; font-size: 1.2rem; cursor: pointer; color: #aaa; }
         .close-modal-icon:hover { color: var(--ink); }
+        .modal-link { color: var(--gold); text-decoration: underline; cursor: pointer; font-size: 0.8rem; }
+        .modal-link:hover { opacity: 0.8; }
 
         @media (max-width:680px) { .hero-title{font-size:2rem} .media-card-grid{grid-template-columns:repeat(2,1fr)} }
     </style>
@@ -132,9 +134,8 @@
                 <p class="hero-subtitle">极简文案资产 · 驱动品牌自然生长</p>
                 <div class="hero-line"></div>
             </header>
-            <div style="display:flex; justify-content:flex-end; margin-bottom:10px; gap:10px;">
+            <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
                 <button class="refresh-btn" onclick="refreshContent()" id="refreshBtn">🔄 检查更新<span class="update-badge" id="updateBadge">有更新</span></button>
-                <button class="refresh-btn" onclick="showChangeLockPwdModal()">🔐 修改锁密码</button>
             </div>
             <nav class="module-grid" id="moduleGrid"></nav>
         </div>
@@ -163,17 +164,14 @@
         </div>
     </div>
 
-    <!-- 浮动按钮组 -->
-    <div style="position:fixed; bottom:28px; right:28px; display:flex; gap:12px; z-index:998;">
-        <a href="admin.html" class="admin-float" style="position:relative; bottom:0; right:0; width:56px; height:56px; display:flex;" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
-        <div class="admin-float" style="background:var(--gold); position:relative; bottom:0; right:0; width:56px; height:56px; cursor:pointer;" onclick="showChangeLockPwdModal()" title="修改模块密码"><i class="fa-solid fa-key"></i></div>
-    </div>
+    <!-- 浮动管理按钮 -->
+    <a href="admin.html" class="admin-float" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
 
     <div class="lightbox" id="lightbox" onclick="closeLightbox()"><span class="close-lightbox">&times;</span><div id="lightboxContent"></div></div>
     <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)"><div class="detail-modal" id="detailModal" onclick="event.stopPropagation()"><span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span><div id="detailContent"></div></div></div>
     <div class="toast" id="toast"></div>
 
-    <!-- 锁密码验证模态框 -->
+    <!-- 锁密码验证模态框（集成修改密码和忘记密码入口） -->
     <div id="lockModal" class="modal-overlay">
         <div class="modal-container">
             <i class="fa-solid fa-xmark close-modal-icon" onclick="closeLockModal()"></i>
@@ -182,14 +180,17 @@
             <input type="password" id="lockPwdInput" placeholder="请输入访问密码" class="unified-input" onkeydown="if(event.key==='Enter')verifyLockPwd()">
             <div class="modal-buttons">
                 <button class="btn-primary" onclick="verifyLockPwd()">解锁</button>
-                <button class="btn-secondary" onclick="showForgotLockPwd()">忘记密码？</button>
                 <button class="btn-secondary" onclick="closeLockModal()">取消</button>
+            </div>
+            <div style="margin-top: 16px; display: flex; justify-content: center; gap: 24px;">
+                <span class="modal-link" onclick="showForgotLockPwdFromLockModal()">忘记密码？</span>
+                <span class="modal-link" onclick="showChangeLockPwdFromLockModal()">修改密码</span>
             </div>
             <p id="lockError" class="error-msg"></p>
         </div>
     </div>
 
-    <!-- 修改模块锁密码模态框（前台） -->
+    <!-- 修改模块锁密码模态框 -->
     <div id="changeLockPwdModal" class="modal-overlay">
         <div class="modal-container">
             <i class="fa-solid fa-xmark close-modal-icon" onclick="closeChangeLockPwdModal()"></i>
@@ -206,7 +207,7 @@
         </div>
     </div>
 
-    <!-- 忘记密码重置模态框（前台） -->
+    <!-- 忘记密码重置模态框 -->
     <div id="forgotLockModal" class="modal-overlay">
         <div class="modal-container">
             <i class="fa-solid fa-xmark close-modal-icon" onclick="closeForgotLockModal()"></i>
@@ -318,6 +319,7 @@
                 }).join('');
             }
 
+            // 锁模块验证弹窗
             window.showLockModal = function(moduleName) {
                 pendingLockedModule = moduleName;
                 document.getElementById('lockPwdInput').value = '';
@@ -334,14 +336,24 @@
                 } else document.getElementById('lockError').textContent = '密码错误';
             };
 
-            // 前台修改锁密码弹窗
-            window.showChangeLockPwdModal = function() {
+            // 从锁模块弹窗调用的修改密码和忘记密码
+            window.showChangeLockPwdFromLockModal = function() {
+                closeLockModal(); // 先关闭锁验证框
+                openChangeLockPwdModal();
+            };
+            window.showForgotLockPwdFromLockModal = function() {
+                closeLockModal();
+                openForgotLockModal();
+            };
+
+            // 修改密码模态框控制
+            function openChangeLockPwdModal() {
                 document.getElementById('oldLockPwd').value = '';
                 document.getElementById('newLockPwd1').value = '';
                 document.getElementById('newLockPwd2').value = '';
                 document.getElementById('changeLockError').textContent = '';
                 document.getElementById('changeLockPwdModal').classList.add('open');
-            };
+            }
             window.closeChangeLockPwdModal = function() { document.getElementById('changeLockPwdModal').classList.remove('open'); };
             window.submitChangeLockPwd = function() {
                 const old = document.getElementById('oldLockPwd').value;
@@ -362,15 +374,18 @@
                 setLockPwd(new1);
                 toast('模块密码已修改');
                 closeChangeLockPwdModal();
+                // 如果之前有等待解锁的模块，重新打开锁验证框让用户输入新密码
+                if (pendingLockedModule) {
+                    setTimeout(() => showLockModal(pendingLockedModule), 200);
+                }
             };
 
-            // 忘记密码模态框
-            window.showForgotLockPwd = function() {
-                closeLockModal();
+            // 忘记密码模态框控制
+            function openForgotLockModal() {
                 document.getElementById('resetCodeInput').value = '';
                 document.getElementById('forgotError').textContent = '';
                 document.getElementById('forgotLockModal').classList.add('open');
-            };
+            }
             window.closeForgotLockModal = function() { document.getElementById('forgotLockModal').classList.remove('open'); };
             window.submitForgotLockPwd = function() {
                 const code = document.getElementById('resetCodeInput').value;
@@ -378,6 +393,9 @@
                     setLockPwd(DEFAULT_LOCK_PWD);
                     toast('密码已重置为默认值');
                     closeForgotLockModal();
+                    if (pendingLockedModule) {
+                        setTimeout(() => showLockModal(pendingLockedModule), 200);
+                    }
                 } else {
                     document.getElementById('forgotError').textContent = '暗号错误，重置失败';
                 }
@@ -539,6 +557,7 @@
                 lb.classList.add('open');
             };
             window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
+            window.openDetail = function(id, moduleName) { /* 可选实现，如需详细弹窗可在此补充 */ };
 
             function showUpdateBadge(show) {
                 const badge = document.getElementById('updateBadge');
@@ -589,6 +608,7 @@
             };
 
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetail(); closeLightbox(); } });
+            window.closeDetail = function() { document.getElementById('detailOverlay').classList.remove('open'); };
 
             loadData();
         })();
