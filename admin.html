@@ -86,7 +86,8 @@
             <h1>⚙️ 库管理中心</h1>
             <div class="header-actions">
                 <a href="index.html" class="btn-outline">← 前台</a>
-                <button class="btn-outline" onclick="showChangeLockPwdModal()">🔑 修改锁密码</button>
+                <button class="btn-outline" onclick="showChangeLockPwdModal()">🔑 修改全局锁密码</button>
+                <button class="btn-outline" onclick="resetLockPwdToDefault()">🔄 重置锁密码为默认</button>
                 <button class="btn-outline" onclick="exportData()">📤 导出</button>
                 <label class="btn-outline" style="cursor:pointer;">📥 导入<input type="file" hidden onchange="importData(this)"></label>
                 <button class="btn" id="saveBtn" onclick="commitChanges()">💾 保存更改</button>
@@ -135,16 +136,16 @@
     </div>
 </div>
 
-<!-- 修改模块锁密码模态框（后台） -->
+<!-- 修改全局锁密码模态框（后台） -->
 <div id="changeLockPwdModalAdmin" class="modal-overlay">
     <div class="modal-container">
         <i class="fa-solid fa-xmark close-modal-icon" onclick="closeModal('changeLockPwdModalAdmin')"></i>
-        <h3>修改模块锁密码</h3>
-        <input type="password" id="oldLockPwdAdmin" placeholder="当前锁密码" class="unified-input">
-        <input type="password" id="newLockPwdAdmin1" placeholder="新密码（至少4位）" class="unified-input">
-        <input type="password" id="newLockPwdAdmin2" placeholder="确认新密码" class="unified-input">
+        <h3>修改全局模块锁密码</h3>
+        <p class="modal-desc">设置后，所有用户访问锁定模块时都需要使用此密码</p>
+        <input type="password" id="newGlobalLockPwd1" placeholder="新密码（至少4位）" class="unified-input">
+        <input type="password" id="newGlobalLockPwd2" placeholder="确认新密码" class="unified-input">
         <div class="modal-buttons">
-            <button class="btn-primary" onclick="changeLockPwdAdmin()">确认修改</button>
+            <button class="btn-primary" onclick="changeGlobalLockPwd()">确认修改</button>
             <button class="btn-secondary" onclick="closeModal('changeLockPwdModalAdmin')">取消</button>
         </div>
         <p id="lockPwdAdminError" class="error-msg"></p>
@@ -157,14 +158,8 @@
     const MASTER_KEY = '$2a$10$ZT.KNtcxFkJRschmg1TdreI.6z4RU2lYAR/qWubLdAqbAWNb80oRa';
     const DEFAULT_PWD = 'ysqy798';
     const RESET_CODE = 'ysqy_reset';
-    const LOCK_PWD_KEY = 'ysqy_module_pwd';
-    const DEFAULT_LOCK_PWD = 'zheshimima';
-    const DEFAULT_MODULES = [
-        { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原'], locked: false },
-        { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙'], locked: false },
-        { id:'course', name:'课程卖点', type:'course', categories:['核心价值'], locked: false }
-    ];
-
+    const DEFAULT_LOCK_PWD = 'zheshimima';  // 全局默认密码
+    
     let siteData = null;
     let hasChanges = false;
     let currentFilter = '全部';
@@ -174,21 +169,31 @@
 
     function getAdminPwd() { return localStorage.getItem('ysqy_admin_pwd') || DEFAULT_PWD; }
     function setAdminPwd(pwd) { localStorage.setItem('ysqy_admin_pwd', pwd); }
-    function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
-    function setLockPwd(pwd) { localStorage.setItem(LOCK_PWD_KEY, pwd); }
 
     function markChanged() { hasChanges = true; document.getElementById('saveBtn').style.background = '#c0392b'; }
     function clearChanged() { hasChanges = false; document.getElementById('saveBtn').style.background = ''; }
 
     function cleanModules(data) {
         if (!data || !data.modules || !Array.isArray(data.modules)) {
-            data.modules = JSON.parse(JSON.stringify(DEFAULT_MODULES));
+            data.modules = JSON.parse(JSON.stringify([
+                { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原'], locked: false },
+                { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙'], locked: false },
+                { id:'course', name:'课程卖点', type:'course', categories:['核心价值'], locked: false }
+            ]));
         } else {
             data.modules = data.modules.filter(m => m && typeof m === 'object' && m.id && m.name && m.name !== 'undefined' && m.name !== 'null');
             data.modules.forEach(m => { if (m.locked === undefined) m.locked = false; });
-            if (data.modules.length === 0) data.modules = JSON.parse(JSON.stringify(DEFAULT_MODULES));
+            if (data.modules.length === 0) data.modules = JSON.parse(JSON.stringify([
+                { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原'], locked: false },
+                { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙'], locked: false },
+                { id:'course', name:'课程卖点', type:'course', categories:['核心价值'], locked: false }
+            ]));
         }
         if (!data.contents || !Array.isArray(data.contents)) data.contents = [];
+        // 确保全局锁密码字段存在
+        if (typeof data.globalLockPassword === 'undefined') {
+            data.globalLockPassword = DEFAULT_LOCK_PWD;
+        }
         return data;
     }
 
@@ -201,10 +206,12 @@
                 const json = await res.json();
                 siteData = cleanModules(json.record);
             } else {
-                siteData = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
+                siteData = { modules: [], contents: [], globalLockPassword: DEFAULT_LOCK_PWD };
+                siteData = cleanModules(siteData);
             }
         } catch(e) {
-            siteData = { modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)), contents: [] };
+            siteData = { modules: [], contents: [], globalLockPassword: DEFAULT_LOCK_PWD };
+            siteData = cleanModules(siteData);
         }
         clearChanged();
     }
@@ -222,6 +229,7 @@
             if (res.ok) {
                 clearChanged();
                 alert('✅ 保存成功！');
+                // 辅助版本同步（可选）
                 fetch(`https://api.jsonbin.io/v3/b/6a082a01c0954111d82fd32b`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
@@ -273,30 +281,38 @@
         const code = document.getElementById('adminResetCode').value;
         if (code === RESET_CODE) {
             setAdminPwd(DEFAULT_PWD);
-            toast('密码已重置为默认值');
+            toast('管理密码已重置为默认值');
             closeModal('forgotAdminPwdModal');
         } else {
             document.getElementById('adminResetError').textContent = '暗号错误，重置失败';
         }
     };
 
+    // 全局锁密码修改（保存到云端）
     window.showChangeLockPwdModal = function() {
-        document.getElementById('oldLockPwdAdmin').value = '';
-        document.getElementById('newLockPwdAdmin1').value = '';
-        document.getElementById('newLockPwdAdmin2').value = '';
+        document.getElementById('newGlobalLockPwd1').value = '';
+        document.getElementById('newGlobalLockPwd2').value = '';
         document.getElementById('lockPwdAdminError').textContent = '';
         openModal('changeLockPwdModalAdmin');
     };
-    window.changeLockPwdAdmin = function() {
-        const old = document.getElementById('oldLockPwdAdmin').value;
-        const new1 = document.getElementById('newLockPwdAdmin1').value;
-        const new2 = document.getElementById('newLockPwdAdmin2').value;
-        if (old !== getLockPwd()) { document.getElementById('lockPwdAdminError').textContent = '当前锁密码错误'; return; }
+    window.changeGlobalLockPwd = function() {
+        const new1 = document.getElementById('newGlobalLockPwd1').value;
+        const new2 = document.getElementById('newGlobalLockPwd2').value;
         if (new1.length < 4) { document.getElementById('lockPwdAdminError').textContent = '新密码至少4位'; return; }
         if (new1 !== new2) { document.getElementById('lockPwdAdminError').textContent = '两次输入不一致'; return; }
-        setLockPwd(new1);
-        toast('模块锁密码已修改');
+        siteData.globalLockPassword = new1;
+        markChanged();
+        commitChanges(); // 直接保存
         closeModal('changeLockPwdModalAdmin');
+        toast('全局锁密码已修改并保存');
+    };
+    window.resetLockPwdToDefault = function() {
+        if (confirm('重置全局锁密码为默认值（zheshimima），确定吗？')) {
+            siteData.globalLockPassword = DEFAULT_LOCK_PWD;
+            markChanged();
+            commitChanges();
+            toast('已重置为默认密码并保存');
+        }
     };
 
     function openModal(id) { document.getElementById(id).classList.add('open'); }
