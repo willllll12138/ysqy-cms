@@ -97,7 +97,6 @@
         .pagination button:disabled { opacity:0.4; cursor:not-allowed; }
         .pagination select { padding:8px 12px; border:1px solid var(--border); border-radius:20px; font-size:0.85rem; background:var(--card-bg); color:var(--ink); outline:none; }
 
-        /* 模态框样式 */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px);
             display: flex; align-items: center; justify-content: center; z-index: 2500;
@@ -119,8 +118,6 @@
         .error-msg { color: #c33; font-size: 0.8rem; margin-top: 8px; }
         .close-modal-icon { position: absolute; top: 20px; right: 24px; font-size: 1.2rem; cursor: pointer; color: #aaa; }
         .close-modal-icon:hover { color: var(--ink); }
-        .modal-link { color: var(--gold); text-decoration: underline; cursor: pointer; font-size: 0.8rem; }
-        .modal-link:hover { opacity: 0.8; }
 
         @media (max-width:680px) { .hero-title{font-size:2rem} .media-card-grid{grid-template-columns:repeat(2,1fr)} }
     </style>
@@ -164,14 +161,13 @@
         </div>
     </div>
 
-    <!-- 浮动管理按钮 -->
     <a href="admin.html" class="admin-float" title="管理后台"><i class="fa-solid fa-sliders"></i></a>
 
     <div class="lightbox" id="lightbox" onclick="closeLightbox()"><span class="close-lightbox">&times;</span><div id="lightboxContent"></div></div>
     <div class="detail-modal-overlay" id="detailOverlay" onclick="closeDetail(event)"><div class="detail-modal" id="detailModal" onclick="event.stopPropagation()"><span class="close-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></span><div id="detailContent"></div></div></div>
     <div class="toast" id="toast"></div>
 
-    <!-- 锁密码验证模态框（集成修改密码和忘记密码入口） -->
+    <!-- 锁密码验证模态框（无修改/忘记密码入口） -->
     <div id="lockModal" class="modal-overlay">
         <div class="modal-container">
             <i class="fa-solid fa-xmark close-modal-icon" onclick="closeLockModal()"></i>
@@ -182,43 +178,7 @@
                 <button class="btn-primary" onclick="verifyLockPwd()">解锁</button>
                 <button class="btn-secondary" onclick="closeLockModal()">取消</button>
             </div>
-            <div style="margin-top: 16px; display: flex; justify-content: center; gap: 24px;">
-                <span class="modal-link" onclick="showForgotLockPwdFromLockModal()">忘记密码？</span>
-                <span class="modal-link" onclick="showChangeLockPwdFromLockModal()">修改密码</span>
-            </div>
             <p id="lockError" class="error-msg"></p>
-        </div>
-    </div>
-
-    <!-- 修改模块锁密码模态框 -->
-    <div id="changeLockPwdModal" class="modal-overlay">
-        <div class="modal-container">
-            <i class="fa-solid fa-xmark close-modal-icon" onclick="closeChangeLockPwdModal()"></i>
-            <h3>🔐 修改模块密码</h3>
-            <p class="modal-desc">修改后，所有锁定模块将使用新密码访问</p>
-            <input type="password" id="oldLockPwd" placeholder="当前密码" class="unified-input">
-            <input type="password" id="newLockPwd1" placeholder="新密码（至少4位）" class="unified-input">
-            <input type="password" id="newLockPwd2" placeholder="确认新密码" class="unified-input">
-            <div class="modal-buttons">
-                <button class="btn-primary" onclick="submitChangeLockPwd()">确认修改</button>
-                <button class="btn-secondary" onclick="closeChangeLockPwdModal()">取消</button>
-            </div>
-            <p id="changeLockError" class="error-msg"></p>
-        </div>
-    </div>
-
-    <!-- 忘记密码重置模态框 -->
-    <div id="forgotLockModal" class="modal-overlay">
-        <div class="modal-container">
-            <i class="fa-solid fa-xmark close-modal-icon" onclick="closeForgotLockModal()"></i>
-            <h3>🔄 重置访问密码</h3>
-            <p class="modal-desc">请输入重置暗号，暗号正确后将恢复默认密码</p>
-            <input type="text" id="resetCodeInput" placeholder="重置暗号" class="unified-input" onkeydown="if(event.key==='Enter')submitForgotLockPwd()">
-            <div class="modal-buttons">
-                <button class="btn-primary" onclick="submitForgotLockPwd()">重置</button>
-                <button class="btn-secondary" onclick="closeForgotLockModal()">取消</button>
-            </div>
-            <p id="forgotError" class="error-msg"></p>
         </div>
     </div>
 
@@ -229,15 +189,12 @@
             const USE_CLOUD = true;
             const CACHE_KEY = 'ysqy_data_cache';
             const VERSION_KEY = 'ysqy_data_version';
-            const LOCK_PWD_KEY = 'ysqy_module_pwd';
-            const DEFAULT_LOCK_PWD = 'zheshimima';
-            const RESET_CODE = 'ysqy_reset';
             const DEFAULT_ANGLES = ['数字冲击','对话还原','情绪唤醒','场景反差','旁观者视角','预言式','时间轴','选择题','内幕揭秘','反常识','学员故事','身体感知','追问式','画面描写'];
             const PAGE_SIZE = 18;
 
             let pendingLockedModule = null;
             let sortOrder = 'desc';
-            let db = { modules: [], angles: [], contents: [], _modules: [] };
+            let db = { modules: [], angles: [], contents: [], _modules: [], globalLockPassword: 'zheshimima' };
             let currentModule = null, currentAngle = '全部', currentCategory = '全部', searchQuery = '';
             let currentPage = 1;
             let filteredItems = [];
@@ -248,8 +205,6 @@
             function getLocalCache() { const c = localStorage.getItem(CACHE_KEY); return c ? JSON.parse(c) : null; }
             function setLocalCache(data) { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); }
             function setLocalVersion(v) { localStorage.setItem(VERSION_KEY, v.toString()); }
-            function getLockPwd() { return localStorage.getItem(LOCK_PWD_KEY) || DEFAULT_LOCK_PWD; }
-            function setLockPwd(pwd) { localStorage.setItem(LOCK_PWD_KEY, pwd); }
 
             function getThumbUrl(originalUrl) {
                 if (!originalUrl) return '';
@@ -290,7 +245,9 @@
                     }
                     return c;
                 });
-                return { modules: moduleNames.length ? moduleNames : ['朋友圈','客户见证','课程卖点'], angles, contents, _modules };
+                // 读取全局锁密码，如果没有则设置默认值
+                const globalLockPassword = data.globalLockPassword || 'zheshimima';
+                return { modules: moduleNames.length ? moduleNames : ['朋友圈','客户见证','课程卖点'], angles, contents, _modules, globalLockPassword };
             }
 
             function createDefaultData() {
@@ -298,7 +255,7 @@
                     { id:'pyq', name:'朋友圈', type:'moments', categories:['数字冲击','对话还原','情绪唤醒'], locked: false },
                     { id:'witness', name:'客户见证', type:'testimonial', categories:['文昌','沙龙','成交'], locked: false },
                     { id:'course', name:'课程卖点', type:'course', categories:['核心价值','课程亮点'], locked: false }
-                ]};
+                ], globalLockPassword: 'zheshimima' };
             }
 
             function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1500); }
@@ -319,7 +276,6 @@
                 }).join('');
             }
 
-            // 锁模块验证弹窗
             window.showLockModal = function(moduleName) {
                 pendingLockedModule = moduleName;
                 document.getElementById('lockPwdInput').value = '';
@@ -329,76 +285,13 @@
             };
             window.closeLockModal = function() { document.getElementById('lockModal').classList.remove('open'); pendingLockedModule = null; };
             window.verifyLockPwd = function() {
-                if (document.getElementById('lockPwdInput').value === getLockPwd()) {
+                // 从云端获取当前全局密码
+                const currentLockPwd = db.globalLockPassword || 'zheshimima';
+                if (document.getElementById('lockPwdInput').value === currentLockPwd) {
                     const target = pendingLockedModule;
                     closeLockModal();
                     if (target) openModule(target);
                 } else document.getElementById('lockError').textContent = '密码错误';
-            };
-
-            // 从锁模块弹窗调用的修改密码和忘记密码
-            window.showChangeLockPwdFromLockModal = function() {
-                closeLockModal(); // 先关闭锁验证框
-                openChangeLockPwdModal();
-            };
-            window.showForgotLockPwdFromLockModal = function() {
-                closeLockModal();
-                openForgotLockModal();
-            };
-
-            // 修改密码模态框控制
-            function openChangeLockPwdModal() {
-                document.getElementById('oldLockPwd').value = '';
-                document.getElementById('newLockPwd1').value = '';
-                document.getElementById('newLockPwd2').value = '';
-                document.getElementById('changeLockError').textContent = '';
-                document.getElementById('changeLockPwdModal').classList.add('open');
-            }
-            window.closeChangeLockPwdModal = function() { document.getElementById('changeLockPwdModal').classList.remove('open'); };
-            window.submitChangeLockPwd = function() {
-                const old = document.getElementById('oldLockPwd').value;
-                const new1 = document.getElementById('newLockPwd1').value;
-                const new2 = document.getElementById('newLockPwd2').value;
-                if (old !== getLockPwd()) {
-                    document.getElementById('changeLockError').textContent = '当前密码错误';
-                    return;
-                }
-                if (new1.length < 4) {
-                    document.getElementById('changeLockError').textContent = '新密码至少4位';
-                    return;
-                }
-                if (new1 !== new2) {
-                    document.getElementById('changeLockError').textContent = '两次输入不一致';
-                    return;
-                }
-                setLockPwd(new1);
-                toast('模块密码已修改');
-                closeChangeLockPwdModal();
-                // 如果之前有等待解锁的模块，重新打开锁验证框让用户输入新密码
-                if (pendingLockedModule) {
-                    setTimeout(() => showLockModal(pendingLockedModule), 200);
-                }
-            };
-
-            // 忘记密码模态框控制
-            function openForgotLockModal() {
-                document.getElementById('resetCodeInput').value = '';
-                document.getElementById('forgotError').textContent = '';
-                document.getElementById('forgotLockModal').classList.add('open');
-            }
-            window.closeForgotLockModal = function() { document.getElementById('forgotLockModal').classList.remove('open'); };
-            window.submitForgotLockPwd = function() {
-                const code = document.getElementById('resetCodeInput').value;
-                if (code === RESET_CODE) {
-                    setLockPwd(DEFAULT_LOCK_PWD);
-                    toast('密码已重置为默认值');
-                    closeForgotLockModal();
-                    if (pendingLockedModule) {
-                        setTimeout(() => showLockModal(pendingLockedModule), 200);
-                    }
-                } else {
-                    document.getElementById('forgotError').textContent = '暗号错误，重置失败';
-                }
             };
 
             window.openModule = function(m) {
@@ -557,7 +450,8 @@
                 lb.classList.add('open');
             };
             window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
-            window.openDetail = function(id, moduleName) { /* 可选实现，如需详细弹窗可在此补充 */ };
+            window.openDetail = function(id, moduleName) { /* 可选 */ };
+            window.closeDetail = function() { document.getElementById('detailOverlay').classList.remove('open'); };
 
             function showUpdateBadge(show) {
                 const badge = document.getElementById('updateBadge');
@@ -608,8 +502,6 @@
             };
 
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetail(); closeLightbox(); } });
-            window.closeDetail = function() { document.getElementById('detailOverlay').classList.remove('open'); };
-
             loadData();
         })();
     </script>
